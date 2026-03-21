@@ -9,9 +9,6 @@ const Header = () => {
           </h1>
           <span className="text-[11px] text-muted-foreground leading-tight">by SentArc Labs</span>
         </div>
-        <div className="hidden sm:flex items-center bg-primary-light text-primary text-xs font-medium px-3 py-1.5 rounded-full">
-          Powered by ICMR Guidelines + PubMed
-        </div>
       </div>
     </header>
   );

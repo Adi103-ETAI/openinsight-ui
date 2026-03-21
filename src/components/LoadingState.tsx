@@ -6,7 +6,7 @@ const LoadingState = () => {
       <div className="bg-card rounded-xl border border-border p-6">
         <div className="flex items-center gap-2 mb-5">
           <Loader2 className="w-4 h-4 text-primary animate-spin-slow" />
-          <span className="text-sm text-muted-foreground">Searching ICMR guidelines and PubMed…</span>
+          <span className="text-sm text-muted-foreground">Searching…</span>
         </div>
         <div className="space-y-3">
           <div className="h-4 skeleton-shimmer rounded w-full" />
