@@ -1,5 +1,5 @@
 import { useState, useRef } from "react";
-import { Loader2 } from "lucide-react";
+import { Loader2, Search } from "lucide-react";
 
 const EXAMPLES = [
   "Treatment for drug-resistant TB in adults",
