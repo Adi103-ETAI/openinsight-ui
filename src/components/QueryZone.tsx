@@ -26,6 +26,7 @@ const QueryZone = ({ onSubmit, isLoading, hasResults }: QueryZoneProps) => {
 
   return (
     <div className="w-full max-w-[760px] mx-auto px-4 sm:px-8 pt-10 pb-6">
+      <h1 className="text-[28px] font-bold text-foreground text-center mb-4">Medical Knowledge Platform</h1>
       <div className="flex">
         <input
           ref={inputRef}
@@ -33,8 +34,8 @@ const QueryZone = ({ onSubmit, isLoading, hasResults }: QueryZoneProps) => {
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && handleSubmit()}
-          placeholder="Ask a clinical question — e.g. first-line treatment for dengue with warning signs"
-          className="flex-1 h-14 px-5 text-base border-[1.5px] border-border rounded-l-xl bg-card text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all overflow-hidden"
+          placeholder="Ask a medical question..."
+          className="flex-1 h-14 px-5 text-base border-[1.5px] border-border border-r-0 rounded-l-xl bg-card text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all overflow-hidden"
         />
         <button
           onClick={() => handleSubmit()}
