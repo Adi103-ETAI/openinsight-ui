@@ -52,10 +52,6 @@ const QueryZone = ({ onSubmit, isLoading, hasResults }: QueryZoneProps) => {
         </button>
       </div>
 
-      <div className="flex flex-wrap gap-3 mt-3 text-xs text-muted-foreground">
-        <span>🔬 Searches ICMR Guidelines</span>
-        <span>📄 Searches PubMed Live</span>
-      </div>
 
       {!hasResults && (
         <div className="flex flex-wrap gap-2 mt-4">
