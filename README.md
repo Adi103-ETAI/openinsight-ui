@@ -1,3 +1,2 @@
-# Welcome to your Lovable project
+# OpenMed UI
 
-TODO: Document your project here
