@@ -1,4 +1,6 @@
+import { useRef } from "react";
 import { BookOpen, Bookmark, FileText, ChevronRight } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
 
 const SAVED_ITEMS = [
   { id: 1, title: "Hypertension Guidelines 2026", type: "Guideline", date: "Oct 12" },
@@ -7,6 +9,39 @@ const SAVED_ITEMS = [
 ];
 
 const Vault = () => {
+  const { toast } = useToast();
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleOpenItem = (title: string) => {
+    toast({
+      title: "Opening Document",
+      description: `Loading external reference: ${title}`,
+    });
+  };
+
+  const handleBookmarkToggle = (e: React.MouseEvent, title: string) => {
+    e.stopPropagation(); // prevent opening the item when clicking bookmark
+    toast({
+      title: "Bookmark Removed",
+      description: `${title} has been unsaved from your vault.`,
+    });
+  };
+
+  const handleUploadClick = () => {
+    fileInputRef.current?.click();
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files.length > 0) {
+      toast({
+        title: "File Uploaded successfully",
+        description: `Your document '${e.target.files[0].name}' is now being ingested into OpenInsight context.`,
+      });
+      // reset value to allow uploading same file again
+      if (fileInputRef.current) fileInputRef.current.value = "";
+    }
+  };
+
   return (
     <div className="w-full max-w-[860px] mx-auto py-12 px-4 sm:px-8 animate-fade-up">
       <div className="flex items-center gap-3 mb-8">
@@ -20,20 +55,26 @@ const Vault = () => {
         {SAVED_ITEMS.map((item) => (
           <button
             key={item.id}
-            className="flex flex-col items-start p-5 bg-surface-container-high border border-border/50 rounded-2xl text-left hover:border-primary/50 hover:bg-muted/30 transition-all group"
+            onClick={() => handleOpenItem(item.title)}
+            className="flex flex-col items-start p-5 bg-surface-container-high border border-border/50 rounded-2xl text-left hover:border-primary/50 hover:bg-muted/30 hover:shadow-lg hover:shadow-primary/5 transition-all duration-300 group"
           >
             <div className="flex items-center justify-between w-full mb-3">
               <span className="text-[11px] font-semibold tracking-wider uppercase text-muted-foreground">
                 {item.type}
               </span>
-              <Bookmark className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors" />
+              <div 
+                className="p-1 hover:bg-muted rounded-md transition-colors"
+                onClick={(e) => handleBookmarkToggle(e, item.title)}
+              >
+                <Bookmark className="w-4 h-4 text-primary fill-primary/30 hover:fill-primary transition-colors" />
+              </div>
             </div>
-            <h3 className="text-base font-semibold text-foreground line-clamp-2 leading-snug mb-4">
+            <h3 className="text-base font-semibold text-foreground line-clamp-2 leading-snug mb-4 group-hover:text-primary transition-colors">
               {item.title}
             </h3>
             <div className="flex items-center justify-between w-full mt-auto">
               <span className="text-xs text-muted-foreground/80">{item.date}</span>
-              <div className="flex items-center gap-1 text-xs font-medium text-primary opacity-0 group-hover:opacity-100 transition-opacity">
+              <div className="flex items-center gap-1 text-xs font-medium text-primary opacity-0 translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all">
                 View <ChevronRight className="w-3 h-3" />
               </div>
             </div>
@@ -47,7 +88,20 @@ const Vault = () => {
         </div>
         <h3 className="text-lg font-semibold text-foreground mb-1">Upload Documents</h3>
         <p className="text-sm text-muted-foreground max-w-sm">Securely store your clinical documents and notes for instant AI retrieval.</p>
-        <button className="mt-6 px-6 py-2.5 bg-primary/10 text-primary font-medium rounded-lg hover:bg-primary/20 transition-colors">
+        
+        {/* Hidden File Input */}
+        <input 
+          type="file" 
+          ref={fileInputRef} 
+          className="hidden" 
+          onChange={handleFileChange}
+          accept=".pdf,.doc,.docx,.txt"
+        />
+        
+        <button 
+          onClick={handleUploadClick}
+          className="mt-6 px-6 py-2.5 bg-primary/10 text-primary font-medium rounded-lg hover:bg-primary/20 transition-colors shadow-sm"
+        >
           Browse Files
         </button>
       </div>
