@@ -1,45 +1,89 @@
 import { useState } from "react";
-import { Settings2, Bell, Shield, Moon, Monitor, CreditCard, ChevronRight } from "lucide-react";
+import { Settings2, Bell, Shield, Moon, Monitor, CreditCard, ChevronRight, Stethoscope, Sun } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Switch } from "@/components/ui/switch";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 const Settings = () => {
   const { toast } = useToast();
   
-  // State for toggles
+  // Profile State
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const [profile, setProfile] = useState({
+    name: "Director A",
+    email: "director@sentarc.labs",
+    role: "Doctor",
+    specialization: "Cardiology",
+    experience: "15+",
+    country: "India",
+    avatarImg: "/avatar_1.png" // Default cartoon avatar
+  });
+
+  // Toggles State
   const [newGuidanceAlerts, setNewGuidanceAlerts] = useState(true);
   const [weeklyDigest, setWeeklyDigest] = useState(false);
-  
-  // State for theme
-  const [theme, setTheme] = useState<'dark' | 'system'>('dark');
+  const [theme, setTheme] = useState<'light' | 'dark' | 'system'>('dark');
 
-  const handleEditProfile = () => {
+  const handleProfileSave = (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsProfileOpen(false);
     toast({
-      title: "Profile Editing",
-      description: "Profile editing functionality will be available soon.",
+      title: "Profile Updated",
+      description: "Your professional context has been saved securely.",
     });
   };
 
   const handleSecurity = () => {
-    toast({
-      title: "Security Settings",
-      description: "Redirecting to security and 2FA settings.",
-    });
+    toast({ title: "Security Settings", description: "Redirecting to security and 2FA settings." });
   };
 
   const handleSubscription = () => {
-    toast({
-      title: "Subscription Setup",
-      description: "Managing your premium Clinical Intelligence plan.",
-    });
+    toast({ title: "Subscription Setup", description: "Managing your premium Clinical Intelligence plan." });
   };
 
-  const handleThemeChange = (newTheme: 'dark' | 'system') => {
+  const handleThemeChange = (newTheme: 'light' | 'dark' | 'system') => {
     setTheme(newTheme);
-    toast({
-      title: "Appearance Updated",
-      description: `Theme has been set to ${newTheme === 'dark' ? 'Dark Mode' : 'System Default'}.`,
-    });
+    
+    const root = window.document.documentElement;
+    const body = window.document.body;
+    
+    root.classList.remove("dark", "light");
+    body.classList.remove("dark", "light");
+    
+    if (newTheme === "dark") {
+      root.classList.add("dark");
+      body.classList.add("dark");
+    } else if (newTheme === "system") {
+      const systemTheme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+      if (systemTheme === "dark") {
+        root.classList.add("dark");
+        body.classList.add("dark");
+      }
+    }
+    
+    let themeName = 'System Default';
+    if (newTheme === 'dark') themeName = 'Dark Mode';
+    if (newTheme === 'light') themeName = 'Light Mode';
+    
+    toast({ title: "Appearance Updated", description: `Theme has been set to ${themeName}.` });
   };
 
   return (
@@ -52,22 +96,170 @@ const Settings = () => {
       </div>
 
       <div className="space-y-6">
+        
         {/* Profile Card */}
         <div className="p-6 bg-surface-container-high border border-border/50 rounded-2xl">
           <h2 className="text-lg font-semibold text-foreground mb-4">Profile Information</h2>
-          <div className="flex items-center gap-6">
-            <div className="w-20 h-20 rounded-full bg-gradient-primary flex items-center justify-center text-primary-foreground font-bold text-xl shadow-inner">
-              DA
+          <div className="flex flex-col sm:flex-row sm:items-center gap-6">
+            <div className="w-20 h-20 rounded-full overflow-hidden border-2 border-border shadow-lg shrink-0 bg-muted">
+              <img src={profile.avatarImg} alt="Avatar" className="w-full h-full object-cover" />
             </div>
-            <div>
-              <h3 className="text-xl font-heading font-semibold text-foreground">Director A</h3>
-              <p className="text-sm text-muted-foreground mb-3">director@sentarc.labs</p>
-              <button 
-                onClick={handleEditProfile}
-                className="px-4 py-2 border border-border rounded-lg text-sm font-medium hover:bg-muted/50 transition-colors"
-              >
-                Edit Profile
-              </button>
+            <div className="flex-1">
+              <h3 className="text-xl font-heading font-semibold text-foreground">{profile.name}</h3>
+              <p className="text-sm text-muted-foreground mb-1">{profile.email}</p>
+              
+              <div className="flex flex-wrap items-center gap-2 mt-3 mb-4">
+                <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium bg-primary/10 text-primary border border-primary/20">
+                  <Stethoscope className="w-3 h-3" />
+                  {profile.role}
+                </span>
+                <span className="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-medium bg-muted text-muted-foreground">
+                  {profile.specialization}
+                </span>
+                <span className="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-medium bg-surface-container-high border border-border text-foreground">
+                  {profile.country}
+                </span>
+              </div>
+
+              <Dialog open={isProfileOpen} onOpenChange={setIsProfileOpen}>
+                <DialogTrigger asChild>
+                  <Button variant="outline" size="sm" className="h-9">
+                    Edit Profile
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="sm:max-w-[500px]">
+                  <DialogHeader>
+                    <DialogTitle>Edit Profile Context</DialogTitle>
+                    <DialogDescription>
+                      Update your professional details to help OpenInsight tailor clinical guidelines and ranking algorithms for your specialty.
+                    </DialogDescription>
+                  </DialogHeader>
+                  
+                  <form onSubmit={handleProfileSave} className="space-y-4 py-4">
+                    <div className="grid grid-cols-2 gap-4">
+                      {/* Avatar Picker */}
+                      <div className="space-y-3 col-span-2 pb-4 border-b border-border/50">
+                        <Label>Choose Your Avatar</Label>
+                        <p className="text-xs text-muted-foreground">Pick a cartoon avatar that represents you.</p>
+                        <div className="grid grid-cols-6 gap-2">
+                          {["/avatar_1.png", "/avatar_2.png", "/avatar_3.png", "/avatar_4.png", "/avatar_5.png", "/avatar_6.png"].map((src) => (
+                            <button
+                              key={src}
+                              type="button"
+                              onClick={() => setProfile({ ...profile, avatarImg: src })}
+                              className={`relative w-full aspect-square rounded-xl overflow-hidden transition-all duration-200 border-2 ${
+                                profile.avatarImg === src
+                                  ? "border-primary ring-2 ring-primary/30 scale-105 shadow-md"
+                                  : "border-border/50 opacity-70 hover:opacity-100 hover:border-primary/40 hover:scale-105"
+                              }`}
+                            >
+                              <img src={src} alt="Avatar option" className="w-full h-full object-cover" />
+                              {profile.avatarImg === src && (
+                                <div className="absolute inset-0 bg-primary/10 flex items-center justify-center">
+                                  <div className="w-5 h-5 rounded-full bg-primary flex items-center justify-center">
+                                    <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                                    </svg>
+                                  </div>
+                                </div>
+                              )}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+
+                      <div className="space-y-2 col-span-2">
+                        <Label htmlFor="name">Full Name</Label>
+                        <Input 
+                          id="name" 
+                          value={profile.name} 
+                          onChange={(e) => setProfile({...profile, name: e.target.value})} 
+                        />
+                      </div>
+
+                      <div className="space-y-2 col-span-2">
+                        <Label htmlFor="email">Email Address <span className="text-muted-foreground font-normal">(Login)</span></Label>
+                        <Input 
+                          id="email" 
+                          type="email" 
+                          value={profile.email} 
+                          disabled 
+                          className="bg-muted text-muted-foreground"
+                        />
+                      </div>
+
+                      <div className="space-y-2">
+                        <Label>Primary Role</Label>
+                        <Select 
+                          value={profile.role} 
+                          onValueChange={(val) => setProfile({...profile, role: val})}
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select role" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="Doctor">Doctor</SelectItem>
+                            <SelectItem value="Medical Student">Medical Student</SelectItem>
+                            <SelectItem value="Researcher">Researcher</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+
+                      <div className="space-y-2">
+                        <Label>Specialization</Label>
+                        <Input 
+                          placeholder="e.g. Cardiology" 
+                          value={profile.specialization} 
+                          onChange={(e) => setProfile({...profile, specialization: e.target.value})} 
+                        />
+                      </div>
+
+                      <div className="space-y-2">
+                        <Label>Region / Country</Label>
+                        <Select 
+                          value={profile.country} 
+                          onValueChange={(val) => setProfile({...profile, country: val})}
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select diagnostic region" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="US">US (CDC / NIH)</SelectItem>
+                            <SelectItem value="India">India (ICMR)</SelectItem>
+                            <SelectItem value="UK">UK (NICE)</SelectItem>
+                            <SelectItem value="Global">Global / Default</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+
+                      <div className="space-y-2">
+                        <Label>Years Exper. <span className="text-muted-foreground font-normal">(Optional)</span></Label>
+                        <Select 
+                          value={profile.experience} 
+                          onValueChange={(val) => setProfile({...profile, experience: val})}
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select experience" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="Student">Student</SelectItem>
+                            <SelectItem value="0-5">0-5 years</SelectItem>
+                            <SelectItem value="5-15">5-15 years</SelectItem>
+                            <SelectItem value="15+">15+ years</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    </div>
+                    
+                    <DialogFooter className="mt-6">
+                      <Button type="button" variant="ghost" onClick={() => setIsProfileOpen(false)}>
+                        Cancel
+                      </Button>
+                      <Button type="submit">Save Changes</Button>
+                    </DialogFooter>
+                  </form>
+                </DialogContent>
+              </Dialog>
             </div>
           </div>
         </div>
@@ -117,28 +309,37 @@ const Settings = () => {
               <h3 className="font-semibold text-foreground">Appearance</h3>
             </div>
             
-            {/* Dark Theme Option */}
-            <div 
-              onClick={() => handleThemeChange('dark')}
-              className={`flex items-center justify-between p-3 rounded-xl cursor-pointer transition-colors ${theme === 'dark' ? 'border border-primary/50 bg-primary/5' : 'border border-border/50 hover:bg-muted/30'}`}
-            >
-              <div className="flex items-center gap-3">
-                <Moon className={`w-4 h-4 ${theme === 'dark' ? 'text-primary' : 'text-muted-foreground'}`} />
-                <span className={`text-sm font-medium ${theme !== 'dark' && 'text-muted-foreground'}`}>Dark Theme</span>
-              </div>
-              <div className={`w-4 h-4 rounded-full ${theme === 'dark' ? 'border-4 border-primary' : 'border-2 border-muted-foreground'}`}></div>
-            </div>
-            
-            {/* System Default Option */}
-            <div 
-              onClick={() => handleThemeChange('system')}
-              className={`flex items-center justify-between p-3 rounded-xl cursor-pointer transition-colors ${theme === 'system' ? 'border border-primary/50 bg-primary/5' : 'border border-border/50 hover:bg-muted/30'}`}
-            >
-              <div className="flex items-center gap-3">
-                <Monitor className={`w-4 h-4 ${theme === 'system' ? 'text-primary' : 'text-muted-foreground'}`} />
-                <span className={`text-sm font-medium ${theme !== 'system' && 'text-muted-foreground'}`}>System Default</span>
-              </div>
-              <div className={`w-4 h-4 rounded-full ${theme === 'system' ? 'border-4 border-primary' : 'border-2 border-muted-foreground'}`}></div>
+            <div className="space-y-3">
+              <Label>Color Theme</Label>
+              
+              <Select 
+                value={theme} 
+                onValueChange={(val) => handleThemeChange(val as 'light' | 'dark' | 'system')}
+              >
+                <SelectTrigger className="w-full h-12 bg-background border-border/50">
+                  <SelectValue placeholder="Select Theme" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="light" className="py-3">
+                    <div className="flex items-center gap-3">
+                      <Sun className="w-4 h-4 text-amber-500" />
+                      <span className="font-medium">Light Theme</span>
+                    </div>
+                  </SelectItem>
+                  <SelectItem value="dark" className="py-3">
+                    <div className="flex items-center gap-3">
+                      <Moon className="w-4 h-4 text-indigo-400" />
+                      <span className="font-medium">Dark Theme</span>
+                    </div>
+                  </SelectItem>
+                  <SelectItem value="system" className="py-3">
+                    <div className="flex items-center gap-3">
+                      <Monitor className="w-4 h-4 text-muted-foreground" />
+                      <span className="font-medium">System Default</span>
+                    </div>
+                  </SelectItem>
+                </SelectContent>
+              </Select>
             </div>
           </div>
         </div>
