@@ -1,9 +1,11 @@
 import { useState, useCallback, useRef, useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import QueryZone from "@/components/QueryZone";
 import AnswerCard from "@/components/AnswerCard";
 import LoadingState from "@/components/LoadingState";
 import EmptyState from "@/components/EmptyState";
 import ErrorState from "@/components/ErrorState";
+import { useStore } from "@/contexts/StoreContext";
 import type { QueryResponse } from "@/types/api";
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL || "http://localhost:8000";
@@ -18,6 +20,18 @@ type ChatMessage = {
 const Index = () => {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const { addHistoryEntry } = useStore();
+  const location = useLocation();
+
+  // Handle loading query from sidebar history
+  useEffect(() => {
+    const state = location.state as { loadQuery?: string } | null;
+    if (state?.loadQuery) {
+      handleQuery(state.loadQuery);
+      // Clear the state so it doesn't re-trigger
+      window.history.replaceState({}, document.title);
+    }
+  }, [location.state]);
 
   useEffect(() => {
     if (scrollRef.current) {
@@ -56,6 +70,11 @@ const Index = () => {
             : msg
         )
       );
+
+      // Save to persistent history
+      if (json.chunks_retrieved > 0) {
+        addHistoryEntry(query, json);
+      }
     } catch {
       setMessages((prev) =>
         prev.map((msg) =>
@@ -63,7 +82,7 @@ const Index = () => {
         )
       );
     }
-  }, []);
+  }, [addHistoryEntry]);
 
   const handleRetry = (msgId: string, query: string) => {
     setMessages((prev) => prev.filter((m) => m.id !== msgId));

@@ -98,7 +98,7 @@ const Settings = () => {
       <div className="space-y-6">
         
         {/* Profile Card */}
-        <div className="p-6 bg-surface-container-high border border-border/50 rounded-2xl">
+        <div className="p-6 bg-surface-high border border-border/50 rounded-2xl">
           <h2 className="text-lg font-semibold text-foreground mb-4">Profile Information</h2>
           <div className="flex flex-col sm:flex-row sm:items-center gap-6">
             <div className="w-20 h-20 rounded-full overflow-hidden border-2 border-border shadow-lg shrink-0 bg-muted">
@@ -116,7 +116,7 @@ const Settings = () => {
                 <span className="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-medium bg-muted text-muted-foreground">
                   {profile.specialization}
                 </span>
-                <span className="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-medium bg-surface-container-high border border-border text-foreground">
+                <span className="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-medium bg-surface-high border border-border text-foreground">
                   {profile.country}
                 </span>
               </div>
@@ -267,7 +267,7 @@ const Settings = () => {
         {/* Preferences Grid */}
         <div className="grid gap-6 md:grid-cols-2">
           {/* Notifications */}
-          <div className="p-6 bg-surface-container-low border border-border/50 rounded-2xl space-y-4">
+          <div className="p-6 bg-surface-low border border-border/50 rounded-2xl space-y-4">
             <div className="flex items-center gap-3 mb-2">
               <Bell className="w-5 h-5 text-primary" />
               <h3 className="font-semibold text-foreground">Notifications</h3>
@@ -303,7 +303,7 @@ const Settings = () => {
           </div>
 
           {/* Appearance */}
-          <div className="p-6 bg-surface-container-low border border-border/50 rounded-2xl space-y-4">
+          <div className="p-6 bg-surface-low border border-border/50 rounded-2xl space-y-4">
             <div className="flex items-center gap-3 mb-2">
               <Monitor className="w-5 h-5 text-primary" />
               <h3 className="font-semibold text-foreground">Appearance</h3>
@@ -348,7 +348,7 @@ const Settings = () => {
         <div className="grid gap-6 md:grid-cols-2">
           <button 
             onClick={handleSecurity}
-            className="flex items-center justify-between p-5 bg-surface-container-low border border-border/50 rounded-2xl hover:border-primary/30 hover:bg-muted/30 transition-all text-left group"
+            className="flex items-center justify-between p-5 bg-surface-low border border-border/50 rounded-2xl hover:border-primary/30 hover:bg-muted/30 transition-all text-left group"
           >
             <div className="flex items-center gap-4">
               <div className="p-2 bg-muted rounded-lg group-hover:bg-primary/10 transition-colors">
@@ -364,7 +364,7 @@ const Settings = () => {
           
           <button 
             onClick={handleSubscription}
-            className="flex items-center justify-between p-5 bg-surface-container-low border border-border/50 rounded-2xl hover:border-primary/30 hover:bg-muted/30 transition-all text-left group"
+            className="flex items-center justify-between p-5 bg-surface-low border border-border/50 rounded-2xl hover:border-primary/30 hover:bg-muted/30 transition-all text-left group"
           >
             <div className="flex items-center gap-4">
               <div className="p-2 bg-muted rounded-lg group-hover:bg-primary/10 transition-colors">
