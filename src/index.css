@@ -6,73 +6,100 @@
 
 @layer base {
   :root {
-    --background: 210 20% 98%; /* Light gray / white */
-    --foreground: 240 5% 10%; /* Dark text */
+    --background: 210 20% 98%;
+    --foreground: 222 47% 11%;
 
-    --card: 0 0% 100%;       /* White */
-    --card-foreground: 240 5% 10%;
+    --card: 0 0% 100%;
+    --card-foreground: 222 47% 11%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 240 5% 10%;
+    --popover-foreground: 222 47% 11%;
 
-    --primary: 216 100% 40%;  /* Darker blue for light mode contrast */
-    --primary-foreground: 210 20% 98%;
-    --primary-hover: 216 100% 30%; 
+    --primary: 173 83% 25%;       /* #0F766E teal-700 */
+    --primary-foreground: 0 0% 100%;
+    --primary-hover: 174 60% 35%; /* #0D9488 teal-600 */
+    --primary-light: 166 76% 94%; /* #CCFBF1 teal-50 */
+    --primary-dark: 176 61% 19%;  /* #134E4A teal-900 */
 
-    --secondary: 191 100% 40%; 
+    --secondary: 215 28% 17%;
     --secondary-foreground: 0 0% 100%;
 
-    --muted: 210 20% 90%; 
-    --muted-foreground: 220 10% 40%;
+    --muted: 210 40% 96%;
+    --muted-foreground: 215 16% 47%;
 
-    --accent: 210 20% 94%;
-    --accent-foreground: 240 5% 10%;
+    --accent: 210 40% 96%;
+    --accent-foreground: 222 47% 11%;
 
     --destructive: 0 84% 60%;
-    --destructive-foreground: 210 20% 98%;
+    --destructive-foreground: 0 0% 100%;
 
-    --border: 220 13% 85%;
-    --input: 220 13% 85%;
-    --ring: 216 100% 40%;
+    --border: 214 32% 91%;
+    --input: 214 32% 91%;
+    --ring: 173 83% 25%;
 
     --radius: 0.75rem;
 
     --success: 142 76% 36%;
     --warning: 23 90% 50%;
+
+    /* Source badge colors */
+    --source-pubmed: 220 70% 50%;
+    --source-cochrane: 262 60% 50%;
+    --source-who: 205 85% 45%;
+    --source-cdc: 340 65% 47%;
+    --source-statpearls: 150 50% 40%;
+    --source-icmr: 173 83% 25%;
+    --source-nmc: 25 85% 50%;
+
+    --surface-low: 210 20% 97%;
+    --surface-high: 210 15% 93%;
   }
 
   .dark {
-    --background: 210 10% 8%; /* #121416 */
-    --foreground: 240 5% 89%; /* #e2e2e5 */
+    --background: 210 10% 8%;
+    --foreground: 240 5% 89%;
 
-    --card: 210 7% 11%;       /* #1a1c1e surface-container-low */
+    --card: 210 7% 11%;
     --card-foreground: 240 5% 89%;
 
-    --popover: 210 5% 15%;    /* #282a2c surface-container-high */
+    --popover: 210 5% 15%;
     --popover-foreground: 240 5% 89%;
 
-    --primary: 221 100% 84%;  /* #adc7ff */
-    --primary-foreground: 213 100% 20%; /* #002e68 */
-    --primary-hover: 216 100% 64%; /* #4a8eff primary-container */
+    --primary: 173 58% 50%;
+    --primary-foreground: 176 61% 10%;
+    --primary-hover: 174 60% 60%;
+    --primary-light: 173 50% 15%;
+    --primary-dark: 166 76% 80%;
 
-    --secondary: 191 100% 50%; /* #00d2ff */
-    --secondary-foreground: 194 100% 8%; /* #001f28 */
+    --secondary: 210 20% 80%;
+    --secondary-foreground: 210 10% 8%;
 
-    --muted: 210 5% 20%; /* #333537 */
-    --muted-foreground: 226 14% 80%; /* #c1c6d7 */
+    --muted: 210 5% 20%;
+    --muted-foreground: 226 14% 80%;
 
     --accent: 210 5% 15%;
     --accent-foreground: 240 5% 89%;
 
-    --destructive: 3 100% 82%; /* #ffb4ab */
-    --destructive-foreground: 3 100% 20%; /* #690005 */
+    --destructive: 3 100% 82%;
+    --destructive-foreground: 3 100% 20%;
 
-    --border: 220 7% 30%; /* #414754 */
+    --border: 220 7% 30%;
     --input: 220 7% 30%;
-    --ring: 221 100% 84%; /* #adc7ff */
+    --ring: 173 58% 50%;
 
     --success: 142 64% 40%;
-    --warning: 23 88% 60%; /* #ef6719 */
+    --warning: 23 88% 60%;
+
+    --source-pubmed: 220 80% 70%;
+    --source-cochrane: 262 70% 70%;
+    --source-who: 205 80% 65%;
+    --source-cdc: 340 70% 65%;
+    --source-statpearls: 150 60% 55%;
+    --source-icmr: 173 58% 50%;
+    --source-nmc: 25 80% 60%;
+
+    --surface-low: 210 7% 13%;
+    --surface-high: 210 5% 18%;
   }
 }
 
@@ -97,11 +124,26 @@
     text-wrap: balance;
   }
   .glassmorphism {
-    @apply bg-muted/60 backdrop-blur-xl border border-border/30 shadow-[0_20px_40px_rgba(0,0,0,0.4)];
+    @apply bg-card/80 backdrop-blur-xl border border-border/50 shadow-lg;
   }
   .gradient-primary {
-    @apply bg-gradient-to-br from-[#adc7ff] to-[#4a8eff] text-[#002e68];
+    background: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--primary-hover)));
   }
+}
+
+/* Custom scrollbar */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: hsl(var(--border));
+  border-radius: 3px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--muted-foreground) / 0.4);
 }
 
 /* Scroll reveal animation */
@@ -129,7 +171,7 @@
 }
 
 .skeleton-shimmer {
-  background: linear-gradient(90deg, hsl(210 7% 15%) 25%, hsl(210 7% 20%) 50%, hsl(210 7% 15%) 75%);
+  background: linear-gradient(90deg, hsl(var(--muted)) 25%, hsl(var(--accent)) 50%, hsl(var(--muted)) 75%);
   background-size: 200% 100%;
   animation: shimmer 1.5s ease-in-out infinite;
 }

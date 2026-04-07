@@ -54,12 +54,21 @@ export default {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
-        pubmed: {
-          DEFAULT: "hsl(var(--pubmed))",
-          foreground: "hsl(var(--pubmed-foreground))",
-        },
         success: "hsl(var(--success))",
         warning: "hsl(var(--warning))",
+        surface: {
+          low: "hsl(var(--surface-low))",
+          high: "hsl(var(--surface-high))",
+        },
+        source: {
+          pubmed: "hsl(var(--source-pubmed))",
+          cochrane: "hsl(var(--source-cochrane))",
+          who: "hsl(var(--source-who))",
+          cdc: "hsl(var(--source-cdc))",
+          statpearls: "hsl(var(--source-statpearls))",
+          icmr: "hsl(var(--source-icmr))",
+          nmc: "hsl(var(--source-nmc))",
+        },
       },
       borderRadius: {
         lg: "var(--radius)",

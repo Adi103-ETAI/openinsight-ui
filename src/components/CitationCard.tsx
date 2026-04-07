@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { ExternalLink, ChevronDown } from "lucide-react";
 import type { Citation } from "@/types/api";
+import { getSourceConfig } from "@/lib/sources";
 
 interface CitationCardProps {
   citation: Citation;
@@ -10,6 +11,7 @@ const CitationCard = ({ citation }: CitationCardProps) => {
   const [expanded, setExpanded] = useState(false);
   const truncated = citation.chunk_text.length > 120;
   const displayText = expanded ? citation.chunk_text : citation.chunk_text.slice(0, 120) + (truncated ? "…" : "");
+  const source = getSourceConfig(citation.source_type);
 
   const pubmedUrl =
     citation.source_type === "pubmed" && citation.mongo_id
@@ -19,7 +21,7 @@ const CitationCard = ({ citation }: CitationCardProps) => {
   return (
     <div
       id={`citation-${citation.index}`}
-      className="border border-border rounded-lg p-3 sm:p-4 hover:bg-muted/40 transition-colors"
+      className="border border-border rounded-lg p-3 sm:p-4 hover:bg-muted/40 hover:shadow-sm transition-all duration-200 group"
     >
       <div className="flex items-start justify-between gap-2 mb-2">
         <div className="flex items-center gap-2 min-w-0">
@@ -29,14 +31,8 @@ const CitationCard = ({ citation }: CitationCardProps) => {
           <span className="text-sm font-semibold text-foreground truncate">{citation.title}</span>
         </div>
         <div className="flex items-center gap-1.5 shrink-0">
-          <span
-            className={`text-[11px] font-medium px-2 py-0.5 rounded-full ${
-              citation.source_type === "icmr"
-                ? "bg-primary text-primary-foreground"
-                : "bg-pubmed text-pubmed-foreground"
-            }`}
-          >
-            {citation.source_type === "icmr" ? "ICMR" : "PubMed"}
+          <span className={`text-[11px] font-medium px-2 py-0.5 rounded-full text-white ${source.colorClass}`}>
+            {source.label}
           </span>
           {pubmedUrl && (
             <a href={pubmedUrl} target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-foreground transition-colors">
