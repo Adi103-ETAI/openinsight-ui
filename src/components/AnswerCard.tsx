@@ -1,7 +1,8 @@
 import { useState } from "react";
 import ReactMarkdown from "react-markdown";
 import { ChevronDown } from "lucide-react";
-import type { QueryResponse } from "@/types/api";
+import type { QueryResponse, SourceType } from "@/types/api";
+import { getSourceConfig } from "@/lib/sources";
 import CitationCard from "./CitationCard";
 
 interface AnswerCardProps {
@@ -11,32 +12,36 @@ interface AnswerCardProps {
 const AnswerCard = ({ data }: AnswerCardProps) => {
   const [citationsOpen, setCitationsOpen] = useState(true);
 
-  const hasIcmr = data.citations.some((c) => c.source_type === "icmr");
-  const hasPubmed = data.citations.some((c) => c.source_type === "pubmed");
+  // Collect unique source types
+  const uniqueSources = [...new Set(data.citations.map((c) => c.source_type))] as SourceType[];
 
-  // Replace [N] with clickable links
-  const processedAnswer = data.answer;
+  // Replace [N] with superscript-style link
+  const processedAnswer = data.answer.replace(
+    /\[(\d+)\]/g,
+    (_, num) => `[<sup>${num}</sup>](#citation-${num})`
+  );
 
   return (
     <div className="w-full max-w-[760px] mx-auto px-4 sm:px-8 animate-fade-up">
-      <div className="bg-card rounded-xl border border-border overflow-hidden">
+      <div className="bg-card rounded-xl border border-border overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300">
         {/* Header */}
         <div className="flex items-center justify-between px-5 py-3 border-b border-border">
           <div className="flex items-center gap-2">
             <span className="text-lg">🩺</span>
             <span className="font-semibold text-foreground">Clinical Answer</span>
           </div>
-          <div className="flex items-center gap-1.5">
-            {hasIcmr && (
-              <span className="text-[11px] font-medium px-2 py-0.5 rounded-full bg-primary text-primary-foreground">
-                ICMR
-              </span>
-            )}
-            {hasPubmed && (
-              <span className="text-[11px] font-medium px-2 py-0.5 rounded-full bg-pubmed text-pubmed-foreground">
-                PubMed
-              </span>
-            )}
+          <div className="flex items-center gap-1.5 flex-wrap justify-end">
+            {uniqueSources.map((src) => {
+              const config = getSourceConfig(src);
+              return (
+                <span
+                  key={src}
+                  className={`text-[11px] font-medium px-2 py-0.5 rounded-full text-white ${config.colorClass}`}
+                >
+                  {config.label}
+                </span>
+              );
+            })}
           </div>
         </div>
 
@@ -45,17 +50,30 @@ const AnswerCard = ({ data }: AnswerCardProps) => {
           <div className="bg-primary-light/50 rounded-lg p-4 prose prose-sm prose-slate max-w-none text-[15px] leading-[1.7]">
             <ReactMarkdown
               components={{
-                a: ({ children, ...props }) => (
-                  <a {...props} className="text-primary hover:underline" target="_blank" rel="noopener noreferrer">
+                a: ({ children, href, ...props }) => (
+                  <a
+                    {...props}
+                    href={href}
+                    className="text-primary hover:underline no-underline"
+                    onClick={(e) => {
+                      if (href?.startsWith('#citation-')) {
+                        e.preventDefault();
+                        const el = document.getElementById(href.slice(1));
+                        el?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                      }
+                    }}
+                  >
                     {children}
                   </a>
                 ),
+                sup: ({ children }) => (
+                  <sup className="text-[11px] font-semibold text-primary cursor-pointer hover:text-primary-hover transition-colors">
+                    {children}
+                  </sup>
+                ),
               }}
             >
-              {processedAnswer.replace(
-                /\[(\d+)\]/g,
-                (_, num) => `[${num}](#citation-${num})`
-              )}
+              {processedAnswer}
             </ReactMarkdown>
           </div>
 
@@ -76,8 +94,14 @@ const AnswerCard = ({ data }: AnswerCardProps) => {
             </button>
             {citationsOpen && (
               <div className="px-5 pb-5 space-y-3">
-                {data.citations.map((citation) => (
-                  <CitationCard key={citation.index} citation={citation} />
+                {data.citations.map((citation, i) => (
+                  <div
+                    key={citation.index}
+                    className="animate-fade-up"
+                    style={{ animationDelay: `${i * 0.05}s` }}
+                  >
+                    <CitationCard citation={citation} />
+                  </div>
                 ))}
               </div>
             )}

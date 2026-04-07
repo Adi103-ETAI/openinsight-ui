@@ -90,7 +90,7 @@ const Index = () => {
               <div key={msg.id} className="space-y-6 animate-fade-up">
                 {/* User Query Bubble */}
                 <div className="flex justify-end">
-                  <div className="bg-surface-container-high border border-border/40 text-foreground px-5 py-3 rounded-2xl rounded-tr-sm max-w-[85%] shadow-sm">
+                  <div className="bg-surface-high border border-border/40 text-foreground px-5 py-3 rounded-2xl rounded-tr-sm max-w-[85%] shadow-sm">
                     <p className="text-[15px]">{msg.query}</p>
                   </div>
                 </div>

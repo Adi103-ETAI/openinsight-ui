@@ -1,6 +1,6 @@
 const Header = () => {
   return (
-    <header className="sticky top-0 z-10 bg-surface/80 backdrop-blur-md border-b border-border/50 h-[60px] flex items-center transition-all">
+    <header className="sticky top-0 z-10 bg-card/80 backdrop-blur-md border-b border-border/50 h-[60px] flex items-center transition-all">
       <div className="w-full px-4 sm:px-6 flex items-center justify-between">
         
         {/* App Title */}
