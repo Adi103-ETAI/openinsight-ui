@@ -1,22 +1,50 @@
 import { useState } from "react";
-import { ExternalLink, ChevronDown } from "lucide-react";
+import { ExternalLink, ChevronDown, Bookmark, BookmarkCheck } from "lucide-react";
 import type { Citation } from "@/types/api";
 import { getSourceConfig } from "@/lib/sources";
+import { useStore } from "@/contexts/StoreContext";
+import { useToast } from "@/hooks/use-toast";
 
 interface CitationCardProps {
   citation: Citation;
+  queryContext?: string;
 }
 
-const CitationCard = ({ citation }: CitationCardProps) => {
+const CitationCard = ({ citation, queryContext = "" }: CitationCardProps) => {
   const [expanded, setExpanded] = useState(false);
+  const { saveToVault, removeFromVault, isInVault, vaultItems } = useStore();
+  const { toast } = useToast();
   const truncated = citation.chunk_text.length > 120;
   const displayText = expanded ? citation.chunk_text : citation.chunk_text.slice(0, 120) + (truncated ? "…" : "");
   const source = getSourceConfig(citation.source_type);
+  const saved = isInVault(citation.title, citation.chunk_text);
 
   const pubmedUrl =
     citation.source_type === "pubmed" && citation.mongo_id
       ? `https://pubmed.ncbi.nlm.nih.gov/${citation.mongo_id}/`
       : null;
+
+  const handleToggleVault = () => {
+    if (saved) {
+      const existing = vaultItems.find(
+        (i) => i.title === citation.title && i.chunkText === citation.chunk_text
+      );
+      if (existing) {
+        removeFromVault(existing.id);
+        toast({ title: "Removed from Vault", description: `"${citation.title}" removed.` });
+      }
+    } else {
+      saveToVault({
+        title: citation.title,
+        sourceType: citation.source_type,
+        chunkText: citation.chunk_text,
+        score: citation.score,
+        queryContext,
+        mongoId: citation.mongo_id,
+      });
+      toast({ title: "Saved to Vault", description: `"${citation.title}" saved to your Research Vault.` });
+    }
+  };
 
   return (
     <div
@@ -31,6 +59,13 @@ const CitationCard = ({ citation }: CitationCardProps) => {
           <span className="text-sm font-semibold text-foreground truncate">{citation.title}</span>
         </div>
         <div className="flex items-center gap-1.5 shrink-0">
+          <button
+            onClick={handleToggleVault}
+            className={`transition-colors ${saved ? 'text-primary' : 'text-muted-foreground/50 hover:text-primary'}`}
+            title={saved ? "Remove from vault" : "Save to vault"}
+          >
+            {saved ? <BookmarkCheck className="w-4 h-4" /> : <Bookmark className="w-4 h-4" />}
+          </button>
           <span className={`text-[11px] font-medium px-2 py-0.5 rounded-full text-white ${source.colorClass}`}>
             {source.label}
           </span>

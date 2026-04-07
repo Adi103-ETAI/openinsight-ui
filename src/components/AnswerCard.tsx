@@ -100,7 +100,7 @@ const AnswerCard = ({ data }: AnswerCardProps) => {
                     className="animate-fade-up"
                     style={{ animationDelay: `${i * 0.05}s` }}
                   >
-                    <CitationCard citation={citation} />
+                    <CitationCard citation={citation} queryContext={data.query} />
                   </div>
                 ))}
               </div>
