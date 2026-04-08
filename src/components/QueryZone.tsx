@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { Loader2, Search, ArrowUp } from "lucide-react";
+import { Loader2, Search } from "lucide-react";
 
 const EXAMPLES = [
   "Treatment for drug-resistant TB in adults",
@@ -15,9 +15,9 @@ interface QueryZoneProps {
 
 const getGreeting = () => {
   const hour = new Date().getHours();
-  if (hour < 12) return "Good Morning, Director";
-  if (hour < 18) return "Good Afternoon, Director";
-  return "Good Evening, Director";
+  if (hour < 12) return "Good Morning";
+  if (hour < 18) return "Good Afternoon";
+  return "Good Evening";
 };
 
 const QueryZone = ({ onSubmit, isLoading, hasResults }: QueryZoneProps) => {
@@ -39,43 +39,49 @@ const QueryZone = ({ onSubmit, isLoading, hasResults }: QueryZoneProps) => {
   };
 
   return (
-    <div className={`w-full max-w-[760px] mx-auto px-4 sm:px-8 ${hasResults ? "" : "pt-10 pb-6"}`}>
+    <div className={`w-full max-w-[680px] mx-auto px-4 sm:px-8 ${hasResults ? "" : "pt-10 pb-6"}`}>
       {!hasResults && (
-        <div className="text-center mb-8 animate-fade-up">
-          <div className="w-16 h-16 gradient-primary rounded-2xl mx-auto flex items-center justify-center mb-6 shadow-lg shadow-primary/20">
-            <span className="text-2xl">🩺</span>
-          </div>
-          <h1 className="text-[40px] font-heading font-bold tracking-tight">
+        <div className="text-center mb-10 animate-fade-up">
+          <p className="text-[11px] uppercase tracking-[0.15em] font-body font-medium text-secondary mb-4">
+            {greeting}
+          </p>
+          <h1 className="text-[36px] font-heading font-semibold tracking-tight leading-[1.15]">
             <span className="text-primary">Open</span>
             <span className="text-foreground">Insight</span>
           </h1>
-          <p className="text-[16px] font-medium text-muted-foreground mt-2">{greeting}</p>
+          <p className="text-[15px] font-body text-muted-foreground mt-3 leading-relaxed">
+            Your clinical research companion
+          </p>
         </div>
       )}
-      <div className={`flex relative items-center transition-all ${hasResults ? 'glassmorphism rounded-full px-2 py-2 border border-border/50 shadow-md' : ''}`}>
-        <div className="absolute left-6 text-muted-foreground/50">
-          <Search className="w-5 h-5" />
+
+      {/* Inquiry Bar */}
+      <div className={`relative transition-all ${hasResults ? '' : ''}`}>
+        <div className="flex items-center bg-card rounded-2xl journal-ring journal-shadow transition-all focus-within:shadow-md focus-within:ring-1 focus-within:ring-primary/30">
+          <div className="pl-5 text-secondary/60">
+            <Search className="w-[18px] h-[18px]" />
+          </div>
+          <input
+            ref={inputRef}
+            type="text"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            onKeyDown={(e) => e.key === "Enter" && handleSubmit()}
+            placeholder="Ask a medical question, or follow up..."
+            className="flex-1 h-14 pl-3 pr-3 text-[15px] font-body bg-transparent text-foreground placeholder:text-secondary/50 focus:outline-none"
+          />
+          <button
+            onClick={() => handleSubmit()}
+            disabled={isLoading || !query.trim()}
+            className="shrink-0 w-10 h-10 mr-2 flex items-center justify-center rounded-xl bg-primary text-primary-foreground transition-all disabled:opacity-40 disabled:pointer-events-none hover:bg-primary-hover active:scale-95"
+          >
+            {isLoading ? (
+              <Loader2 className="w-4 h-4 animate-spin-slow" />
+            ) : (
+              <Search className="w-4 h-4" />
+            )}
+          </button>
         </div>
-        <input
-          ref={inputRef}
-          type="text"
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          onKeyDown={(e) => e.key === "Enter" && handleSubmit()}
-          placeholder="Ask a medical question, or follow up..."
-          className={`flex-1 h-16 pl-14 pr-4 text-[15px] bg-transparent text-foreground placeholder:text-muted-foreground focus:outline-none transition-all ${!hasResults ? 'border border-border/50 rounded-full focus:border-primary/50 focus:ring-4 focus:ring-primary/10 bg-surface-low shadow-sm' : ''}`}
-        />
-        <button
-          onClick={() => handleSubmit()}
-          disabled={isLoading || !query.trim()}
-          className={`shrink-0 w-12 h-12 flex items-center justify-center rounded-full bg-primary text-primary-foreground transition-all disabled:opacity-50 disabled:pointer-events-none hover:bg-primary-hover ${!hasResults ? 'absolute right-2 shadow-sm' : 'hover:scale-105 active:scale-95'}`}
-        >
-          {isLoading ? (
-            <Loader2 className="w-5 h-5 animate-spin-slow" />
-          ) : (
-            <ArrowUp className="w-5 h-5" />
-          )}
-        </button>
       </div>
 
       {!hasResults && (
@@ -84,7 +90,7 @@ const QueryZone = ({ onSubmit, isLoading, hasResults }: QueryZoneProps) => {
             <button
               key={ex}
               onClick={() => handleSubmit(ex)}
-              className="text-[13px] font-medium bg-surface-high border border-border/50 text-foreground px-4 py-2 rounded-full hover:bg-primary/10 hover:border-primary/30 hover:text-primary transition-all shadow-sm"
+              className="text-[12px] font-body font-medium text-secondary border border-border px-4 py-2 rounded-full hover:bg-primary/8 hover:border-primary/30 hover:text-primary transition-all"
             >
               {ex}
             </button>
