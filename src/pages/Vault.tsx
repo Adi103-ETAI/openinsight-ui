@@ -1,10 +1,11 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { BookOpen, Bookmark, Search, Trash2, ExternalLink, ChevronDown, Filter } from "lucide-react";
 import { useStore } from "@/contexts/StoreContext";
 import { useToast } from "@/hooks/use-toast";
 import { formatDistanceToNow } from "date-fns";
 import { getSourceConfig } from "@/lib/sources";
 import type { SourceType } from "@/types/api";
+import { Skeleton as BoneyardSkeleton } from "boneyard-js/react";
 
 const SOURCE_FILTERS: { value: string; label: string }[] = [
   { value: "all", label: "All Sources" },
@@ -23,6 +24,12 @@ const Vault = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [sourceFilter, setSourceFilter] = useState("all");
   const [expandedId, setExpandedId] = useState<string | null>(null);
+  const [isInitializing, setIsInitializing] = useState(true);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setIsInitializing(false), 300);
+    return () => clearTimeout(timer);
+  }, []);
 
   const filteredItems = vaultItems.filter((item) => {
     const matchesSearch =
@@ -43,14 +50,39 @@ const Vault = () => {
   };
 
   return (
-    <div className="w-full max-w-[860px] mx-auto py-12 px-4 sm:px-8 animate-fade-up">
+    <BoneyardSkeleton
+      loading={isInitializing}
+      animate="shimmer"
+      className="w-full"
+      fallback={
+        <div className="w-full max-w-4xl xl:max-w-5xl mx-auto py-8 sm:py-12 px-4 sm:px-6 lg:px-8 animate-fade-up">
+          <div className="flex items-center gap-3 mb-8">
+            <div className="w-12 h-12 rounded-xl skeleton-shimmer" />
+            <div className="space-y-2">
+              <div className="w-40 h-7 rounded-md skeleton-shimmer" />
+              <div className="w-32 h-4 rounded-md skeleton-shimmer" />
+            </div>
+          </div>
+          <div className="grid gap-3 sm:grid-cols-[1fr_220px] mb-6">
+            <div className="h-11 rounded-xl skeleton-shimmer" />
+            <div className="h-11 rounded-xl skeleton-shimmer" />
+          </div>
+          <div className="space-y-3">
+            <div className="h-36 rounded-xl skeleton-shimmer" />
+            <div className="h-36 rounded-xl skeleton-shimmer" />
+            <div className="h-36 rounded-xl skeleton-shimmer" />
+          </div>
+        </div>
+      }
+    >
+    <div className="w-full max-w-4xl xl:max-w-5xl mx-auto py-8 sm:py-12 px-4 sm:px-6 lg:px-8 animate-fade-up">
       {/* Header */}
       <div className="flex items-center gap-3 mb-8">
         <div className="p-3 bg-primary/10 rounded-xl text-primary">
           <BookOpen className="w-6 h-6" />
         </div>
         <div>
-          <h1 className="text-3xl font-heading font-bold tracking-tight text-foreground">Research Vault</h1>
+          <h1 className="text-2xl sm:text-3xl font-heading font-bold tracking-tight text-foreground">Research Vault</h1>
           <p className="text-sm text-muted-foreground mt-0.5">
             {vaultItems.length} saved citation{vaultItems.length !== 1 ? "s" : ""}
           </p>
@@ -178,6 +210,7 @@ const Vault = () => {
         </div>
       )}
     </div>
+    </BoneyardSkeleton>
   );
 };
 

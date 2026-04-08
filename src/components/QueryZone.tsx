@@ -39,17 +39,17 @@ const QueryZone = ({ onSubmit, isLoading, hasResults }: QueryZoneProps) => {
   };
 
   return (
-    <div className={`w-full max-w-[680px] mx-auto px-4 sm:px-8 ${hasResults ? "" : "pt-10 pb-6"}`}>
+    <div className={`w-full max-w-3xl md:max-w-4xl xl:max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 ${hasResults ? "" : "pt-8 sm:pt-10 pb-5 sm:pb-6"}`}>
       {!hasResults && (
         <div className="text-center mb-10 animate-fade-up">
-          <p className="text-[11px] uppercase tracking-[0.15em] font-body font-medium text-secondary mb-4">
+          <p className="text-[10px] sm:text-[11px] uppercase tracking-[0.15em] font-body font-medium text-secondary mb-3 sm:mb-4">
             {greeting}
           </p>
-          <h1 className="text-[36px] font-heading font-semibold tracking-tight leading-[1.15]">
+          <h1 className="text-[28px] sm:text-[36px] lg:text-[42px] font-heading font-semibold tracking-tight leading-[1.15]">
             <span className="text-primary">Open</span>
             <span className="text-foreground">Insight</span>
           </h1>
-          <p className="text-[15px] font-body text-muted-foreground mt-3 leading-relaxed">
+          <p className="text-[14px] sm:text-[15px] font-body text-muted-foreground mt-2.5 sm:mt-3 leading-relaxed">
             Your clinical research companion
           </p>
         </div>
@@ -68,7 +68,7 @@ const QueryZone = ({ onSubmit, isLoading, hasResults }: QueryZoneProps) => {
             onChange={(e) => setQuery(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && handleSubmit()}
             placeholder="Ask a medical question, or follow up..."
-            className="flex-1 h-14 pl-3 pr-3 text-[15px] font-body bg-transparent text-foreground placeholder:text-secondary/50 focus:outline-none"
+            className="flex-1 h-12 sm:h-14 pl-3 pr-3 text-[14px] sm:text-[15px] font-body bg-transparent text-foreground placeholder:text-secondary/50 focus:outline-none"
           />
           <button
             onClick={() => handleSubmit()}
@@ -85,7 +85,7 @@ const QueryZone = ({ onSubmit, isLoading, hasResults }: QueryZoneProps) => {
       </div>
 
       {!hasResults && (
-        <div className="flex flex-wrap justify-center gap-2 mt-8 animate-fade-up" style={{ animationDelay: '0.1s' }}>
+        <div className="flex flex-wrap justify-center gap-2 mt-6 sm:mt-8 animate-fade-up" style={{ animationDelay: '0.1s' }}>
           {EXAMPLES.map((ex) => (
             <button
               key={ex}

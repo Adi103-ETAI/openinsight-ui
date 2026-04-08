@@ -110,7 +110,7 @@ const Index = () => {
             <Footer visible={true} />
           </div>
         ) : (
-          <div className="w-full max-w-[760px] mx-auto py-8 px-4 sm:px-8 space-y-8">
+          <div className="w-full max-w-3xl md:max-w-4xl xl:max-w-5xl mx-auto py-6 sm:py-8 px-4 sm:px-6 lg:px-8 space-y-6 sm:space-y-8">
             {messages.map((msg, idx) => (
               <div key={msg.id} className="space-y-6 animate-fade-up">
                 {/* Date header */}
@@ -122,8 +122,8 @@ const Index = () => {
 
                 {/* User query */}
                 <div className="flex justify-end">
-                  <div className="bg-card journal-shadow rounded-2xl rounded-tr-sm max-w-[80%] px-5 py-3.5">
-                    <p className="text-[15px] font-body text-foreground leading-relaxed">{msg.query}</p>
+                  <div className="bg-card journal-shadow rounded-2xl rounded-tr-sm max-w-[92%] sm:max-w-[85%] lg:max-w-[75%] px-4 sm:px-5 py-3 sm:py-3.5">
+                    <p className="text-[14px] sm:text-[15px] font-body text-foreground leading-relaxed">{msg.query}</p>
                     <p className="text-[10px] font-body text-secondary/40 mt-1.5 text-right">{formatTime(msg.timestamp)}</p>
                   </div>
                 </div>
@@ -151,7 +151,7 @@ const Index = () => {
 
       {hasMessages && (
         <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-background via-background/95 to-transparent pb-6 pt-14 pointer-events-none">
-          <div className="max-w-[760px] mx-auto px-4 sm:px-8 pointer-events-auto">
+          <div className="max-w-3xl md:max-w-4xl xl:max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pointer-events-auto">
             <QueryZone
               onSubmit={handleQuery}
               isLoading={messages[messages.length - 1]?.status === "loading"}

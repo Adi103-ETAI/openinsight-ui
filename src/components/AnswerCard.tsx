@@ -45,7 +45,7 @@ const AnswerCard = ({ data }: AnswerCardProps) => {
       </div>
 
       {/* Editorial answer body */}
-      <div className="prose-journal text-[15.5px] font-body leading-[1.7] max-w-none">
+      <div className="prose-journal text-[14px] sm:text-[15.5px] font-body leading-[1.7] max-w-none">
         <ReactMarkdown
           components={{
             a: ({ children, href, ...props }) => (

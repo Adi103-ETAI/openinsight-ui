@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Settings2, Bell, Shield, Moon, Monitor, CreditCard, ChevronRight, Stethoscope, Sun } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Switch } from "@/components/ui/switch";
@@ -21,6 +21,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Skeleton as BoneyardSkeleton } from "boneyard-js/react";
 
 const Settings = () => {
   const { toast } = useToast();
@@ -41,6 +42,12 @@ const Settings = () => {
   const [newGuidanceAlerts, setNewGuidanceAlerts] = useState(true);
   const [weeklyDigest, setWeeklyDigest] = useState(false);
   const [theme, setTheme] = useState<'light' | 'dark' | 'system'>('dark');
+  const [isInitializing, setIsInitializing] = useState(true);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setIsInitializing(false), 300);
+    return () => clearTimeout(timer);
+  }, []);
 
   const handleProfileSave = (e: React.FormEvent) => {
     e.preventDefault();
@@ -87,12 +94,36 @@ const Settings = () => {
   };
 
   return (
-    <div className="w-full max-w-[860px] mx-auto py-12 px-4 sm:px-8 animate-fade-up">
+    <BoneyardSkeleton
+      loading={isInitializing}
+      animate="shimmer"
+      className="w-full"
+      fallback={
+        <div className="w-full max-w-4xl xl:max-w-5xl mx-auto py-8 sm:py-12 px-4 sm:px-6 lg:px-8 animate-fade-up">
+          <div className="flex items-center gap-3 mb-8">
+            <div className="w-12 h-12 rounded-xl skeleton-shimmer" />
+            <div className="w-36 h-8 rounded-md skeleton-shimmer" />
+          </div>
+          <div className="space-y-6">
+            <div className="h-56 rounded-2xl skeleton-shimmer" />
+            <div className="grid gap-6 md:grid-cols-2">
+              <div className="h-44 rounded-2xl skeleton-shimmer" />
+              <div className="h-44 rounded-2xl skeleton-shimmer" />
+            </div>
+            <div className="grid gap-6 md:grid-cols-2">
+              <div className="h-24 rounded-2xl skeleton-shimmer" />
+              <div className="h-24 rounded-2xl skeleton-shimmer" />
+            </div>
+          </div>
+        </div>
+      }
+    >
+    <div className="w-full max-w-4xl xl:max-w-5xl mx-auto py-8 sm:py-12 px-4 sm:px-6 lg:px-8 animate-fade-up">
       <div className="flex items-center gap-3 mb-8">
         <div className="p-3 bg-primary/10 rounded-xl text-primary">
           <Settings2 className="w-6 h-6" />
         </div>
-        <h1 className="text-3xl font-heading font-bold tracking-tight text-foreground">Settings</h1>
+        <h1 className="text-2xl sm:text-3xl font-heading font-bold tracking-tight text-foreground">Settings</h1>
       </div>
 
       <div className="space-y-6">
@@ -380,6 +411,7 @@ const Settings = () => {
         </div>
       </div>
     </div>
+    </BoneyardSkeleton>
   );
 };
 
