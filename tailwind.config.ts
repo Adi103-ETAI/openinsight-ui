@@ -15,7 +15,8 @@ export default {
     extend: {
       fontFamily: {
         sans: ['Inter', 'system-ui', 'sans-serif'],
-        heading: ['Manrope', 'system-ui', 'sans-serif'],
+        heading: ['Playfair Display', 'Georgia', 'serif'],
+        body: ['Inter', 'system-ui', 'sans-serif'],
       },
       colors: {
         border: "hsl(var(--border))",
@@ -56,6 +57,11 @@ export default {
         },
         success: "hsl(var(--success))",
         warning: "hsl(var(--warning))",
+        terracotta: "hsl(var(--terracotta))",
+        olive: "hsl(var(--olive-gray))",
+        stone: "hsl(var(--stone-gray))",
+        ivory: "hsl(var(--ivory))",
+        parchment: "hsl(var(--parchment))",
         surface: {
           low: "hsl(var(--surface-low))",
           high: "hsl(var(--surface-high))",

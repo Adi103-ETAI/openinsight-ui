@@ -15,6 +15,11 @@ type ChatMessage = {
   query: string;
   response?: QueryResponse;
   status: "loading" | "success" | "empty" | "error";
+  timestamp: number;
+};
+
+const formatTime = (ts: number) => {
+  return new Date(ts).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 };
 
 const Index = () => {
@@ -23,12 +28,10 @@ const Index = () => {
   const { addHistoryEntry } = useStore();
   const location = useLocation();
 
-  // Handle loading query from sidebar history
   useEffect(() => {
     const state = location.state as { loadQuery?: string } | null;
     if (state?.loadQuery) {
       handleQuery(state.loadQuery);
-      // Clear the state so it doesn't re-trigger
       window.history.replaceState({}, document.title);
     }
   }, [location.state]);
@@ -46,7 +49,7 @@ const Index = () => {
     const newMessageId = Date.now().toString();
     setMessages((prev) => [
       ...prev,
-      { id: newMessageId, query, status: "loading" },
+      { id: newMessageId, query, status: "loading", timestamp: Date.now() },
     ]);
 
     try {
@@ -71,7 +74,6 @@ const Index = () => {
         )
       );
 
-      // Save to persistent history
       if (json.chunks_retrieved > 0) {
         addHistoryEntry(query, json);
       }
@@ -93,10 +95,10 @@ const Index = () => {
     <div className="flex flex-col h-full bg-background relative">
       <div 
         ref={scrollRef}
-        className="flex-1 overflow-y-auto w-full custom-scrollbar pb-32"
+        className="flex-1 overflow-y-auto w-full custom-scrollbar pb-36"
       >
         {messages.length === 0 ? (
-          <div className="h-full flex flex-col items-center justify-center -mt-20">
+          <div className="h-full flex flex-col items-center justify-center -mt-16">
             <QueryZone
               onSubmit={handleQuery}
               isLoading={false}
@@ -104,17 +106,25 @@ const Index = () => {
             />
           </div>
         ) : (
-          <div className="w-full max-w-[860px] mx-auto py-8 px-4 sm:px-8 space-y-10">
-            {messages.map((msg) => (
+          <div className="w-full max-w-[760px] mx-auto py-8 px-4 sm:px-8 space-y-8">
+            {messages.map((msg, idx) => (
               <div key={msg.id} className="space-y-6 animate-fade-up">
-                {/* User Query Bubble */}
+                {/* Date/context header */}
+                {(idx === 0 || new Date(msg.timestamp).toDateString() !== new Date(messages[idx - 1].timestamp).toDateString()) && (
+                  <p className="text-center text-[10px] uppercase tracking-[0.5px] font-body text-secondary my-4">
+                    {new Date(msg.timestamp).toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric' })}
+                  </p>
+                )}
+
+                {/* User query — Ivory card */}
                 <div className="flex justify-end">
-                  <div className="bg-surface-high border border-border/40 text-foreground px-5 py-3 rounded-2xl rounded-tr-sm max-w-[85%] shadow-sm">
-                    <p className="text-[15px]">{msg.query}</p>
+                  <div className="bg-card journal-shadow rounded-2xl rounded-tr-sm max-w-[80%] px-5 py-3.5">
+                    <p className="text-[15px] font-body text-foreground leading-relaxed">{msg.query}</p>
+                    <p className="text-[10px] font-body text-secondary/50 mt-1.5 text-right">{formatTime(msg.timestamp)}</p>
                   </div>
                 </div>
 
-                {/* AI Response Area */}
+                {/* AI Response — editorial style on parchment */}
                 <div className="flex justify-start">
                   <div className="w-full">
                     {msg.status === "loading" && <LoadingState />}
@@ -136,8 +146,8 @@ const Index = () => {
       </div>
 
       {messages.length > 0 && (
-        <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-background via-background/95 to-transparent pb-6 pt-12 pointer-events-none">
-          <div className="max-w-[860px] mx-auto px-4 sm:px-8 pointer-events-auto">
+        <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-background via-background/95 to-transparent pb-6 pt-14 pointer-events-none">
+          <div className="max-w-[760px] mx-auto px-4 sm:px-8 pointer-events-auto">
             <QueryZone
               onSubmit={handleQuery}
               isLoading={messages[messages.length - 1]?.status === "loading"}
