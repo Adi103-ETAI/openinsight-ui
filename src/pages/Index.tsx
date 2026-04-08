@@ -5,6 +5,7 @@ import AnswerCard from "@/components/AnswerCard";
 import LoadingState from "@/components/LoadingState";
 import EmptyState from "@/components/EmptyState";
 import ErrorState from "@/components/ErrorState";
+import Footer from "@/components/Footer";
 import { useStore } from "@/contexts/StoreContext";
 import type { QueryResponse } from "@/types/api";
 
@@ -91,40 +92,43 @@ const Index = () => {
     handleQuery(query);
   };
 
+  const hasMessages = messages.length > 0;
+
   return (
     <div className="flex flex-col h-full bg-background relative">
       <div 
         ref={scrollRef}
         className="flex-1 overflow-y-auto w-full custom-scrollbar pb-36"
       >
-        {messages.length === 0 ? (
-          <div className="h-full flex flex-col items-center justify-center -mt-16">
+        {!hasMessages ? (
+          <div className="h-full flex flex-col items-center justify-center -mt-8">
             <QueryZone
               onSubmit={handleQuery}
               isLoading={false}
               hasResults={false}
             />
+            <Footer visible={true} />
           </div>
         ) : (
           <div className="w-full max-w-[760px] mx-auto py-8 px-4 sm:px-8 space-y-8">
             {messages.map((msg, idx) => (
               <div key={msg.id} className="space-y-6 animate-fade-up">
-                {/* Date/context header */}
+                {/* Date header */}
                 {(idx === 0 || new Date(msg.timestamp).toDateString() !== new Date(messages[idx - 1].timestamp).toDateString()) && (
-                  <p className="text-center text-[10px] uppercase tracking-[0.5px] font-body text-secondary my-4">
+                  <p className="text-center text-[10px] uppercase tracking-[0.5px] font-body text-secondary/50 my-4">
                     {new Date(msg.timestamp).toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric' })}
                   </p>
                 )}
 
-                {/* User query — Ivory card */}
+                {/* User query */}
                 <div className="flex justify-end">
                   <div className="bg-card journal-shadow rounded-2xl rounded-tr-sm max-w-[80%] px-5 py-3.5">
                     <p className="text-[15px] font-body text-foreground leading-relaxed">{msg.query}</p>
-                    <p className="text-[10px] font-body text-secondary/50 mt-1.5 text-right">{formatTime(msg.timestamp)}</p>
+                    <p className="text-[10px] font-body text-secondary/40 mt-1.5 text-right">{formatTime(msg.timestamp)}</p>
                   </div>
                 </div>
 
-                {/* AI Response — editorial style on parchment */}
+                {/* AI Response */}
                 <div className="flex justify-start">
                   <div className="w-full">
                     {msg.status === "loading" && <LoadingState />}
@@ -145,7 +149,7 @@ const Index = () => {
         )}
       </div>
 
-      {messages.length > 0 && (
+      {hasMessages && (
         <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-background via-background/95 to-transparent pb-6 pt-14 pointer-events-none">
           <div className="max-w-[760px] mx-auto px-4 sm:px-8 pointer-events-auto">
             <QueryZone

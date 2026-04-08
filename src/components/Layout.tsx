@@ -1,7 +1,6 @@
 import { ReactNode, useState } from "react";
 import Sidebar from "./Sidebar";
 import Header from "./Header";
-import Footer from "./Footer";
 
 interface LayoutProps {
   children: ReactNode;
@@ -18,7 +17,6 @@ const Layout = ({ children }: LayoutProps) => {
         <main className="flex-1 overflow-y-auto relative w-full">
           {children}
         </main>
-        <Footer />
       </div>
     </div>
   );

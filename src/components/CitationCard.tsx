@@ -49,7 +49,7 @@ const CitationCard = ({ citation, queryContext = "" }: CitationCardProps) => {
   return (
     <div
       id={`citation-${citation.index}`}
-      className="border border-border rounded-xl p-4 hover:journal-shadow transition-all duration-300 group bg-card"
+      className="rounded-xl p-4 hover:bg-card transition-all duration-300 group"
     >
       <div className="flex items-start justify-between gap-2 mb-2">
         <div className="flex items-center gap-2.5 min-w-0">
