@@ -1,13 +1,15 @@
 import { ReactNode, useState } from "react";
+import { useLocation } from "react-router-dom";
 import Sidebar from "./Sidebar";
 import Header from "./Header";
 import Footer from "./Footer";
 
 interface LayoutProps {
   children: ReactNode;
+  hasMessages?: boolean;
 }
 
-const Layout = ({ children }: LayoutProps) => {
+const Layout = ({ children, hasMessages = false }: LayoutProps) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   return (
@@ -18,7 +20,7 @@ const Layout = ({ children }: LayoutProps) => {
         <main className="flex-1 overflow-y-auto relative w-full">
           {children}
         </main>
-        <Footer />
+        <Footer visible={!hasMessages} />
       </div>
     </div>
   );

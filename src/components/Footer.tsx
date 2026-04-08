@@ -1,10 +1,17 @@
-const Footer = () => {
+interface FooterProps {
+  visible?: boolean;
+}
+
+const Footer = ({ visible = true }: FooterProps) => {
   return (
-    <footer className="border-t border-border py-4 px-4 sm:px-8">
-      <div className="max-w-[860px] mx-auto flex flex-col sm:flex-row items-center justify-between gap-1 text-[11px] font-body text-secondary">
-        <span>OpenInsight · For verified physicians only · Not a substitute for clinical judgment</span>
-        <span className="text-[10px] text-secondary/60 tracking-wide">by SentArc Labs</span>
-      </div>
+    <footer
+      className={`py-4 px-4 text-center transition-all duration-500 ease-in-out overflow-hidden ${
+        visible ? 'max-h-16 opacity-100' : 'max-h-0 opacity-0 py-0'
+      }`}
+    >
+      <span className="text-[11px] font-body text-secondary/40 tracking-[0.15em] uppercase">
+        SentArc Labs
+      </span>
     </footer>
   );
 };
