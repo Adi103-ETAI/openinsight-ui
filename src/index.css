@@ -7,10 +7,10 @@
 @layer base {
   :root {
     --background: 40 14% 95%;        /* Parchment #f5f4ed */
-    --foreground: 60 4% 8%;          /* Near Black #141413 */
+    --foreground: 60 4% 11%;         /* Near Black, slightly lifted */
 
     --card: 43 29% 97%;              /* Ivory #faf9f5 */
-    --card-foreground: 60 4% 8%;
+    --card-foreground: 60 4% 11%;
 
     --popover: 43 29% 97%;
     --popover-foreground: 60 4% 8%;
@@ -25,7 +25,7 @@
     --secondary-foreground: 43 29% 97%;
 
     --muted: 40 10% 91%;             /* Light parchment */
-    --muted-foreground: 50 3% 37%;   /* Olive Gray #5e5d59 */
+    --muted-foreground: 50 4% 32%;   /* Olive Gray, deeper */
 
     --accent: 40 14% 90%;
     --accent-foreground: 60 4% 8%;
