@@ -1,10 +1,10 @@
 import { useState, useRef, useEffect } from "react";
-import { Loader2, Search } from "lucide-react";
+import { Loader2, Search, Lightbulb, ArrowRightLeft, BookOpen } from "lucide-react";
 
 const EXAMPLES = [
-  "Treatment for drug-resistant TB in adults",
-  "Dengue warning signs and management",
-  "Scrub typhus diagnosis and antibiotic protocol",
+  { label: "Ask for a Quick Fact", icon: Lightbulb },
+  { label: "Ask about Drug Interactions", icon: ArrowRightLeft },
+  { label: "Ask about Guidelines", icon: BookOpen },
 ];
 
 interface QueryZoneProps {
@@ -49,14 +49,11 @@ const QueryZone = ({ onSubmit, isLoading, hasResults }: QueryZoneProps) => {
             <span className="text-primary">Open</span>
             <span className="text-foreground">Insight</span>
           </h1>
-          <p className="text-[14px] sm:text-[15px] font-body text-muted-foreground mt-2.5 sm:mt-3 leading-relaxed">
-            Your clinical research companion
-          </p>
         </div>
       )}
 
       {/* Inquiry Bar */}
-      <div className={`relative transition-all ${hasResults ? '' : ''}`}>
+      <div className="relative transition-all">
         <div className="flex items-center bg-card rounded-2xl journal-ring journal-shadow transition-all focus-within:shadow-md focus-within:ring-1 focus-within:ring-primary/30">
           <div className="pl-5 text-secondary/60">
             <Search className="w-[18px] h-[18px]" />
@@ -67,7 +64,7 @@ const QueryZone = ({ onSubmit, isLoading, hasResults }: QueryZoneProps) => {
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && handleSubmit()}
-            placeholder="Ask a medical question, or follow up..."
+            placeholder={hasResults ? "Reply..." : "Ask a medical question..."}
             className="flex-1 h-12 sm:h-14 pl-3 pr-3 text-[14px] sm:text-[15px] font-body bg-transparent text-foreground placeholder:text-secondary/50 focus:outline-none"
           />
           <button
@@ -85,14 +82,15 @@ const QueryZone = ({ onSubmit, isLoading, hasResults }: QueryZoneProps) => {
       </div>
 
       {!hasResults && (
-        <div className="flex flex-wrap justify-center gap-2 mt-6 sm:mt-8 animate-fade-up" style={{ animationDelay: '0.1s' }}>
+        <div className="flex flex-wrap justify-center gap-2.5 mt-6 sm:mt-8 animate-fade-up" style={{ animationDelay: '0.1s' }}>
           {EXAMPLES.map((ex) => (
             <button
-              key={ex}
-              onClick={() => handleSubmit(ex)}
-              className="text-[12px] font-body font-medium text-secondary border border-border px-4 py-2 rounded-full hover:bg-primary/8 hover:border-primary/30 hover:text-primary transition-all"
+              key={ex.label}
+              onClick={() => handleSubmit(ex.label)}
+              className="flex items-center gap-2 text-[12px] sm:text-[13px] font-body font-medium text-secondary border border-border px-4 py-2.5 rounded-full hover:bg-primary/8 hover:border-primary/30 hover:text-primary transition-all"
             >
-              {ex}
+              <ex.icon className="w-3.5 h-3.5" />
+              {ex.label}
             </button>
           ))}
         </div>
