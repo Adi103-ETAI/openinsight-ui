@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { Loader2, Search, Lightbulb, ArrowRightLeft, BookOpen } from "lucide-react";
+import { Loader2, Search, Lightbulb, ArrowRightLeft, BookOpen, ArrowUp } from "lucide-react";
 import Logo from "./Logo";
 
 const EXAMPLES = [
@@ -75,7 +75,7 @@ const QueryZone = ({ onSubmit, isLoading, hasResults }: QueryZoneProps) => {
             {isLoading ? (
               <Loader2 className="w-4 h-4 animate-spin-slow" />
             ) : (
-              <Search className="w-4 h-4" />
+              <ArrowUp className="w-4 h-4" />
             )}
           </button>
         </div>
