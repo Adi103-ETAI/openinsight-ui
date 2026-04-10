@@ -41,12 +41,34 @@ const Settings = () => {
   // Toggles State
   const [newGuidanceAlerts, setNewGuidanceAlerts] = useState(true);
   const [weeklyDigest, setWeeklyDigest] = useState(false);
-  const [theme, setTheme] = useState<'light' | 'dark' | 'system'>('dark');
+  const [theme, setTheme] = useState<'light' | 'dark' | 'system'>(() => {
+    return (localStorage.getItem('theme') as 'light' | 'dark' | 'system') || 'dark';
+  });
   const [isInitializing, setIsInitializing] = useState(true);
 
   useEffect(() => {
     const timer = setTimeout(() => setIsInitializing(false), 300);
     return () => clearTimeout(timer);
+  }, []);
+
+  // Apply persisted theme on mount
+  useEffect(() => {
+    const saved = localStorage.getItem('theme') as 'light' | 'dark' | 'system' | null;
+    if (saved) {
+      const root = document.documentElement;
+      const body = document.body;
+      root.classList.remove("dark", "light");
+      body.classList.remove("dark", "light");
+      if (saved === "dark") {
+        root.classList.add("dark");
+        body.classList.add("dark");
+      } else if (saved === "system") {
+        if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+          root.classList.add("dark");
+          body.classList.add("dark");
+        }
+      }
+    }
   }, []);
 
   const handleProfileSave = (e: React.FormEvent) => {
@@ -68,6 +90,7 @@ const Settings = () => {
 
   const handleThemeChange = (newTheme: 'light' | 'dark' | 'system') => {
     setTheme(newTheme);
+    localStorage.setItem('theme', newTheme);
     
     const root = window.document.documentElement;
     const body = window.document.body;
