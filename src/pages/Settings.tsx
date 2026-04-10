@@ -23,6 +23,15 @@ import {
 } from "@/components/ui/select";
 import { Skeleton as BoneyardSkeleton } from "boneyard-js/react";
 
+import avatar1 from "@/assets/avatar_1.png";
+import avatar2 from "@/assets/avatar_2.png";
+import avatar3 from "@/assets/avatar_3.png";
+import avatar4 from "@/assets/avatar_4.png";
+import avatar5 from "@/assets/avatar_5.png";
+import avatar6 from "@/assets/avatar_6.png";
+
+const AVATARS = [avatar1, avatar2, avatar3, avatar4, avatar5, avatar6];
+
 const Settings = () => {
   const { toast } = useToast();
   
@@ -35,7 +44,7 @@ const Settings = () => {
     specialization: "Cardiology",
     experience: "15+",
     country: "India",
-    avatarImg: "/avatar_1.png" // Default cartoon avatar
+    avatarImg: avatar1 // Default cartoon avatar
   });
 
   // Toggles State
@@ -196,7 +205,7 @@ const Settings = () => {
                         <Label>Choose Your Avatar</Label>
                         <p className="text-xs text-muted-foreground">Pick a cartoon avatar that represents you.</p>
                         <div className="grid grid-cols-6 gap-2">
-                          {["/avatar_1.png", "/avatar_2.png", "/avatar_3.png", "/avatar_4.png", "/avatar_5.png", "/avatar_6.png"].map((src) => (
+                          {AVATARS.map((src) => (
                             <button
                               key={src}
                               type="button"

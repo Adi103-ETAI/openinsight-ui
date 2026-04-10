@@ -1,4 +1,5 @@
 import { PanelLeftClose, PanelLeftOpen } from "lucide-react";
+import Logo from "./Logo";
 
 interface HeaderProps {
   onToggleSidebar: () => void;
@@ -16,10 +17,9 @@ const Header = ({ onToggleSidebar, isSidebarOpen }: HeaderProps) => {
         >
           {isSidebarOpen ? <PanelLeftClose className="w-4 h-4" /> : <PanelLeftOpen className="w-4 h-4" />}
         </button>
-        <h1 className="text-[18px] font-heading font-semibold leading-none tracking-tight">
-          <span className="text-primary">Open</span>
-          <span className="text-foreground">Insight</span>
-        </h1>
+        <div className="flex items-center">
+          <Logo className="text-[18px]" />
+        </div>
         <span className="hidden sm:inline text-[10px] uppercase tracking-[0.12em] font-body font-medium text-secondary/60">
           Clinical Intelligence
         </span>

@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { Loader2, Search, Lightbulb, ArrowRightLeft, BookOpen } from "lucide-react";
+import Logo from "./Logo";
 
 const EXAMPLES = [
   { label: "Ask for a Quick Fact", icon: Lightbulb },
@@ -45,10 +46,9 @@ const QueryZone = ({ onSubmit, isLoading, hasResults }: QueryZoneProps) => {
           <p className="text-[10px] sm:text-[11px] uppercase tracking-[0.15em] font-body font-medium text-secondary mb-3 sm:mb-4">
             {greeting}
           </p>
-          <h1 className="text-[28px] sm:text-[36px] lg:text-[42px] font-heading font-semibold tracking-tight leading-[1.15]">
-            <span className="text-primary">Open</span>
-            <span className="text-foreground">Insight</span>
-          </h1>
+          <div className="flex justify-center mb-0">
+            <Logo className="text-[32px] sm:text-[40px] lg:text-[48px]" />
+          </div>
         </div>
       )}
 
