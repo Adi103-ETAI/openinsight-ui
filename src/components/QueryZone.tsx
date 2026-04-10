@@ -46,9 +46,9 @@ const QueryZone = ({ onSubmit, isLoading, hasResults }: QueryZoneProps) => {
           <p className="text-[10px] sm:text-[11px] uppercase tracking-[0.15em] font-body font-medium text-secondary mb-3 sm:mb-4">
             {greeting}
           </p>
-          <div className="flex justify-center mb-0">
-            <Logo className="text-[32px] sm:text-[40px] lg:text-[48px]" />
-          </div>
+            <div className="mb-8 flex justify-center items-center gap-3">
+              <Logo variant="home" className="text-[32px] sm:text-[40px] lg:text-[48px]" />
+            </div>
         </div>
       )}
 

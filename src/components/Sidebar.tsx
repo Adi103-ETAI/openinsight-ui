@@ -1,7 +1,8 @@
-import { Clock, BookOpen, Settings, LayoutDashboard, PanelLeftClose, PanelLeftOpen, Hexagon, Trash2, X } from "lucide-react";
+import { Clock, BookOpen, Settings, LayoutDashboard, PanelLeftClose, PanelLeftOpen, Trash2, X } from "lucide-react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useStore } from "@/contexts/StoreContext";
 import { format, formatDistanceToNow, isThisWeek, isToday, isYesterday } from "date-fns";
+import Logo from "@/components/Logo";
 
 interface SidebarProps {
   isOpen: boolean;
@@ -46,64 +47,51 @@ const Sidebar = ({ isOpen, isMobile, toggleSidebar }: SidebarProps) => {
       <aside
         className={`h-screen flex flex-col bg-card/70 md:bg-card/50 border-r border-border/40 transition-all duration-300 shrink-0
           ${isMobile
-            ? `fixed left-0 top-0 z-40 w-[260px] transform ${isOpen ? "translate-x-0" : "-translate-x-full"}`
-            : `${isOpen ? "w-[240px]" : "w-[56px]"}`
+            ? `fixed left-0 top-0 z-40 w-[280px] transform ${isOpen ? "translate-x-0" : "-translate-x-full"}`
+            : `${isOpen ? "w-[280px]" : "w-[56px]"}`
           }`}
       >
-      <div className={`h-[52px] shrink-0 flex items-center ${isOpen ? 'px-4 justify-between' : 'justify-center'}`}>
-        {isOpen ? (
-          <>
-            <Hexagon className="w-4 h-4 text-primary/60" />
-            <button 
-              onClick={toggleSidebar}
-              className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-muted/50 transition-colors text-secondary/50 hover:text-foreground"
-            >
-              <PanelLeftClose className="w-4 h-4" />
-            </button>
-          </>
-        ) : (
-          <div 
-            className="group relative w-8 h-8 flex items-center justify-center rounded-lg cursor-pointer hover:bg-muted/50 transition-colors"
-            onClick={toggleSidebar}
-          >
-            <div className="absolute inset-0 flex items-center justify-center transition-opacity duration-200 opacity-100 group-hover:opacity-0">
-              <Hexagon className="w-4 h-4 text-primary/60" />
-            </div>
-            <div className="absolute inset-0 flex items-center justify-center transition-opacity duration-200 opacity-0 group-hover:opacity-100">
-              <PanelLeftOpen className="w-4 h-4 text-foreground" />
-            </div>
-          </div>
+      <div className={`h-[60px] shrink-0 flex items-center ${isOpen ? 'px-5 justify-between' : 'justify-center'}`}>
+        {isOpen && (
+          <Logo variant="sidebar" className="text-[19px] ml-1 max-w-[150px]" />
         )}
+        <button 
+          onClick={toggleSidebar}
+          className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-muted/50 transition-colors text-secondary/50 hover:text-foreground"
+          aria-label={isOpen ? "Close sidebar" : "Open sidebar"}
+        >
+          {isOpen ? <PanelLeftClose className="w-4 h-4" /> : <PanelLeftOpen className="w-4 h-4" />}
+        </button>
       </div>
 
-      <nav className="flex-1 overflow-x-hidden overflow-y-auto py-3 flex flex-col gap-1 custom-scrollbar">
+      <nav className="flex-1 overflow-x-hidden overflow-y-auto pt-4 pb-3 flex flex-col gap-1 custom-scrollbar">
         <div className="px-2 flex flex-col gap-0.5">
           <Link
             title="New Consultation"
             to="/"
             onClick={() => isMobile && toggleSidebar()}
-            className={`flex items-center gap-3 px-2.5 py-2 rounded-lg text-[13px] font-body font-medium transition-colors ${
-              isActive("/") ? "text-primary bg-primary/5" : "text-secondary/70 hover:text-foreground hover:bg-muted/40"
+            className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-[14px] font-body font-medium transition-all duration-300 overflow-hidden ${
+              isActive("/") && isOpen ? "text-primary bg-primary/10" : isActive("/") ? "text-primary" : "text-secondary/70 hover:text-foreground hover:bg-muted/40"
             }`}
           >
-            <LayoutDashboard className="w-4 h-4 shrink-0" />
-            <span className={`transition-opacity duration-200 whitespace-nowrap ${isOpen ? 'opacity-100' : 'opacity-0 hidden'}`}>New Consultation</span>
+            <LayoutDashboard className="w-[18px] h-[18px] shrink-0" />
+            <span className={`whitespace-nowrap transition-all duration-300 ${isOpen ? 'opacity-100 max-w-[200px]' : 'opacity-0 max-w-0'}`}>New Consultation</span>
           </Link>
           <Link
             title="Research Vault"
             to="/vault"
             onClick={() => isMobile && toggleSidebar()}
-            className={`flex items-center gap-3 px-2.5 py-2 rounded-lg text-[13px] font-body font-medium transition-colors ${
-              isActive("/vault") ? "text-primary bg-primary/5" : "text-secondary/70 hover:text-foreground hover:bg-muted/40"
+            className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-[14px] font-body font-medium transition-all duration-300 overflow-hidden ${
+              isActive("/vault") && isOpen ? "text-primary bg-primary/10" : isActive("/vault") ? "text-primary" : "text-secondary/70 hover:text-foreground hover:bg-muted/40"
             }`}
           >
-            <BookOpen className="w-4 h-4 shrink-0" />
-            <span className={`transition-opacity duration-200 whitespace-nowrap ${isOpen ? 'opacity-100' : 'opacity-0 hidden'}`}>Research Vault</span>
+            <BookOpen className="w-[18px] h-[18px] shrink-0" />
+            <span className={`whitespace-nowrap transition-all duration-300 ${isOpen ? 'opacity-100 max-w-[200px]' : 'opacity-0 max-w-0'}`}>Research Vault</span>
           </Link>
         </div>
 
         {/* History */}
-        <div className={`mt-5 transition-opacity duration-300 ${isOpen ? 'opacity-100' : 'opacity-0 hidden'}`}>
+        <div className={`mt-5 transition-all duration-300 ${isOpen ? 'opacity-100' : 'opacity-0 pointer-events-none h-0 overflow-hidden'}`}>
           <div className="px-4 flex items-center justify-between mb-2">
             <h4 className="text-[10px] font-body font-medium text-secondary/50 uppercase tracking-[0.12em] flex items-center gap-1.5">
               <Clock className="w-3 h-3" /> Recent Conversations
@@ -163,12 +151,12 @@ const Sidebar = ({ isOpen, isMobile, toggleSidebar }: SidebarProps) => {
           title="Settings"
           to="/settings"
           onClick={() => isMobile && toggleSidebar()}
-          className={`flex items-center gap-3 px-2.5 py-2 rounded-lg text-[13px] font-body font-medium transition-colors ${
-            isActive("/settings") ? "text-foreground" : "text-secondary/50 hover:text-foreground hover:bg-muted/40"
+          className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-[14px] font-body font-medium transition-all duration-300 overflow-hidden ${
+            isActive("/settings") && isOpen ? "text-foreground bg-primary/10" : isActive("/settings") ? "text-foreground" : "text-secondary/50 hover:text-foreground hover:bg-muted/40"
           }`}
         >
-          <Settings className="w-4 h-4 shrink-0" />
-          <span className={`transition-opacity duration-200 whitespace-nowrap ${isOpen ? 'opacity-100' : 'opacity-0 hidden'}`}>Settings</span>
+          <Settings className="w-[18px] h-[18px] shrink-0" />
+          <span className={`whitespace-nowrap transition-all duration-300 ${isOpen ? 'opacity-100 max-w-[200px]' : 'opacity-0 max-w-0'}`}>Settings</span>
         </Link>
       </div>
       </aside>

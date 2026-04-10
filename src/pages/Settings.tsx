@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
-import { Settings2, Bell, Shield, Moon, Monitor, CreditCard, ChevronRight, Stethoscope, Sun } from "lucide-react";
+import { Settings2, Bell, Shield, Moon, Monitor, CreditCard, ChevronRight, Stethoscope, Sun, Type } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Switch } from "@/components/ui/switch";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { getLogoStyle, setLogoStyle, type LogoStyle } from "@/components/Logo";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -53,6 +54,7 @@ const Settings = () => {
   const [theme, setTheme] = useState<'light' | 'dark' | 'system'>(() => {
     return (localStorage.getItem('theme') as 'light' | 'dark' | 'system') || 'dark';
   });
+  const [logoStyle, setLogoStyleState] = useState<LogoStyle>(getLogoStyle);
   const [isInitializing, setIsInitializing] = useState(true);
 
   useEffect(() => {
@@ -123,6 +125,15 @@ const Settings = () => {
     if (newTheme === 'light') themeName = 'Light Mode';
     
     toast({ title: "Appearance Updated", description: `Theme has been set to ${themeName}.` });
+  };
+
+  const handleLogoStyleChange = (newStyle: LogoStyle) => {
+    setLogoStyleState(newStyle);
+    setLogoStyle(newStyle);
+    toast({
+      title: "Font Updated",
+      description: newStyle === "classic" ? "Switched to Classic font." : "Switched to Modern font.",
+    });
   };
 
   return (
@@ -403,6 +414,53 @@ const Settings = () => {
                   </SelectItem>
                 </SelectContent>
               </Select>
+            </div>
+
+            {/* Fonts */}
+            <div className="space-y-3 pt-2 border-t border-border/30">
+              <Label>Fonts</Label>
+              <div className="grid grid-cols-2 gap-3">
+                <button
+                  type="button"
+                  onClick={() => {
+                    handleLogoStyleChange("classic");
+                  }}
+                  className={`relative flex items-center justify-center p-4 rounded-xl border-2 transition-all duration-200 ${
+                    logoStyle === "classic"
+                      ? "border-primary bg-primary/5 shadow-sm"
+                      : "border-border/50 hover:border-primary/30 hover:bg-muted/30"
+                  }`}
+                >
+                  <span className="text-sm font-medium text-foreground">Classic</span>
+                  {logoStyle === "classic" && (
+                    <div className="absolute top-2 right-2 w-4 h-4 rounded-full bg-primary flex items-center justify-center">
+                      <svg className="w-2.5 h-2.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                      </svg>
+                    </div>
+                  )}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    handleLogoStyleChange("modern");
+                  }}
+                  className={`relative flex items-center justify-center p-4 rounded-xl border-2 transition-all duration-200 ${
+                    logoStyle === "modern"
+                      ? "border-primary bg-primary/5 shadow-sm"
+                      : "border-border/50 hover:border-primary/30 hover:bg-muted/30"
+                  }`}
+                >
+                  <span className="text-sm font-medium text-foreground">Modern</span>
+                  {logoStyle === "modern" && (
+                    <div className="absolute top-2 right-2 w-4 h-4 rounded-full bg-primary flex items-center justify-center">
+                      <svg className="w-2.5 h-2.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                      </svg>
+                    </div>
+                  )}
+                </button>
+              </div>
             </div>
           </div>
         </div>
