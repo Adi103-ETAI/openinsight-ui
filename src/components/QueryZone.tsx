@@ -75,7 +75,7 @@ const QueryZone = ({ onSubmit, isLoading, hasResults }: QueryZoneProps) => {
             {isLoading ? (
               <Loader2 className="w-4 h-4 animate-spin-slow" />
             ) : (
-              <Search className="w-4 h-4" />
+              <ArrowUp className="w-4 h-4" />
             )}
           </button>
         </div>
