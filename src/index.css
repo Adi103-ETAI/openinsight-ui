@@ -6,13 +6,13 @@
 
 @layer base {
   :root {
-    --background: 40 14% 95%;        /* Parchment #f5f4ed */
+    --background: 53 100% 96.9%;     /* Lightyellow #fffdef */
     --foreground: 60 4% 11%;         /* Near Black, slightly lifted */
 
-    --card: 43 29% 97%;              /* Ivory #faf9f5 */
+    --card: 53 60% 95%;              /* Synced to Lightyellow family */
     --card-foreground: 60 4% 11%;
 
-    --popover: 43 29% 97%;
+    --popover: 53 60% 95%;
     --popover-foreground: 60 4% 8%;
 
     --primary: 18 56% 52%;           /* Terracotta #c96442 */
@@ -24,7 +24,7 @@
     --secondary: 40 8% 50%;          /* Stone Gray #87867f */
     --secondary-foreground: 43 29% 97%;
 
-    --muted: 40 10% 91%;             /* Light parchment */
+    --muted: 53 40% 90%;             /* Synced to Lightyellow family */
     --muted-foreground: 50 4% 32%;   /* Olive Gray, deeper */
 
     --accent: 40 14% 90%;
@@ -33,8 +33,8 @@
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 43 16% 90%;            /* #e3e3dc */
-    --input: 43 16% 90%;
+    --border: 53 30% 85%;            /* Synced to Lightyellow family */
+    --input: 53 30% 85%;
     --ring: 18 56% 52%;
 
     --radius: 0.75rem;
@@ -51,15 +51,15 @@
     --source-icmr: 18 56% 52%;
     --source-nmc: 25 85% 50%;
 
-    --surface-low: 40 14% 94%;
-    --surface-high: 40 10% 91%;
+    --surface-low: 53 50% 92%;
+    --surface-high: 53 40% 89%;
 
     /* Journal-specific tokens */
     --terracotta: 18 56% 52%;
     --olive-gray: 50 3% 37%;
     --stone-gray: 40 8% 50%;
     --ivory: 43 29% 97%;
-    --parchment: 40 14% 95%;
+    --parchment: 53 100% 96.9%;
     --near-black: 60 4% 8%;
   }
 
