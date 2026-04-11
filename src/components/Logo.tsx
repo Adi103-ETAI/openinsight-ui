@@ -29,8 +29,19 @@ applyFontStyle(getLogoStyle());
 
 export function setLogoStyle(style: LogoStyle) {
   localStorage.setItem(LOGO_STYLE_KEY, style);
-  applyFontStyle(style);
-  window.dispatchEvent(new Event("logostylechange"));
+
+  const body = document.body;
+  body.style.transition = "opacity 0.18s ease";
+  body.style.opacity = "0";
+
+  setTimeout(() => {
+    applyFontStyle(style);
+    window.dispatchEvent(new Event("logostylechange"));
+    body.style.opacity = "1";
+    setTimeout(() => {
+      body.style.transition = "";
+    }, 200);
+  }, 180);
 }
 
 interface LogoProps {
