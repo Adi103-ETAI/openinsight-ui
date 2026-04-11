@@ -40,13 +40,16 @@ interface LogoProps {
 
 // ─── Classic Logo (original GitHub - font-heading semibold, text-based) ───
 const ClassicTextLogo: React.FC<{ className: string }> = ({ className }) => (
-  <div className={`font-heading font-semibold tracking-tight leading-none flex items-baseline ${className}`}>
-    <span className="text-foreground">OpenIns</span>
-    <span className="relative inline-block text-foreground">
-      <span className="absolute top-[0.12em] left-[50%] -translate-x-1/2 w-[0.22em] h-[0.22em] bg-primary rounded-full"></span>
-      <span>ı</span>
+  <div className={`font-heading tracking-tight leading-none flex items-baseline ${className}`}>
+    <span className="text-foreground font-normal">open</span>
+    <span className="text-foreground font-bold flex items-baseline">
+      <span>Ins</span>
+      <span className="relative inline-block">
+        <span className="absolute top-[0.12em] left-1/2 -translate-x-1/2 w-[0.22em] h-[0.22em] bg-primary rounded-full"></span>
+        <span>ı</span>
+      </span>
+      <span>ght</span>
     </span>
-    <span className="text-foreground">ght</span>
   </div>
 );
 
