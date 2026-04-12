@@ -7,6 +7,7 @@ export interface HistoryEntry {
   timestamp: number;
   sourcesUsed: string[];
   model?: string;
+  response?: QueryResponse;
 }
 
 export interface VaultItem {
@@ -51,6 +52,7 @@ export function useQueryHistory() {
       timestamp: Date.now(),
       sourcesUsed: [...new Set(response.citations.map((c) => c.source_type))],
       model: response.model,
+      response,
     };
     setHistory((prev) => [entry, ...prev].slice(0, 50));
   }, []);

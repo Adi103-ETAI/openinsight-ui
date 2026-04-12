@@ -1,5 +1,5 @@
 import { useState, useCallback, useRef, useEffect } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import QueryZone from "@/components/QueryZone";
 import AnswerCard from "@/components/AnswerCard";
 import LoadingState from "@/components/LoadingState";
@@ -26,16 +26,11 @@ const formatTime = (ts: number) => {
 const Index = () => {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const scrollRef = useRef<HTMLDivElement>(null);
-  const { addHistoryEntry } = useStore();
+  const { addHistoryEntry, history } = useStore();
   const location = useLocation();
-
-  useEffect(() => {
-    const state = location.state as { loadQuery?: string } | null;
-    if (state?.loadQuery) {
-      handleQuery(state.loadQuery);
-      window.history.replaceState({}, document.title);
-    }
-  }, [location.state]);
+  const navigate = useNavigate();
+  const handledNavigationRef = useRef<string | null>(null);
+  const latestMessageStatus = messages[messages.length - 1]?.status;
 
   useEffect(() => {
     if (scrollRef.current) {
@@ -44,7 +39,7 @@ const Index = () => {
         behavior: "smooth"
       });
     }
-  }, [messages.length, messages[messages.length - 1]?.status]);
+  }, [messages.length, latestMessageStatus]);
 
   const handleQuery = useCallback(async (query: string) => {
     const newMessageId = Date.now().toString();
@@ -60,7 +55,16 @@ const Index = () => {
         body: JSON.stringify({ query, top_k: 8, mode: "standard" }),
       });
 
-      if (!res.ok) throw new Error("API error");
+      if (!res.ok) {
+        let detail = "API error";
+        try {
+          const err = await res.json();
+          detail = err?.detail || detail;
+        } catch {
+          // Ignore JSON parse issues and keep the fallback detail.
+        }
+        throw new Error(detail);
+      }
 
       const json: QueryResponse = await res.json();
       setMessages((prev) =>
@@ -76,9 +80,14 @@ const Index = () => {
       );
 
       if (json.chunks_retrieved > 0) {
-        addHistoryEntry(query, json);
+        try {
+          addHistoryEntry(query, json);
+        } catch (err) {
+          console.error("Failed to persist query history", err);
+        }
       }
-    } catch {
+    } catch (err) {
+      console.error("Query request failed", err);
       setMessages((prev) =>
         prev.map((msg) =>
           msg.id === newMessageId ? { ...msg, status: "error" } : msg
@@ -86,6 +95,48 @@ const Index = () => {
       );
     }
   }, [addHistoryEntry]);
+
+  useEffect(() => {
+    const state = location.state as { loadQuery?: string; loadHistoryId?: string } | null;
+    if (!state) return;
+
+    const navKey = location.key;
+    if (handledNavigationRef.current === navKey) return;
+
+    let didHandle = false;
+
+    if (state.loadHistoryId) {
+      const entry = history.find((item) => item.id === state.loadHistoryId);
+      if (entry) {
+        if (entry.response) {
+          const restoredMessageId = Date.now().toString();
+          setMessages((prev) => [
+            ...prev,
+            {
+              id: restoredMessageId,
+              query: entry.query,
+              response: entry.response,
+              status: entry.response.chunks_retrieved === 0 ? "empty" : "success",
+              timestamp: Date.now(),
+            },
+          ]);
+        } else {
+          handleQuery(entry.query);
+        }
+        didHandle = true;
+      }
+    }
+
+    if (!didHandle && state.loadQuery) {
+      handleQuery(state.loadQuery);
+      didHandle = true;
+    }
+
+    if (didHandle) {
+      handledNavigationRef.current = navKey;
+      navigate(location.pathname, { replace: true, state: null });
+    }
+  }, [location.key, location.pathname, location.state, history, handleQuery, navigate]);
 
   const handleRetry = (msgId: string, query: string) => {
     setMessages((prev) => prev.filter((m) => m.id !== msgId));

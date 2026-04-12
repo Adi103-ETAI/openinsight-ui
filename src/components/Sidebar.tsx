@@ -3,6 +3,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useStore } from "@/contexts/StoreContext";
 import { format, formatDistanceToNow, isThisWeek, isToday, isYesterday } from "date-fns";
 import Logo from "@/components/Logo";
+import type { HistoryEntry } from "@/hooks/use-store";
 
 interface SidebarProps {
   isOpen: boolean;
@@ -17,8 +18,8 @@ const Sidebar = ({ isOpen, isMobile, toggleSidebar }: SidebarProps) => {
 
   const isActive = (path: string) => location.pathname === path;
 
-  const handleLoadQuery = (query: string) => {
-    navigate("/", { state: { loadQuery: query } });
+  const handleLoadQuery = (item: HistoryEntry) => {
+    navigate("/", { state: { loadHistoryId: item.id, loadQuery: item.query } });
   };
 
   const groupedHistory = history.slice(0, 30).reduce<Record<string, typeof history>>((acc, item) => {
@@ -117,7 +118,7 @@ const Sidebar = ({ isOpen, isMobile, toggleSidebar }: SidebarProps) => {
                     <div
                       key={item.id}
                       className="group w-full flex items-start gap-1 px-2.5 py-1.5 rounded-lg text-left transition-colors hover:bg-muted/40 cursor-pointer"
-                      onClick={() => handleLoadQuery(item.query)}
+                      onClick={() => handleLoadQuery(item)}
                     >
                       <div className="flex-1 min-w-0">
                         <span className="text-[12px] font-body text-foreground/80 group-hover:text-primary transition-colors line-clamp-1 block">
