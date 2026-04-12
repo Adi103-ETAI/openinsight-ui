@@ -67,17 +67,19 @@ const Sidebar = ({ isOpen, isMobile, toggleSidebar }: SidebarProps) => {
 
       <nav className="flex-1 overflow-x-hidden overflow-y-auto pt-4 pb-3 flex flex-col gap-1 custom-scrollbar">
         <div className="px-2 flex flex-col gap-0.5">
-          <Link
+          <button
             title="New Consultation"
-            to="/"
-            onClick={() => isMobile && toggleSidebar()}
-            className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-[14px] font-body font-medium transition-all duration-300 overflow-hidden ${
+            onClick={() => {
+              navigate("/", { state: { newConvo: true } });
+              if (isMobile) toggleSidebar();
+            }}
+            className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-[14px] font-body font-medium transition-all duration-300 overflow-hidden ${
               isActive("/") && isOpen ? "text-primary bg-primary/10" : isActive("/") ? "text-primary" : "text-secondary/70 hover:text-foreground hover:bg-muted/40"
             }`}
           >
             <LayoutDashboard className="w-[18px] h-[18px] shrink-0" />
             <span className={`whitespace-nowrap transition-all duration-300 ${isOpen ? 'opacity-100 max-w-[200px]' : 'opacity-0 max-w-0'}`}>New Consultation</span>
-          </Link>
+          </button>
           <Link
             title="Research Vault"
             to="/vault"

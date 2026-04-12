@@ -97,7 +97,7 @@ const Index = () => {
   }, [addHistoryEntry]);
 
   useEffect(() => {
-    const state = location.state as { loadQuery?: string; loadHistoryId?: string } | null;
+    const state = location.state as { loadQuery?: string; loadHistoryId?: string; newConvo?: boolean } | null;
     if (!state) return;
 
     const navKey = location.key;
@@ -105,13 +105,19 @@ const Index = () => {
 
     let didHandle = false;
 
+    // Handle "new conversation" — clear all messages
+    if (state.newConvo) {
+      setMessages([]);
+      didHandle = true;
+    }
+
     if (state.loadHistoryId) {
       const entry = history.find((item) => item.id === state.loadHistoryId);
       if (entry) {
+        // Clear existing messages first, then load the history entry
         if (entry.response) {
           const restoredMessageId = Date.now().toString();
-          setMessages((prev) => [
-            ...prev,
+          setMessages([
             {
               id: restoredMessageId,
               query: entry.query,
@@ -121,6 +127,7 @@ const Index = () => {
             },
           ]);
         } else {
+          setMessages([]);
           handleQuery(entry.query);
         }
         didHandle = true;
@@ -128,6 +135,7 @@ const Index = () => {
     }
 
     if (!didHandle && state.loadQuery) {
+      setMessages([]);
       handleQuery(state.loadQuery);
       didHandle = true;
     }

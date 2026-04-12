@@ -1,9 +1,9 @@
 import { useState } from "react";
 import ReactMarkdown from "react-markdown";
-import { ChevronDown, Copy, RotateCcw } from "lucide-react";
+import { Copy, BookOpen } from "lucide-react";
 import type { QueryResponse, SourceType } from "@/types/api";
 import { getSourceConfig } from "@/lib/sources";
-import CitationCard from "./CitationCard";
+import SourcesPanel from "./SourcesPanel";
 import { useToast } from "@/hooks/use-toast";
 
 interface AnswerCardProps {
@@ -11,15 +11,15 @@ interface AnswerCardProps {
 }
 
 const AnswerCard = ({ data }: AnswerCardProps) => {
-  const [citationsOpen, setCitationsOpen] = useState(true);
+  const [sourcesOpen, setSourcesOpen] = useState(false);
   const { toast } = useToast();
 
   const uniqueSources = [...new Set(data.citations.map((c) => c.source_type))] as SourceType[];
 
-  // Replace [N] with superscript link
+  // Replace [N] with markdown superscript links (no raw HTML)
   const processedAnswer = data.answer.replace(
     /\[(\d+)\]/g,
-    (_, num) => `[<sup>${num}</sup>](#citation-${num})`
+    (_, num) => `[^${num}^](#citation-${num})`
   );
 
   const handleCopy = () => {
@@ -48,27 +48,35 @@ const AnswerCard = ({ data }: AnswerCardProps) => {
       <div className="prose-journal text-[14px] sm:text-[15.5px] font-body leading-[1.7] max-w-none">
         <ReactMarkdown
           components={{
-            a: ({ children, href, ...props }) => (
-              <a
-                {...props}
-                href={href}
-                className="text-primary hover:text-primary-hover no-underline transition-colors"
-                onClick={(e) => {
-                  if (href?.startsWith('#citation-')) {
-                    e.preventDefault();
-                    const el = document.getElementById(href.slice(1));
-                    el?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                  }
-                }}
-              >
-                {children}
-              </a>
-            ),
-            sup: ({ children }) => (
-              <sup className="text-[11px] font-semibold text-primary cursor-pointer hover:text-primary-hover transition-colors">
-                {children}
-              </sup>
-            ),
+            a: ({ children, href, ...props }) => {
+              const isCitation = href?.startsWith('#citation-');
+              if (isCitation) {
+                return (
+                  <a
+                    {...props}
+                    href={href}
+                    className="no-underline"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      setSourcesOpen(true);
+                    }}
+                  >
+                    <sup className="text-[11px] font-semibold text-primary cursor-pointer hover:text-primary-hover transition-colors">
+                      {children}
+                    </sup>
+                  </a>
+                );
+              }
+              return (
+                <a
+                  {...props}
+                  href={href}
+                  className="text-primary hover:text-primary-hover no-underline transition-colors"
+                >
+                  {children}
+                </a>
+              );
+            },
             h1: ({ children }) => (
               <h1 className="font-heading text-[24px] font-medium text-foreground leading-[1.2] mt-6 mb-3">{children}</h1>
             ),
@@ -84,7 +92,7 @@ const AnswerCard = ({ data }: AnswerCardProps) => {
         </ReactMarkdown>
       </div>
 
-      {/* Action links — journal style */}
+      {/* Action links */}
       <div className="flex items-center gap-4 mt-5 pt-3 border-t border-border/50">
         <button
           onClick={handleCopy}
@@ -93,36 +101,27 @@ const AnswerCard = ({ data }: AnswerCardProps) => {
           <Copy className="w-3.5 h-3.5" />
           Copy
         </button>
+        {data.citations.length > 0 && (
+          <button
+            onClick={() => setSourcesOpen(true)}
+            className="flex items-center gap-1.5 text-[11px] uppercase tracking-[0.05em] font-body font-medium text-primary hover:text-primary-hover transition-colors"
+          >
+            <BookOpen className="w-3.5 h-3.5" />
+            Sources ({data.citations.length})
+          </button>
+        )}
         <span className="text-[11px] font-body text-secondary/50">
-          {data.model} · {data.chunks_retrieved} sources
+          {data.chunks_retrieved} sources
         </span>
       </div>
 
-      {/* Citations */}
-      {data.citations.length > 0 && (
-        <div className="mt-6">
-          <button
-            onClick={() => setCitationsOpen(!citationsOpen)}
-            className="w-full flex items-center justify-between py-2.5 text-[13px] font-body font-semibold text-foreground hover:text-primary transition-colors"
-          >
-            <span className="uppercase tracking-[0.05em]">Sources ({data.citations.length})</span>
-            <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${citationsOpen ? "rotate-180" : ""}`} />
-          </button>
-          {citationsOpen && (
-            <div className="space-y-2.5 mt-1">
-              {data.citations.map((citation, i) => (
-                <div
-                  key={citation.index}
-                  className="animate-fade-up"
-                  style={{ animationDelay: `${i * 0.04}s` }}
-                >
-                  <CitationCard citation={citation} queryContext={data.query} />
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-      )}
+      {/* Sources Panel */}
+      <SourcesPanel
+        citations={data.citations}
+        queryContext={data.query}
+        isOpen={sourcesOpen}
+        onClose={() => setSourcesOpen(false)}
+      />
     </div>
   );
 };
