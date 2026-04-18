@@ -7,6 +7,12 @@ import { StoreProvider } from "@/contexts/StoreContext";
 import Index from "./pages/Index.tsx";
 import Vault from "./pages/Vault.tsx";
 import Settings from "./pages/Settings.tsx";
+import SecuritySettings from "./pages/SecuritySettings.tsx";
+import BillingSettings from "./pages/BillingSettings.tsx";
+import PrivacySettings from "./pages/PrivacySettings.tsx";
+import NotificationsSettings from "./pages/NotificationsSettings.tsx";
+import ApiSettings from "./pages/ApiSettings.tsx";
+import Help from "./pages/Help.tsx";
 import NotFound from "./pages/NotFound.tsx";
 import Layout from "./components/Layout.tsx";
 
@@ -42,6 +48,12 @@ const App = () => (
               <Route path="/" element={<Index />} />
               <Route path="/vault" element={<Vault />} />
               <Route path="/settings" element={<Settings />} />
+              <Route path="/settings/security" element={<SecuritySettings />} />
+              <Route path="/settings/billing" element={<BillingSettings />} />
+              <Route path="/settings/privacy" element={<PrivacySettings />} />
+              <Route path="/settings/notifications" element={<NotificationsSettings />} />
+              <Route path="/settings/api" element={<ApiSettings />} />
+              <Route path="/help" element={<Help />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>
