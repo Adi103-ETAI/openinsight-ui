@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import { Settings2, Bell, Shield, Moon, Monitor, CreditCard, ChevronRight, Stethoscope, Sun, Type } from "lucide-react";
+import { Link } from "react-router-dom";
+import { Settings2, Bell, Shield, Moon, Monitor, CreditCard, ChevronRight, Stethoscope, Sun, Type, Lock, Code2, HelpCircle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Switch } from "@/components/ui/switch";
 import { Input } from "@/components/ui/input";
@@ -91,13 +92,7 @@ const Settings = () => {
     });
   };
 
-  const handleSecurity = () => {
-    toast({ title: "Security Settings", description: "Redirecting to security and 2FA settings." });
-  };
-
-  const handleSubscription = () => {
-    toast({ title: "Subscription Setup", description: "Managing your premium Clinical Intelligence plan." });
-  };
+  // Navigation handled via <Link> below.
 
   const handleThemeChange = (newTheme: 'light' | 'dark' | 'system') => {
     setTheme(newTheme);
@@ -465,39 +460,33 @@ const Settings = () => {
           </div>
         </div>
 
-        {/* Security / Billing */}
-        <div className="grid gap-6 md:grid-cols-2">
-          <button 
-            onClick={handleSecurity}
-            className="flex items-center justify-between p-5 bg-surface-low border border-border/50 rounded-2xl hover:border-primary/30 hover:bg-muted/30 transition-all text-left group"
-          >
-            <div className="flex items-center gap-4">
-              <div className="p-2 bg-muted rounded-lg group-hover:bg-primary/10 transition-colors">
-                <Shield className="w-5 h-5 text-foreground group-hover:text-primary transition-colors" />
+        {/* Account & advanced settings */}
+        <div className="grid gap-3 sm:grid-cols-2">
+          {[
+            { to: "/settings/security", icon: Shield, title: "Security", desc: "Password, 2FA, sessions" },
+            { to: "/settings/notifications", icon: Bell, title: "Notifications", desc: "Email, alerts, quiet hours" },
+            { to: "/settings/billing", icon: CreditCard, title: "Subscription & Billing", desc: "Plan, usage, invoices" },
+            { to: "/settings/privacy", icon: Lock, title: "Data & Privacy", desc: "Export, retention, delete" },
+            { to: "/settings/api", icon: Code2, title: "API Access", desc: "Keys, webhooks, docs" },
+            { to: "/help", icon: HelpCircle, title: "Help & Support", desc: "FAQ, shortcuts, contact" },
+          ].map(({ to, icon: Icon, title, desc }) => (
+            <Link
+              key={to}
+              to={to}
+              className="flex items-center justify-between p-5 bg-surface-low border border-border/50 rounded-2xl hover:border-primary/30 hover:bg-muted/30 transition-all text-left group"
+            >
+              <div className="flex items-center gap-4">
+                <div className="p-2 bg-muted rounded-lg group-hover:bg-primary/10 transition-colors">
+                  <Icon className="w-5 h-5 text-foreground group-hover:text-primary transition-colors" />
+                </div>
+                <div>
+                  <h4 className="font-semibold text-sm">{title}</h4>
+                  <p className="text-xs text-muted-foreground">{desc}</p>
+                </div>
               </div>
-              <div>
-                <h4 className="font-semibold text-sm">Security</h4>
-                <p className="text-xs text-muted-foreground">Password, 2FA</p>
-              </div>
-            </div>
-            <ChevronRight className="w-4 h-4 text-muted-foreground group-hover:text-foreground transition-colors" />
-          </button>
-          
-          <button 
-            onClick={handleSubscription}
-            className="flex items-center justify-between p-5 bg-surface-low border border-border/50 rounded-2xl hover:border-primary/30 hover:bg-muted/30 transition-all text-left group"
-          >
-            <div className="flex items-center gap-4">
-              <div className="p-2 bg-muted rounded-lg group-hover:bg-primary/10 transition-colors">
-                <CreditCard className="w-5 h-5 text-foreground group-hover:text-primary transition-colors" />
-              </div>
-              <div>
-                <h4 className="font-semibold text-sm">Subscription</h4>
-                <p className="text-xs text-muted-foreground">Manage your plan</p>
-              </div>
-            </div>
-            <ChevronRight className="w-4 h-4 text-muted-foreground group-hover:text-foreground transition-colors" />
-          </button>
+              <ChevronRight className="w-4 h-4 text-muted-foreground group-hover:text-foreground transition-colors" />
+            </Link>
+          ))}
         </div>
       </div>
     </div>
