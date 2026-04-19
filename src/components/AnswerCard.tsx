@@ -1,13 +1,15 @@
 import { useState } from "react";
 import ReactMarkdown from "react-markdown";
-import { Copy, BookOpen } from "lucide-react";
+import { Copy, BookOpen, RefreshCw, Share2, Bookmark, Check } from "lucide-react";
 import type { QueryResponse, SourceType } from "@/types/api";
 import { getSourceConfig } from "@/lib/sources";
 import SourcesPanel from "./SourcesPanel";
 import { useToast } from "@/hooks/use-toast";
+import { useStore } from "@/contexts/StoreContext";
 
 interface AnswerCardProps {
   data: QueryResponse;
+  onRegenerate?: () => void;
 }
 
 const AnswerCard = ({ data }: AnswerCardProps) => {
