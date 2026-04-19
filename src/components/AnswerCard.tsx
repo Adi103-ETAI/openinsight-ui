@@ -101,19 +101,21 @@ const AnswerCard = ({ data, onRegenerate }: AnswerCardProps) => {
             a: ({ children, href, ...props }) => {
               const isCitation = href?.startsWith('#citation-');
               if (isCitation) {
+                // Strip the wrapping ^ chars (footnote markers)
+                const label = String(children).replace(/\^/g, '');
                 return (
                   <a
                     {...props}
                     href={href}
-                    className="no-underline"
+                    className="no-underline align-super"
                     onClick={(e) => {
                       e.preventDefault();
                       setSourcesOpen(true);
                     }}
                   >
-                    <sup className="text-[11px] font-semibold text-primary cursor-pointer hover:text-primary-hover transition-colors">
-                      {children}
-                    </sup>
+                    <span className="inline-flex items-center justify-center min-w-[18px] h-[18px] px-[5px] mx-[1px] rounded-full bg-primary/12 text-primary text-[10px] font-semibold leading-none align-super hover:bg-primary/20 hover:text-primary-hover transition-colors cursor-pointer">
+                      {label}
+                    </span>
                   </a>
                 );
               }
