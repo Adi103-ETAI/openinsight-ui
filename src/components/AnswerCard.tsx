@@ -144,25 +144,63 @@ const AnswerCard = ({ data, onRegenerate }: AnswerCardProps) => {
         </ReactMarkdown>
       </div>
 
-      {/* Action links */}
-      <div className="flex items-center gap-4 mt-5 pt-3 border-t border-border/50">
+      {/* Action toolbar */}
+      <div className="flex items-center gap-1 mt-5 pt-3 border-t border-border/50 flex-wrap">
         <button
           onClick={handleCopy}
-          className="flex items-center gap-1.5 text-[11px] uppercase tracking-[0.05em] font-body font-medium text-primary hover:text-primary-hover transition-colors"
+          aria-label="Copy answer"
+          title="Copy answer"
+          className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-[11px] uppercase tracking-[0.05em] font-body font-medium text-secondary/70 hover:text-primary hover:bg-primary/8 transition-colors"
         >
-          <Copy className="w-3.5 h-3.5" />
-          Copy
+          {copied ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
+          <span className="hidden sm:inline">{copied ? "Copied" : "Copy"}</span>
         </button>
+
+        {onRegenerate && (
+          <button
+            onClick={onRegenerate}
+            aria-label="Regenerate answer"
+            title="Regenerate answer"
+            className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-[11px] uppercase tracking-[0.05em] font-body font-medium text-secondary/70 hover:text-primary hover:bg-primary/8 transition-colors"
+          >
+            <RefreshCw className="w-3.5 h-3.5" />
+            <span className="hidden sm:inline">Regenerate</span>
+          </button>
+        )}
+
+        <button
+          onClick={handleShare}
+          aria-label="Share answer"
+          title="Share answer"
+          className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-[11px] uppercase tracking-[0.05em] font-body font-medium text-secondary/70 hover:text-primary hover:bg-primary/8 transition-colors"
+        >
+          <Share2 className="w-3.5 h-3.5" />
+          <span className="hidden sm:inline">Share</span>
+        </button>
+
+        {data.citations.length > 0 && (
+          <button
+            onClick={handleSaveAll}
+            aria-label="Save citations to vault"
+            title="Save to Vault"
+            className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-[11px] uppercase tracking-[0.05em] font-body font-medium text-secondary/70 hover:text-primary hover:bg-primary/8 transition-colors"
+          >
+            <Bookmark className={`w-3.5 h-3.5 ${alreadySaved ? 'fill-primary text-primary' : ''}`} />
+            <span className="hidden sm:inline">Save</span>
+          </button>
+        )}
+
         {data.citations.length > 0 && (
           <button
             onClick={() => setSourcesOpen(true)}
-            className="flex items-center gap-1.5 text-[11px] uppercase tracking-[0.05em] font-body font-medium text-primary hover:text-primary-hover transition-colors"
+            className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-[11px] uppercase tracking-[0.05em] font-body font-medium text-primary hover:bg-primary/8 transition-colors"
           >
             <BookOpen className="w-3.5 h-3.5" />
             Sources ({data.citations.length})
           </button>
         )}
-        <span className="text-[11px] font-body text-secondary/50">
+
+        <span className="ml-auto text-[11px] font-body text-secondary/50 px-2">
           {data.chunks_retrieved} sources
         </span>
       </div>
