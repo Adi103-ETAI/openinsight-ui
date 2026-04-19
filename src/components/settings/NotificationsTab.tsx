@@ -1,3 +1,5 @@
+"use client";
+
 import { useState } from "react";
 import { Mail, BellRing, Moon } from "lucide-react";
 import { Switch } from "@/components/ui/switch";

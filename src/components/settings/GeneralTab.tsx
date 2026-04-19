@@ -1,3 +1,5 @@
+"use client";
+
 import { useEffect, useState } from "react";
 import { Stethoscope, Sun, Moon, Monitor } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
@@ -38,7 +40,8 @@ const GeneralTab = () => {
   // Profile State
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [displayName, setDisplayName] = useState(() => {
-    return localStorage.getItem("openinsight_display_name") || "Director";
+    if (typeof window === "undefined") return "Director";
+    return window.localStorage.getItem("openinsight_display_name") || "Director";
   });
 
   useEffect(() => {
@@ -58,7 +61,8 @@ const GeneralTab = () => {
   const [newGuidanceAlerts, setNewGuidanceAlerts] = useState(true);
   const [weeklyDigest, setWeeklyDigest] = useState(false);
   const [theme, setTheme] = useState<'light' | 'dark' | 'system'>(() => {
-    return (localStorage.getItem('theme') as 'light' | 'dark' | 'system') || 'dark';
+    if (typeof window === "undefined") return "dark";
+    return (window.localStorage.getItem('theme') as 'light' | 'dark' | 'system') || 'dark';
   });
   const [logoStyle, setLogoStyleState] = useState<LogoStyle>(getLogoStyle);
 
@@ -141,7 +145,7 @@ const GeneralTab = () => {
             <Label className="text-base text-muted-foreground">Full name</Label>
             <div className="flex items-center gap-3 px-4 py-2 bg-muted/40 border border-border/30 rounded-md focus-within:ring-1 focus-within:ring-ring transition-all">
               <div className="w-8 h-8 rounded-full overflow-hidden bg-muted shrink-0">
-                <img src={profile.avatarImg} alt="Avatar" className="w-full h-full object-cover" />
+                <img src={profile.avatarImg.src} alt="Avatar" className="w-full h-full object-cover" />
               </div>
               <input
                 value={profile.name}
@@ -208,7 +212,7 @@ const GeneralTab = () => {
                       <div className="grid grid-cols-6 gap-2">
                         {AVATARS.map((src) => (
                           <button
-                            key={src}
+                            key={src.src}
                             type="button"
                             onClick={() => setProfile({ ...profile, avatarImg: src })}
                             className={`relative w-full aspect-square rounded-xl overflow-hidden transition-all duration-200 border-2 ${
@@ -217,7 +221,7 @@ const GeneralTab = () => {
                                 : "border-border/50 opacity-70 hover:opacity-100 hover:border-primary/40 hover:scale-105"
                             }`}
                           >
-                            <img src={src} alt="Avatar option" className="w-full h-full object-cover" />
+                            <img src={src.src} alt="Avatar option" className="w-full h-full object-cover" />
                             {profile.avatarImg === src && (
                               <div className="absolute inset-0 bg-primary/10 flex items-center justify-center">
                                 <div className="w-5 h-5 rounded-full bg-primary flex items-center justify-center">

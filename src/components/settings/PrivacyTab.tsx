@@ -1,3 +1,5 @@
+"use client";
+
 import { useState } from "react";
 import { Download, Trash2, Clock, EyeOff, AlertTriangle } from "lucide-react";
 import { Button } from "@/components/ui/button";

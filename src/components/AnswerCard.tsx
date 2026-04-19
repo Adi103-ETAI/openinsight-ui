@@ -1,7 +1,9 @@
+"use client";
+
 import { useState } from "react";
 import ReactMarkdown from "react-markdown";
 import { Copy, BookOpen, RefreshCw, Share2, Bookmark, Check } from "lucide-react";
-import type { QueryResponse, SourceType } from "@/types/api";
+import type { Citation, QueryResponse, SourceType } from "@/types/api";
 import { getSourceConfig } from "@/lib/sources";
 import { useToast } from "@/hooks/use-toast";
 import { useStore } from "@/contexts/StoreContext";

@@ -1,3 +1,6 @@
+"use client";
+
+import type { StaticImageData } from "next/image";
 import React, { useEffect, useState } from "react";
 import homeDarkLogo from "@/assets/DarkGrey.png";
 import homeLightLogo from "@/assets/LightYellow.png";
@@ -9,10 +12,12 @@ export type LogoStyle = "classic" | "modern";
 const LOGO_STYLE_KEY = "openinsight_logo_style";
 
 export function getLogoStyle(): LogoStyle {
+  if (typeof window === "undefined") return "modern";
   return (localStorage.getItem(LOGO_STYLE_KEY) as LogoStyle) || "modern";
 }
 
 function applyFontStyle(style: LogoStyle) {
+  if (typeof document === "undefined") return;
   const root = document.documentElement;
   if (style === "classic") {
     root.style.setProperty("--font-heading", "'Playfair Display', Georgia, serif");
@@ -24,10 +29,8 @@ function applyFontStyle(style: LogoStyle) {
   }
 }
 
-// Apply on initial load
-applyFontStyle(getLogoStyle());
-
 export function setLogoStyle(style: LogoStyle) {
+  if (typeof window === "undefined") return;
   localStorage.setItem(LOGO_STYLE_KEY, style);
 
   const body = document.body;
@@ -103,19 +106,19 @@ const ModernTextLogo: React.FC<{ className: string }> = ({ className }) => (
 // ─── Image-based Logo (for home/header in Modern mode) ───
 const ImageLogo: React.FC<{
   className: string;
-  lightSrc: string;
-  darkSrc: string;
+  lightSrc: StaticImageData;
+  darkSrc: StaticImageData;
 }> = ({ className, lightSrc, darkSrc }) => (
   <div
     className={`relative flex items-center justify-center overflow-hidden w-[8em] h-[1.5em] ${className}`}
   >
     <img
-      src={lightSrc}
+      src={lightSrc.src}
       alt="OpenInsight Logo"
       className="block dark:hidden absolute w-full h-auto object-center"
     />
     <img
-      src={darkSrc}
+      src={darkSrc.src}
       alt="OpenInsight Logo"
       className="hidden dark:block absolute w-full h-auto object-center"
     />
@@ -127,6 +130,7 @@ const Logo: React.FC<LogoProps> = ({ className = "", variant = "header" }) => {
   const [style, setStyle] = useState<LogoStyle>(getLogoStyle);
 
   useEffect(() => {
+    applyFontStyle(getLogoStyle());
     const handler = () => setStyle(getLogoStyle());
     window.addEventListener("logostylechange", handler);
     return () => window.removeEventListener("logostylechange", handler);

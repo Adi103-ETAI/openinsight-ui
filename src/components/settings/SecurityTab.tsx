@@ -1,3 +1,5 @@
+"use client";
+
 import { useState } from "react";
 import { Key, Smartphone, Activity, Copy, Check, AlertTriangle } from "lucide-react";
 import { Button } from "@/components/ui/button";

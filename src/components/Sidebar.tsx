@@ -1,5 +1,8 @@
+"use client";
+
 import { Clock, BookOpen, Settings, LayoutDashboard, PanelLeftClose, PanelLeftOpen, Trash2, X, LogOut, User } from "lucide-react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
 import { useStore } from "@/contexts/StoreContext";
 import { format, formatDistanceToNow, isThisWeek, isToday, isYesterday } from "date-fns";
 import Logo from "@/components/Logo";
@@ -15,15 +18,15 @@ interface SidebarProps {
 }
 
 const Sidebar = ({ isOpen, isMobile, toggleSidebar }: SidebarProps) => {
-  const location = useLocation();
-  const navigate = useNavigate();
+  const pathname = usePathname();
+  const router = useRouter();
   const { toast } = useToast();
   const { history, removeHistoryEntry, clearHistory } = useStore();
 
-  const isActive = (path: string) => location.pathname === path;
+  const isActive = (path: string) => pathname === path;
 
   const handleLoadQuery = (item: HistoryEntry) => {
-    navigate("/", { state: { loadHistoryId: item.id, loadQuery: item.query } });
+    router.push(`/?historyId=${encodeURIComponent(item.id)}`);
   };
 
   const groupedHistory = history.slice(0, 30).reduce<Record<string, typeof history>>((acc, item) => {
@@ -74,7 +77,7 @@ const Sidebar = ({ isOpen, isMobile, toggleSidebar }: SidebarProps) => {
           <button
             title="New Consultation"
             onClick={() => {
-              navigate("/", { state: { newConvo: true } });
+              router.push("/?new=1");
               if (isMobile) toggleSidebar();
             }}
             className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-[14px] font-body font-medium transition-all duration-300 overflow-hidden ${
@@ -86,7 +89,7 @@ const Sidebar = ({ isOpen, isMobile, toggleSidebar }: SidebarProps) => {
           </button>
           <Link
             title="Research Vault"
-            to="/vault"
+            href="/vault"
             onClick={() => isMobile && toggleSidebar()}
             className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-[14px] font-body font-medium transition-all duration-300 overflow-hidden ${
               isActive("/vault") && isOpen ? "text-primary bg-primary/10" : isActive("/vault") ? "text-primary" : "text-secondary/70 hover:text-foreground hover:bg-muted/40"
@@ -160,7 +163,7 @@ const Sidebar = ({ isOpen, isMobile, toggleSidebar }: SidebarProps) => {
               className={`w-full flex items-center gap-3 p-2 rounded-lg text-left transition-all duration-300 hover:bg-muted/50 ${isOpen ? '' : 'justify-center'}`}
             >
               <div className="w-8 h-8 rounded-full overflow-hidden shrink-0 border border-border/50">
-                <img src={avatar1} alt="User" className="w-full h-full object-cover" />
+                <img src={avatar1.src} alt="User" className="w-full h-full object-cover" />
               </div>
               <div className={`flex-1 min-w-0 transition-all duration-300 ${isOpen ? 'opacity-100' : 'opacity-0 w-0 hidden'}`}>
                 <p className="text-[13px] font-medium text-foreground truncate leading-tight">SentArc Labs</p>
@@ -174,7 +177,7 @@ const Sidebar = ({ isOpen, isMobile, toggleSidebar }: SidebarProps) => {
               <p className="text-xs text-muted-foreground truncate">sentarc.ai@gmail.com</p>
             </div>
             <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={() => { navigate("/settings"); if (isMobile) toggleSidebar(); }} className="cursor-pointer">
+            <DropdownMenuItem onClick={() => { router.push("/settings"); if (isMobile) toggleSidebar(); }} className="cursor-pointer">
               <Settings className="mr-2 h-4 w-4" />
               <span>Settings</span>
             </DropdownMenuItem>

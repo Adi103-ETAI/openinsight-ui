@@ -1,3 +1,5 @@
+"use client";
+
 import { createContext, useContext, ReactNode } from "react";
 import { useQueryHistory, useVault, type HistoryEntry, type VaultItem } from "@/hooks/use-store";
 import type { QueryResponse } from "@/types/api";
