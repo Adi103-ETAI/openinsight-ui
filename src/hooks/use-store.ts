@@ -4,6 +4,7 @@ import type { QueryResponse } from "@/types/api";
 export interface HistoryEntry {
   id: string;
   query: string;
+  title: string;
   timestamp: number;
   sourcesUsed: string[];
   model?: string;
