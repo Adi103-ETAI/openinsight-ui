@@ -37,7 +37,13 @@ const GeneralTab = () => {
 
   // Profile State
   const [isProfileOpen, setIsProfileOpen] = useState(false);
-  const [displayName, setDisplayName] = useState("Director");
+  const [displayName, setDisplayName] = useState(() => {
+    return localStorage.getItem("openinsight_display_name") || "Director";
+  });
+
+  useEffect(() => {
+    localStorage.setItem("openinsight_display_name", displayName);
+  }, [displayName]);
   const [profile, setProfile] = useState({
     name: "Director A",
     email: "director@sentarc.labs",

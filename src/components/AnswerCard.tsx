@@ -1,18 +1,22 @@
 import { useState } from "react";
 import ReactMarkdown from "react-markdown";
-import { Copy, BookOpen } from "lucide-react";
+import { Copy, BookOpen, RefreshCw, Share2, Bookmark, Check } from "lucide-react";
 import type { QueryResponse, SourceType } from "@/types/api";
 import { getSourceConfig } from "@/lib/sources";
 import SourcesPanel from "./SourcesPanel";
 import { useToast } from "@/hooks/use-toast";
+import { useStore } from "@/contexts/StoreContext";
 
 interface AnswerCardProps {
   data: QueryResponse;
+  onRegenerate?: () => void;
 }
 
-const AnswerCard = ({ data }: AnswerCardProps) => {
+const AnswerCard = ({ data, onRegenerate }: AnswerCardProps) => {
   const [sourcesOpen, setSourcesOpen] = useState(false);
+  const [copied, setCopied] = useState(false);
   const { toast } = useToast();
+  const { saveToVault, isInVault } = useStore();
 
   const uniqueSources = [...new Set(data.citations.map((c) => c.source_type))] as SourceType[];
 
@@ -24,7 +28,53 @@ const AnswerCard = ({ data }: AnswerCardProps) => {
 
   const handleCopy = () => {
     navigator.clipboard.writeText(data.answer);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 1800);
     toast({ title: "Copied to clipboard" });
+  };
+
+  const handleShare = async () => {
+    const shareText = `${data.query}\n\n${data.answer}`;
+    try {
+      if (navigator.share) {
+        await navigator.share({ title: "OpenInsight Answer", text: shareText });
+      } else {
+        await navigator.clipboard.writeText(shareText);
+        toast({ title: "Share link copied", description: "Answer copied to clipboard." });
+      }
+    } catch {
+      // User canceled share — silently ignore
+    }
+  };
+
+  const firstCitation = data.citations[0];
+  const alreadySaved = firstCitation
+    ? isInVault(firstCitation.title, firstCitation.chunk_text)
+    : false;
+
+  const handleSaveAll = () => {
+    if (!firstCitation) {
+      toast({ title: "Nothing to save", description: "This answer has no citations." });
+      return;
+    }
+    let added = 0;
+    data.citations.forEach((c) => {
+      if (!isInVault(c.title, c.chunk_text)) {
+        saveToVault({
+          title: c.title,
+          sourceType: c.source_type,
+          chunkText: c.chunk_text,
+          score: c.score,
+          queryContext: data.query,
+          mongoId: c.mongo_id,
+        });
+        added++;
+      }
+    });
+    toast({
+      title: added > 0 ? "Saved to Vault" : "Already in Vault",
+      description: added > 0 ? `${added} citation${added > 1 ? "s" : ""} added.` : "These citations are already saved.",
+    });
   };
 
   return (
@@ -51,19 +101,21 @@ const AnswerCard = ({ data }: AnswerCardProps) => {
             a: ({ children, href, ...props }) => {
               const isCitation = href?.startsWith('#citation-');
               if (isCitation) {
+                // Strip the wrapping ^ chars (footnote markers)
+                const label = String(children).replace(/\^/g, '');
                 return (
                   <a
                     {...props}
                     href={href}
-                    className="no-underline"
+                    className="no-underline align-super"
                     onClick={(e) => {
                       e.preventDefault();
                       setSourcesOpen(true);
                     }}
                   >
-                    <sup className="text-[11px] font-semibold text-primary cursor-pointer hover:text-primary-hover transition-colors">
-                      {children}
-                    </sup>
+                    <span className="inline-flex items-center justify-center min-w-[18px] h-[18px] px-[5px] mx-[1px] rounded-full bg-primary/12 text-primary text-[10px] font-semibold leading-none align-super hover:bg-primary/20 hover:text-primary-hover transition-colors cursor-pointer">
+                      {label}
+                    </span>
                   </a>
                 );
               }
@@ -92,25 +144,63 @@ const AnswerCard = ({ data }: AnswerCardProps) => {
         </ReactMarkdown>
       </div>
 
-      {/* Action links */}
-      <div className="flex items-center gap-4 mt-5 pt-3 border-t border-border/50">
+      {/* Action toolbar */}
+      <div className="flex items-center gap-1 mt-5 pt-3 border-t border-border/50 flex-wrap">
         <button
           onClick={handleCopy}
-          className="flex items-center gap-1.5 text-[11px] uppercase tracking-[0.05em] font-body font-medium text-primary hover:text-primary-hover transition-colors"
+          aria-label="Copy answer"
+          title="Copy answer"
+          className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-[11px] uppercase tracking-[0.05em] font-body font-medium text-secondary/70 hover:text-primary hover:bg-primary/8 transition-colors"
         >
-          <Copy className="w-3.5 h-3.5" />
-          Copy
+          {copied ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
+          <span className="hidden sm:inline">{copied ? "Copied" : "Copy"}</span>
         </button>
+
+        {onRegenerate && (
+          <button
+            onClick={onRegenerate}
+            aria-label="Regenerate answer"
+            title="Regenerate answer"
+            className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-[11px] uppercase tracking-[0.05em] font-body font-medium text-secondary/70 hover:text-primary hover:bg-primary/8 transition-colors"
+          >
+            <RefreshCw className="w-3.5 h-3.5" />
+            <span className="hidden sm:inline">Regenerate</span>
+          </button>
+        )}
+
+        <button
+          onClick={handleShare}
+          aria-label="Share answer"
+          title="Share answer"
+          className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-[11px] uppercase tracking-[0.05em] font-body font-medium text-secondary/70 hover:text-primary hover:bg-primary/8 transition-colors"
+        >
+          <Share2 className="w-3.5 h-3.5" />
+          <span className="hidden sm:inline">Share</span>
+        </button>
+
+        {data.citations.length > 0 && (
+          <button
+            onClick={handleSaveAll}
+            aria-label="Save citations to vault"
+            title="Save to Vault"
+            className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-[11px] uppercase tracking-[0.05em] font-body font-medium text-secondary/70 hover:text-primary hover:bg-primary/8 transition-colors"
+          >
+            <Bookmark className={`w-3.5 h-3.5 ${alreadySaved ? 'fill-primary text-primary' : ''}`} />
+            <span className="hidden sm:inline">Save</span>
+          </button>
+        )}
+
         {data.citations.length > 0 && (
           <button
             onClick={() => setSourcesOpen(true)}
-            className="flex items-center gap-1.5 text-[11px] uppercase tracking-[0.05em] font-body font-medium text-primary hover:text-primary-hover transition-colors"
+            className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-[11px] uppercase tracking-[0.05em] font-body font-medium text-primary hover:bg-primary/8 transition-colors"
           >
             <BookOpen className="w-3.5 h-3.5" />
             Sources ({data.citations.length})
           </button>
         )}
-        <span className="text-[11px] font-body text-secondary/50">
+
+        <span className="ml-auto text-[11px] font-body text-secondary/50 px-2">
           {data.chunks_retrieved} sources
         </span>
       </div>

@@ -192,7 +192,10 @@ const Index = () => {
                   <div className="w-full">
                     {msg.status === "loading" && <LoadingState />}
                     {msg.status === "success" && msg.response && (
-                      <AnswerCard data={msg.response} />
+                      <AnswerCard
+                        data={msg.response}
+                        onRegenerate={() => handleRetry(msg.id, msg.query)}
+                      />
                     )}
                     {msg.status === "empty" && (
                       <EmptyState onRetry={() => handleRetry(msg.id, msg.query)} />

@@ -128,7 +128,7 @@ const Sidebar = ({ isOpen, isMobile, toggleSidebar }: SidebarProps) => {
                     >
                       <div className="flex-1 min-w-0">
                         <span className="text-[12px] font-body text-foreground/80 group-hover:text-primary transition-colors line-clamp-1 block">
-                          {item.query}
+                          {item.title || item.query}
                         </span>
                         <span className="text-[10px] font-body text-secondary/40 mt-0.5 block">
                           {formatDistanceToNow(item.timestamp, { addSuffix: true })}

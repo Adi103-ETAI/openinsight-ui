@@ -16,9 +16,18 @@ interface QueryZoneProps {
 
 const getGreeting = () => {
   const hour = new Date().getHours();
-  if (hour < 12) return "Good Morning";
-  if (hour < 18) return "Good Afternoon";
-  return "Good Evening";
+  const name = (localStorage.getItem("openinsight_display_name") || "").trim();
+  const suffix = name ? `, ${name}` : "";
+
+  let salutation: string;
+  if (hour >= 5 && hour < 12) salutation = "Good Morning";
+  else if (hour >= 12 && hour < 17) salutation = "Good Afternoon";
+  else if (hour >= 17 && hour < 21) salutation = "Good Evening";
+  else if (hour >= 21 && hour < 24) salutation = "Working Late";
+  else if (hour >= 0 && hour < 3) salutation = "Burning the Midnight Oil";
+  else salutation = "Up Before Dawn"; // 3-5
+
+  return `${salutation}${suffix}`;
 };
 
 const QueryZone = ({ onSubmit, isLoading, hasResults }: QueryZoneProps) => {
