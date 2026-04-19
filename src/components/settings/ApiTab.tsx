@@ -1,10 +1,9 @@
 import { useState } from "react";
-import { Code2, Plus, Copy, Check, Trash2, Webhook, ExternalLink } from "lucide-react";
+import { Plus, Copy, Check, Trash2, Webhook, ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
-import SettingsLayout from "@/components/SettingsLayout";
 
 interface ApiKey {
   id: string;
@@ -14,7 +13,7 @@ interface ApiKey {
   lastUsed: string;
 }
 
-const ApiSettings = () => {
+const ApiTab = () => {
   const { toast } = useToast();
   const [keys, setKeys] = useState<ApiKey[]>([
     { id: "1", name: "Production", key: "sk_live_oI4f...9k2P", created: "Mar 12, 2026", lastUsed: "2 min ago" },
@@ -53,15 +52,11 @@ const ApiSettings = () => {
   };
 
   return (
-    <SettingsLayout
-      title="API Access"
-      description="Generate keys for programmatic access and configure webhooks for realtime citation alerts."
-      icon={<Code2 className="w-6 h-6" />}
-    >
-      {/* Usage */}
-      <section className="p-6 bg-surface-high border border-border/50 rounded-2xl">
-        <h2 className="text-lg font-semibold text-foreground mb-4">Today's Usage</h2>
-        <div className="grid grid-cols-3 gap-4">
+    <div className="space-y-0">
+      {/* ── Usage ── */}
+      <section>
+        <h2 className="settings-section-header">Today's Usage</h2>
+        <div className="grid grid-cols-3 gap-4 p-5 bg-surface-high border border-border/30 rounded-xl">
           <div>
             <p className="text-2xl font-mono font-bold text-foreground">847</p>
             <p className="text-xs text-muted-foreground uppercase tracking-wider">Requests</p>
@@ -75,7 +70,7 @@ const ApiSettings = () => {
             <p className="text-xs text-muted-foreground uppercase tracking-wider">Avg latency</p>
           </div>
         </div>
-        <div className="mt-4 pt-4 border-t border-border/30">
+        <div className="mt-4">
           <div className="flex items-baseline justify-between mb-2">
             <p className="text-sm text-muted-foreground">Rate limit</p>
             <p className="text-sm font-mono text-foreground">847 / 5,000 per day</p>
@@ -86,23 +81,23 @@ const ApiSettings = () => {
         </div>
       </section>
 
-      {/* Create key */}
-      <section className="p-6 bg-surface-high border border-border/50 rounded-2xl">
-        <h2 className="text-lg font-semibold text-foreground mb-4">Create API Key</h2>
+      {/* ── Create key ── */}
+      <section className="settings-section-divider">
+        <h2 className="settings-section-header">Create API Key</h2>
         <div className="flex flex-col sm:flex-row gap-2 max-w-xl">
           <Input placeholder="Key name (e.g. Production server)" value={newName} onChange={(e) => setNewName(e.target.value)} />
           <Button onClick={generateKey}><Plus className="w-4 h-4 mr-1" /> Generate</Button>
         </div>
       </section>
 
-      {/* Keys list */}
-      <section className="p-6 bg-surface-high border border-border/50 rounded-2xl">
-        <h2 className="text-lg font-semibold text-foreground mb-4">Active Keys</h2>
+      {/* ── Keys list ── */}
+      <section className="settings-section-divider">
+        <h2 className="settings-section-header">Active Keys</h2>
         <div className="space-y-2">
           {keys.length === 0 ? (
             <p className="text-sm text-muted-foreground text-center py-6">No API keys yet.</p>
           ) : keys.map((k) => (
-            <div key={k.id} className="flex items-center justify-between p-4 bg-background/40 border border-border/30 rounded-xl">
+            <div key={k.id} className="flex items-center justify-between p-4 bg-surface-high border border-border/30 rounded-xl">
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-medium text-foreground">{k.name}</p>
                 <code className="text-xs font-mono text-muted-foreground">{k.key}</code>
@@ -121,12 +116,9 @@ const ApiSettings = () => {
         </div>
       </section>
 
-      {/* Webhooks */}
-      <section className="p-6 bg-surface-high border border-border/50 rounded-2xl">
-        <div className="flex items-center gap-3 mb-4">
-          <Webhook className="w-5 h-5 text-primary" />
-          <h2 className="text-lg font-semibold text-foreground">Webhooks</h2>
-        </div>
+      {/* ── Webhooks ── */}
+      <section className="settings-section-divider">
+        <h2 className="settings-section-header">Webhooks</h2>
         <p className="text-sm text-muted-foreground mb-4">Receive realtime POST callbacks when new citations match your saved queries.</p>
         <div className="space-y-2 max-w-xl">
           <Label>Endpoint URL</Label>
@@ -143,20 +135,20 @@ const ApiSettings = () => {
         </div>
       </section>
 
-      {/* Docs */}
-      <section className="p-6 bg-surface-high border border-border/50 rounded-2xl">
+      {/* ── Docs ── */}
+      <section className="settings-section-divider">
         <div className="flex items-center justify-between">
           <div>
-            <h2 className="text-lg font-semibold text-foreground">API Documentation</h2>
-            <p className="text-sm text-muted-foreground mt-1">Full reference for endpoints, auth and SDKs.</p>
+            <h2 className="settings-section-header mb-1">API Documentation</h2>
+            <p className="text-sm text-muted-foreground">Full reference for endpoints, auth and SDKs.</p>
           </div>
           <Button variant="outline" onClick={() => toast({ title: "Docs", description: "Opening API reference." })}>
             View docs <ExternalLink className="w-4 h-4 ml-1" />
           </Button>
         </div>
       </section>
-    </SettingsLayout>
+    </div>
   );
 };
 
-export default ApiSettings;
+export default ApiTab;

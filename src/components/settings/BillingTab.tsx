@@ -1,10 +1,9 @@
 import { CreditCard, Check, Download, Zap, TrendingUp, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
-import SettingsLayout from "@/components/SettingsLayout";
 import { useStore } from "@/contexts/StoreContext";
 
-const BillingSettings = () => {
+const BillingTab = () => {
   const { toast } = useToast();
   const { history, vaultItems } = useStore();
 
@@ -29,21 +28,18 @@ const BillingSettings = () => {
   ];
 
   return (
-    <SettingsLayout
-      title="Subscription & Billing"
-      description="Manage your plan, monitor usage, and access invoices."
-      icon={<CreditCard className="w-6 h-6" />}
-    >
-      {/* Current plan */}
-      <section className="p-6 bg-surface-high border border-border/50 rounded-2xl">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+    <div className="space-y-0">
+      {/* ── Current plan ── */}
+      <section>
+        <h2 className="settings-section-header">Current Plan</h2>
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 bg-surface-high border border-border/30 rounded-xl">
           <div className="flex items-center gap-4">
             <div className="p-3 bg-primary/10 rounded-xl">
               <Zap className="w-6 h-6 text-primary" />
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <h2 className="text-xl font-heading font-semibold text-foreground">Pro Plan</h2>
+                <h3 className="text-xl font-heading font-semibold text-foreground">Pro Plan</h3>
                 <span className="text-[10px] uppercase tracking-wider px-1.5 py-0.5 rounded bg-primary/15 text-primary font-medium">Active</span>
               </div>
               <p className="text-sm text-muted-foreground">$29/month • Renews May 1, 2026</p>
@@ -60,14 +56,11 @@ const BillingSettings = () => {
         </div>
       </section>
 
-      {/* Usage */}
-      <section className="p-6 bg-surface-high border border-border/50 rounded-2xl">
-        <div className="flex items-center gap-3 mb-5">
-          <TrendingUp className="w-5 h-5 text-primary" />
-          <h2 className="text-lg font-semibold text-foreground">Usage This Month</h2>
-        </div>
+      {/* ── Usage ── */}
+      <section className="settings-section-divider">
+        <h2 className="settings-section-header">Usage This Month</h2>
         <div className="grid sm:grid-cols-2 gap-4">
-          <div className="p-4 bg-background/40 border border-border/30 rounded-xl">
+          <div className="p-4 bg-surface-high border border-border/30 rounded-xl">
             <div className="flex items-baseline justify-between mb-2">
               <p className="text-sm text-muted-foreground">Consultations</p>
               <p className="text-sm font-mono text-foreground">{queriesUsed}<span className="text-muted-foreground"> / {queriesLimit}</span></p>
@@ -76,7 +69,7 @@ const BillingSettings = () => {
               <div className="h-full bg-primary transition-all" style={{ width: `${queriesPercent}%` }} />
             </div>
           </div>
-          <div className="p-4 bg-background/40 border border-border/30 rounded-xl">
+          <div className="p-4 bg-surface-high border border-border/30 rounded-xl">
             <div className="flex items-baseline justify-between mb-2">
               <p className="text-sm text-muted-foreground">Vault items</p>
               <p className="text-sm font-mono text-foreground">{vaultUsed}<span className="text-muted-foreground"> / {vaultLimit}</span></p>
@@ -88,15 +81,15 @@ const BillingSettings = () => {
         </div>
       </section>
 
-      {/* Plans */}
-      <section className="p-6 bg-surface-high border border-border/50 rounded-2xl">
-        <h2 className="text-lg font-semibold text-foreground mb-5">Compare Plans</h2>
+      {/* ── Plans ── */}
+      <section className="settings-section-divider">
+        <h2 className="settings-section-header">Compare Plans</h2>
         <div className="grid md:grid-cols-3 gap-4">
           {plans.map((plan) => (
             <div
               key={plan.name}
               className={`relative p-5 rounded-xl border-2 transition-all ${
-                plan.current ? "border-primary bg-primary/5" : "border-border/40 bg-background/40 hover:border-primary/30"
+                plan.current ? "border-primary bg-primary/5" : "border-border/40 bg-surface-high hover:border-primary/30"
               }`}
             >
               {plan.badge && (
@@ -130,15 +123,15 @@ const BillingSettings = () => {
         </div>
       </section>
 
-      {/* Payment methods */}
-      <section className="p-6 bg-surface-high border border-border/50 rounded-2xl">
+      {/* ── Payment methods ── */}
+      <section className="settings-section-divider">
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-lg font-semibold text-foreground">Payment Method</h2>
+          <h2 className="settings-section-header mb-0">Payment Method</h2>
           <Button variant="outline" size="sm" onClick={() => toast({ title: "Add card", description: "Open Stripe payment dialog." })}>
             <Plus className="w-4 h-4 mr-1" /> Add card
           </Button>
         </div>
-        <div className="flex items-center justify-between p-4 bg-background/40 border border-border/30 rounded-xl">
+        <div className="flex items-center justify-between p-4 bg-surface-high border border-border/30 rounded-xl">
           <div className="flex items-center gap-4">
             <div className="w-12 h-8 bg-foreground rounded flex items-center justify-center">
               <span className="text-[10px] font-bold text-background">VISA</span>
@@ -152,12 +145,12 @@ const BillingSettings = () => {
         </div>
       </section>
 
-      {/* Invoices */}
-      <section className="p-6 bg-surface-high border border-border/50 rounded-2xl">
-        <h2 className="text-lg font-semibold text-foreground mb-4">Invoice History</h2>
-        <div className="divide-y divide-border/30">
+      {/* ── Invoices ── */}
+      <section className="settings-section-divider">
+        <h2 className="settings-section-header">Invoice History</h2>
+        <div className="space-y-0">
           {invoices.map((inv) => (
-            <div key={inv.id} className="flex items-center justify-between py-3">
+            <div key={inv.id} className="flex items-center justify-between py-3 border-b border-border/15 last:border-0">
               <div>
                 <p className="text-sm font-medium text-foreground">{inv.id}</p>
                 <p className="text-xs text-muted-foreground">{inv.date}</p>
@@ -173,8 +166,8 @@ const BillingSettings = () => {
           ))}
         </div>
       </section>
-    </SettingsLayout>
+    </div>
   );
 };
 
-export default BillingSettings;
+export default BillingTab;

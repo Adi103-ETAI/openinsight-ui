@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Bell, Mail, BellRing, Moon } from "lucide-react";
+import { Mail, BellRing, Moon } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import {
@@ -7,9 +7,8 @@ import {
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
-import SettingsLayout from "@/components/SettingsLayout";
 
-const NotificationsSettings = () => {
+const NotificationsTab = () => {
   const { toast } = useToast();
   const [digestFreq, setDigestFreq] = useState("weekly");
   const [sources, setSources] = useState({ icmr: true, cdc: true, who: true, nice: false });
@@ -30,17 +29,10 @@ const NotificationsSettings = () => {
   };
 
   return (
-    <SettingsLayout
-      title="Notifications"
-      description="Control how OpenInsight reaches you across email, browser and digest summaries."
-      icon={<Bell className="w-6 h-6" />}
-    >
-      {/* Email */}
-      <section className="p-6 bg-surface-high border border-border/50 rounded-2xl">
-        <div className="flex items-center gap-3 mb-5">
-          <Mail className="w-5 h-5 text-primary" />
-          <h2 className="text-lg font-semibold text-foreground">Email Preferences</h2>
-        </div>
+    <div className="space-y-0">
+      {/* ── Email ── */}
+      <section>
+        <h2 className="settings-section-header">Email Preferences</h2>
         <div className="space-y-5">
           <div className="space-y-2 max-w-sm">
             <Label>Digest frequency</Label>
@@ -74,12 +66,9 @@ const NotificationsSettings = () => {
         </div>
       </section>
 
-      {/* Alert types */}
-      <section className="p-6 bg-surface-high border border-border/50 rounded-2xl">
-        <div className="flex items-center gap-3 mb-5">
-          <BellRing className="w-5 h-5 text-primary" />
-          <h2 className="text-lg font-semibold text-foreground">Alert Types</h2>
-        </div>
+      {/* ── Alert types ── */}
+      <section className="settings-section-divider">
+        <h2 className="settings-section-header">Alert Types</h2>
         <div className="space-y-4">
           <div className="flex items-center justify-between">
             <div>
@@ -105,13 +94,10 @@ const NotificationsSettings = () => {
         </div>
       </section>
 
-      {/* Quiet hours */}
-      <section className="p-6 bg-surface-high border border-border/50 rounded-2xl">
+      {/* ── Quiet hours ── */}
+      <section className="settings-section-divider">
         <div className="flex items-center justify-between mb-4">
-          <div className="flex items-center gap-3">
-            <Moon className="w-5 h-5 text-primary" />
-            <h2 className="text-lg font-semibold text-foreground">Quiet Hours</h2>
-          </div>
+          <h2 className="settings-section-header mb-0">Quiet Hours</h2>
           <Switch checked={quietHours} onCheckedChange={setQuietHours} />
         </div>
         {quietHours && (
@@ -142,20 +128,20 @@ const NotificationsSettings = () => {
         )}
       </section>
 
-      {/* Push */}
-      <section className="p-6 bg-surface-high border border-border/50 rounded-2xl">
+      {/* ── Push ── */}
+      <section className="settings-section-divider">
         <div className="flex items-center justify-between">
           <div>
-            <h2 className="text-lg font-semibold text-foreground">Browser push notifications</h2>
-            <p className="text-sm text-muted-foreground mt-1">Get realtime alerts in your browser.</p>
+            <h2 className="settings-section-header mb-1">Browser push notifications</h2>
+            <p className="text-sm text-muted-foreground">Get realtime alerts in your browser.</p>
           </div>
           <Button variant={pushEnabled ? "outline" : "default"} onClick={requestPush}>
             {pushEnabled ? "Enabled" : "Enable"}
           </Button>
         </div>
       </section>
-    </SettingsLayout>
+    </div>
   );
 };
 
-export default NotificationsSettings;
+export default NotificationsTab;

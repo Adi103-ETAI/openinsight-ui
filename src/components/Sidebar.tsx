@@ -1,9 +1,12 @@
-import { Clock, BookOpen, Settings, LayoutDashboard, PanelLeftClose, PanelLeftOpen, Trash2, X } from "lucide-react";
+import { Clock, BookOpen, Settings, LayoutDashboard, PanelLeftClose, PanelLeftOpen, Trash2, X, LogOut, User } from "lucide-react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useStore } from "@/contexts/StoreContext";
 import { format, formatDistanceToNow, isThisWeek, isToday, isYesterday } from "date-fns";
 import Logo from "@/components/Logo";
 import type { HistoryEntry } from "@/hooks/use-store";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { useToast } from "@/hooks/use-toast";
+import avatar1 from "@/assets/avatar_1.png";
 
 interface SidebarProps {
   isOpen: boolean;
@@ -14,6 +17,7 @@ interface SidebarProps {
 const Sidebar = ({ isOpen, isMobile, toggleSidebar }: SidebarProps) => {
   const location = useLocation();
   const navigate = useNavigate();
+  const { toast } = useToast();
   const { history, removeHistoryEntry, clearHistory } = useStore();
 
   const isActive = (path: string) => location.pathname === path;
@@ -149,18 +153,38 @@ const Sidebar = ({ isOpen, isMobile, toggleSidebar }: SidebarProps) => {
         </div>
       </nav>
 
-      <div className="p-2">
-        <Link
-          title="Settings"
-          to="/settings"
-          onClick={() => isMobile && toggleSidebar()}
-          className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-[14px] font-body font-medium transition-all duration-300 overflow-hidden ${
-            isActive("/settings") && isOpen ? "text-foreground bg-primary/10" : isActive("/settings") ? "text-foreground" : "text-secondary/50 hover:text-foreground hover:bg-muted/40"
-          }`}
-        >
-          <Settings className="w-[18px] h-[18px] shrink-0" />
-          <span className={`whitespace-nowrap transition-all duration-300 ${isOpen ? 'opacity-100 max-w-[200px]' : 'opacity-0 max-w-0'}`}>Settings</span>
-        </Link>
+      <div className="p-2 mt-auto">
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <button
+              className={`w-full flex items-center gap-3 p-2 rounded-lg text-left transition-all duration-300 hover:bg-muted/50 ${isOpen ? '' : 'justify-center'}`}
+            >
+              <div className="w-8 h-8 rounded-full overflow-hidden shrink-0 border border-border/50">
+                <img src={avatar1} alt="User" className="w-full h-full object-cover" />
+              </div>
+              <div className={`flex-1 min-w-0 transition-all duration-300 ${isOpen ? 'opacity-100' : 'opacity-0 w-0 hidden'}`}>
+                <p className="text-[13px] font-medium text-foreground truncate leading-tight">SentArc Labs</p>
+                <p className="text-[11px] text-muted-foreground truncate leading-tight mt-0.5">Free plan</p>
+              </div>
+            </button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" side={isMobile ? "top" : "right"} className="w-56" sideOffset={12}>
+            <div className="px-2 py-1.5 mb-1">
+              <p className="text-sm font-medium text-foreground truncate">SentArc Labs</p>
+              <p className="text-xs text-muted-foreground truncate">sentarc.ai@gmail.com</p>
+            </div>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem onClick={() => { navigate("/settings"); if (isMobile) toggleSidebar(); }} className="cursor-pointer">
+              <Settings className="mr-2 h-4 w-4" />
+              <span>Settings</span>
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem onClick={() => toast({ title: "Logged out", description: "You have been signed out." })} className="cursor-pointer text-destructive focus:bg-destructive/10 focus:text-destructive">
+              <LogOut className="mr-2 h-4 w-4" />
+              <span>Log out</span>
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
       </aside>
     </>

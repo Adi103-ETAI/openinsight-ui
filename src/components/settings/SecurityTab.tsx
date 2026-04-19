@@ -1,13 +1,12 @@
 import { useState } from "react";
-import { Shield, Key, Smartphone, Monitor, Activity, Copy, Check, AlertTriangle } from "lucide-react";
+import { Key, Smartphone, Activity, Copy, Check, AlertTriangle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/hooks/use-toast";
-import SettingsLayout from "@/components/SettingsLayout";
 
-const SecuritySettings = () => {
+const SecurityTab = () => {
   const { toast } = useToast();
   const [currentPwd, setCurrentPwd] = useState("");
   const [newPwd, setNewPwd] = useState("");
@@ -15,12 +14,6 @@ const SecuritySettings = () => {
   const [twoFA, setTwoFA] = useState(false);
   const [showBackupCodes, setShowBackupCodes] = useState(false);
   const [copiedCode, setCopiedCode] = useState<string | null>(null);
-
-  const sessions = [
-    { id: "1", device: "MacBook Pro", browser: "Chrome 120", location: "Mumbai, IN", ip: "103.21.xx.xx", current: true, lastActive: "Active now" },
-    { id: "2", device: "iPhone 15", browser: "Safari 17", location: "Mumbai, IN", ip: "103.21.xx.xx", current: false, lastActive: "2 hours ago" },
-    { id: "3", device: "Windows PC", browser: "Edge 120", location: "Delhi, IN", ip: "157.32.xx.xx", current: false, lastActive: "3 days ago" },
-  ];
 
   const activityLog = [
     { event: "Successful login", time: "Today, 09:24 AM", ip: "103.21.xx.xx", status: "success" },
@@ -69,17 +62,10 @@ const SecuritySettings = () => {
   };
 
   return (
-    <SettingsLayout
-      title="Security"
-      description="Protect your clinical research account with strong authentication and session control."
-      icon={<Shield className="w-6 h-6" />}
-    >
-      {/* Password */}
-      <section className="p-6 bg-surface-high border border-border/50 rounded-2xl">
-        <div className="flex items-center gap-3 mb-5">
-          <Key className="w-5 h-5 text-primary" />
-          <h2 className="text-lg font-semibold text-foreground">Password</h2>
-        </div>
+    <div className="space-y-0">
+      {/* ── Password ── */}
+      <section>
+        <h2 className="settings-section-header">Password</h2>
         <form onSubmit={handlePasswordChange} className="space-y-4 max-w-md">
           <div className="space-y-2">
             <Label htmlFor="current">Current password</Label>
@@ -110,13 +96,10 @@ const SecuritySettings = () => {
         </form>
       </section>
 
-      {/* 2FA */}
-      <section className="p-6 bg-surface-high border border-border/50 rounded-2xl">
+      {/* ── 2FA ── */}
+      <section className="settings-section-divider">
         <div className="flex items-center justify-between mb-4">
-          <div className="flex items-center gap-3">
-            <Smartphone className="w-5 h-5 text-primary" />
-            <h2 className="text-lg font-semibold text-foreground">Two-Factor Authentication</h2>
-          </div>
+          <h2 className="settings-section-header mb-0">Two-Factor Authentication</h2>
           <Switch
             checked={twoFA}
             onCheckedChange={(c) => {
@@ -128,7 +111,7 @@ const SecuritySettings = () => {
         <p className="text-sm text-muted-foreground mb-4">Add an extra layer of security with TOTP-based authentication apps like Authy, 1Password or Google Authenticator.</p>
 
         {twoFA && (
-          <div className="grid sm:grid-cols-[180px_1fr] gap-6 p-4 bg-background/40 border border-border/30 rounded-xl">
+          <div className="grid sm:grid-cols-[180px_1fr] gap-6 p-4 bg-surface-high border border-border/30 rounded-xl">
             <div className="aspect-square bg-foreground rounded-lg flex items-center justify-center p-3">
               <svg viewBox="0 0 100 100" className="w-full h-full text-background">
                 <rect x="0" y="0" width="100" height="100" fill="currentColor" />
@@ -157,11 +140,11 @@ const SecuritySettings = () => {
         )}
       </section>
 
-      {/* Backup codes */}
+      {/* ── Backup codes ── */}
       {twoFA && (
-        <section className="p-6 bg-surface-high border border-border/50 rounded-2xl">
+        <section className="settings-section-divider">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-semibold text-foreground">Backup recovery codes</h2>
+            <h2 className="settings-section-header mb-0">Backup recovery codes</h2>
             <Button variant="outline" size="sm" onClick={() => setShowBackupCodes(!showBackupCodes)}>
               {showBackupCodes ? "Hide" : "Reveal"} codes
             </Button>
@@ -173,7 +156,7 @@ const SecuritySettings = () => {
                 <button
                   key={code}
                   onClick={() => copyCode(code)}
-                  className="flex items-center justify-between gap-2 px-3 py-2 bg-background/40 border border-border/30 rounded-lg font-mono text-xs hover:border-primary/40 transition-colors"
+                  className="flex items-center justify-between gap-2 px-3 py-2 bg-surface-high border border-border/30 rounded-lg font-mono text-xs hover:border-primary/40 transition-colors"
                 >
                   <span>{code}</span>
                   {copiedCode === code ? <Check className="w-3 h-3 text-primary" /> : <Copy className="w-3 h-3 text-muted-foreground" />}
@@ -184,45 +167,12 @@ const SecuritySettings = () => {
         </section>
       )}
 
-      {/* Active sessions */}
-      <section className="p-6 bg-surface-high border border-border/50 rounded-2xl">
-        <div className="flex items-center gap-3 mb-5">
-          <Monitor className="w-5 h-5 text-primary" />
-          <h2 className="text-lg font-semibold text-foreground">Active Sessions</h2>
-        </div>
-        <div className="space-y-2">
-          {sessions.map((s) => (
-            <div key={s.id} className="flex items-center justify-between p-4 bg-background/40 border border-border/30 rounded-xl">
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-2 mb-0.5">
-                  <p className="text-sm font-medium text-foreground">{s.device}</p>
-                  {s.current && <span className="text-[10px] uppercase tracking-wider px-1.5 py-0.5 rounded bg-primary/15 text-primary font-medium">Current</span>}
-                </div>
-                <p className="text-xs text-muted-foreground">{s.browser} • {s.location} • {s.ip}</p>
-                <p className="text-xs text-muted-foreground/70 mt-0.5">{s.lastActive}</p>
-              </div>
-              {!s.current && (
-                <Button variant="ghost" size="sm" className="text-destructive hover:text-destructive" onClick={() => toast({ title: "Session revoked", description: `${s.device} has been logged out.` })}>
-                  Revoke
-                </Button>
-              )}
-            </div>
-          ))}
-        </div>
-        <Button variant="outline" className="mt-4 w-full" onClick={() => toast({ title: "All other sessions revoked", description: "You're now signed in only on this device." })}>
-          Sign out all other sessions
-        </Button>
-      </section>
-
-      {/* Activity log */}
-      <section className="p-6 bg-surface-high border border-border/50 rounded-2xl">
-        <div className="flex items-center gap-3 mb-5">
-          <Activity className="w-5 h-5 text-primary" />
-          <h2 className="text-lg font-semibold text-foreground">Recent Security Activity</h2>
-        </div>
+      {/* ── Activity log ── */}
+      <section className="settings-section-divider">
+        <h2 className="settings-section-header">Recent Security Activity</h2>
         <div className="space-y-1">
           {activityLog.map((a, i) => (
-            <div key={i} className="flex items-center justify-between py-3 border-b border-border/20 last:border-0">
+            <div key={i} className="flex items-center justify-between py-3">
               <div className="flex items-center gap-3">
                 {a.status === "warning" ? (
                   <AlertTriangle className="w-4 h-4 text-orange-500" />
@@ -238,8 +188,8 @@ const SecuritySettings = () => {
           ))}
         </div>
       </section>
-    </SettingsLayout>
+    </div>
   );
 };
 
-export default SecuritySettings;
+export default SecurityTab;
