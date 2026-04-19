@@ -38,6 +38,31 @@ function saveToStorage<T>(key: string, data: T[]) {
   localStorage.setItem(key, JSON.stringify(data));
 }
 
+// Generate a short, human-readable title from the query (and optional answer)
+const STOPWORDS = new Set([
+  "what", "whats", "is", "the", "a", "an", "of", "for", "to", "in", "on", "and",
+  "or", "are", "do", "does", "did", "how", "why", "when", "where", "with", "about",
+  "can", "should", "would", "could", "tell", "me", "please", "i", "we", "you", "us",
+  "my", "your", "their", "his", "her", "this", "that", "these", "those", "be", "been",
+  "from", "as", "by", "at", "it", "its",
+]);
+
+function generateTitle(query: string, _answer?: string): string {
+  const cleaned = query.trim().replace(/[?!.,;:]+$/g, "");
+  if (cleaned.length <= 48) return capitalize(cleaned);
+
+  // Take meaningful words (skip stopwords) up to ~6 words
+  const words = cleaned.split(/\s+/);
+  const significant = words.filter((w) => !STOPWORDS.has(w.toLowerCase()));
+  const pick = (significant.length >= 3 ? significant : words).slice(0, 6).join(" ");
+  const result = pick.length < cleaned.length ? `${pick}…` : pick;
+  return capitalize(result);
+}
+
+function capitalize(s: string): string {
+  return s.charAt(0).toUpperCase() + s.slice(1);
+}
+
 // ─── History Hook ───
 export function useQueryHistory() {
   const [history, setHistory] = useState<HistoryEntry[]>(() => loadFromStorage(HISTORY_KEY, []));
@@ -50,6 +75,7 @@ export function useQueryHistory() {
     const entry: HistoryEntry = {
       id: Date.now().toString(),
       query,
+      title: generateTitle(query, response.answer),
       timestamp: Date.now(),
       sourcesUsed: [...new Set(response.citations.map((c) => c.source_type))],
       model: response.model,
