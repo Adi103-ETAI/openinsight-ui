@@ -3,17 +3,16 @@ import ReactMarkdown from "react-markdown";
 import { Copy, BookOpen, RefreshCw, Share2, Bookmark, Check } from "lucide-react";
 import type { QueryResponse, SourceType } from "@/types/api";
 import { getSourceConfig } from "@/lib/sources";
-import SourcesPanel from "./SourcesPanel";
 import { useToast } from "@/hooks/use-toast";
 import { useStore } from "@/contexts/StoreContext";
 
 interface AnswerCardProps {
   data: QueryResponse;
   onRegenerate?: () => void;
+  onOpenSources?: (citations: Citation[], queryContext: string) => void;
 }
 
-const AnswerCard = ({ data, onRegenerate }: AnswerCardProps) => {
-  const [sourcesOpen, setSourcesOpen] = useState(false);
+const AnswerCard = ({ data, onRegenerate, onOpenSources }: AnswerCardProps) => {
   const [copied, setCopied] = useState(false);
   const { toast } = useToast();
   const { saveToVault, isInVault } = useStore();
@@ -110,7 +109,7 @@ const AnswerCard = ({ data, onRegenerate }: AnswerCardProps) => {
                     className="no-underline align-super"
                     onClick={(e) => {
                       e.preventDefault();
-                      setSourcesOpen(true);
+                      onOpenSources?.(data.citations, data.query);
                     }}
                   >
                     <span className="inline-flex items-center justify-center min-w-[18px] h-[18px] px-[5px] mx-[1px] rounded-full bg-primary/12 text-primary text-[10px] font-semibold leading-none align-super hover:bg-primary/20 hover:text-primary-hover transition-colors cursor-pointer">
@@ -192,7 +191,7 @@ const AnswerCard = ({ data, onRegenerate }: AnswerCardProps) => {
 
         {data.citations.length > 0 && (
           <button
-            onClick={() => setSourcesOpen(true)}
+            onClick={() => onOpenSources?.(data.citations, data.query)}
             className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-[11px] uppercase tracking-[0.05em] font-body font-medium text-primary hover:bg-primary/8 transition-colors"
           >
             <BookOpen className="w-3.5 h-3.5" />
@@ -205,13 +204,6 @@ const AnswerCard = ({ data, onRegenerate }: AnswerCardProps) => {
         </span>
       </div>
 
-      {/* Sources Panel */}
-      <SourcesPanel
-        citations={data.citations}
-        queryContext={data.query}
-        isOpen={sourcesOpen}
-        onClose={() => setSourcesOpen(false)}
-      />
     </div>
   );
 };

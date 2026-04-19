@@ -1,13 +1,15 @@
 import { useState, useCallback, useRef, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
 import QueryZone from "@/components/QueryZone";
 import AnswerCard from "@/components/AnswerCard";
 import LoadingState from "@/components/LoadingState";
 import EmptyState from "@/components/EmptyState";
 import ErrorState from "@/components/ErrorState";
 import Footer from "@/components/Footer";
+import SourcesPanel from "@/components/SourcesPanel";
 import { useStore } from "@/contexts/StoreContext";
-import type { QueryResponse } from "@/types/api";
+import type { QueryResponse, Citation } from "@/types/api";
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL || "http://localhost:8000";
 
@@ -31,6 +33,8 @@ const Index = () => {
   const navigate = useNavigate();
   const handledNavigationRef = useRef<string | null>(null);
   const latestMessageStatus = messages[messages.length - 1]?.status;
+
+  const [activeSources, setActiveSources] = useState<{ citations: Citation[], queryContext: string } | null>(null);
 
   useEffect(() => {
     if (scrollRef.current) {
@@ -154,12 +158,14 @@ const Index = () => {
   const hasMessages = messages.length > 0;
 
   return (
-    <div className="flex flex-col h-full bg-background relative">
-      <div 
-        ref={scrollRef}
-        className="flex-1 overflow-y-auto w-full custom-scrollbar pb-36"
-      >
-        {!hasMessages ? (
+    <div className="flex h-full bg-background overflow-hidden w-full">
+      <PanelGroup direction="horizontal" autoSaveId="sources-panel-layout">
+        <Panel defaultSize={100} minSize={30} className="relative flex flex-col h-full">
+          <div 
+            ref={scrollRef}
+            className="flex-1 overflow-y-auto w-full custom-scrollbar pb-36"
+          >
+            {!hasMessages ? (
           <div className="h-full flex flex-col items-center justify-center -mt-8">
             <QueryZone
               onSubmit={handleQuery}
@@ -195,6 +201,7 @@ const Index = () => {
                       <AnswerCard
                         data={msg.response}
                         onRegenerate={() => handleRetry(msg.id, msg.query)}
+                        onOpenSources={(citations, queryContext) => setActiveSources({ citations, queryContext })}
                       />
                     )}
                     {msg.status === "empty" && (
@@ -222,6 +229,23 @@ const Index = () => {
           </div>
         </div>
       )}
+        </Panel>
+
+        {activeSources && (
+          <>
+            <PanelResizeHandle className="w-1.5 bg-border/20 hover:bg-primary/20 transition-colors cursor-col-resize flex-shrink-0 relative group">
+               <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-1 h-8 bg-border/40 group-hover:bg-primary/40 rounded-full transition-colors" />
+            </PanelResizeHandle>
+            <Panel defaultSize={35} minSize={25} maxSize={50}>
+              <SourcesPanel
+                citations={activeSources.citations}
+                queryContext={activeSources.queryContext}
+                onClose={() => setActiveSources(null)}
+              />
+            </Panel>
+          </>
+        )}
+      </PanelGroup>
     </div>
   );
 };
