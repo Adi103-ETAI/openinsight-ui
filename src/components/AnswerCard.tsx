@@ -12,9 +12,11 @@ interface AnswerCardProps {
   onRegenerate?: () => void;
 }
 
-const AnswerCard = ({ data }: AnswerCardProps) => {
+const AnswerCard = ({ data, onRegenerate }: AnswerCardProps) => {
   const [sourcesOpen, setSourcesOpen] = useState(false);
+  const [copied, setCopied] = useState(false);
   const { toast } = useToast();
+  const { saveToVault, isInVault } = useStore();
 
   const uniqueSources = [...new Set(data.citations.map((c) => c.source_type))] as SourceType[];
 
@@ -26,7 +28,53 @@ const AnswerCard = ({ data }: AnswerCardProps) => {
 
   const handleCopy = () => {
     navigator.clipboard.writeText(data.answer);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 1800);
     toast({ title: "Copied to clipboard" });
+  };
+
+  const handleShare = async () => {
+    const shareText = `${data.query}\n\n${data.answer}`;
+    try {
+      if (navigator.share) {
+        await navigator.share({ title: "OpenInsight Answer", text: shareText });
+      } else {
+        await navigator.clipboard.writeText(shareText);
+        toast({ title: "Share link copied", description: "Answer copied to clipboard." });
+      }
+    } catch {
+      // User canceled share — silently ignore
+    }
+  };
+
+  const firstCitation = data.citations[0];
+  const alreadySaved = firstCitation
+    ? isInVault(firstCitation.title, firstCitation.chunk_text)
+    : false;
+
+  const handleSaveAll = () => {
+    if (!firstCitation) {
+      toast({ title: "Nothing to save", description: "This answer has no citations." });
+      return;
+    }
+    let added = 0;
+    data.citations.forEach((c) => {
+      if (!isInVault(c.title, c.chunk_text)) {
+        saveToVault({
+          title: c.title,
+          sourceType: c.source_type,
+          chunkText: c.chunk_text,
+          score: c.score,
+          queryContext: data.query,
+          mongoId: c.mongo_id,
+        });
+        added++;
+      }
+    });
+    toast({
+      title: added > 0 ? "Saved to Vault" : "Already in Vault",
+      description: added > 0 ? `${added} citation${added > 1 ? "s" : ""} added.` : "These citations are already saved.",
+    });
   };
 
   return (
