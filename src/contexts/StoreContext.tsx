@@ -1,5 +1,12 @@
 import { createContext, useContext, ReactNode } from "react";
-import { useQueryHistory, useVault, type HistoryEntry, type VaultItem } from "@/hooks/use-store";
+import {
+  useQueryHistory,
+  useVault,
+  useCollections,
+  type HistoryEntry,
+  type VaultItem,
+  type Collection,
+} from "@/hooks/use-store";
 import type { QueryResponse } from "@/types/api";
 
 interface StoreContextType {
@@ -10,14 +17,20 @@ interface StoreContextType {
   vaultItems: VaultItem[];
   saveToVault: (item: Omit<VaultItem, "id" | "savedAt">) => VaultItem;
   removeFromVault: (id: string) => void;
+  updateVaultItem: (id: string, patch: Partial<VaultItem>) => void;
   isInVault: (title: string, chunkText: string) => boolean;
+  collections: Collection[];
+  createCollection: (name: string, color?: string) => Collection;
+  renameCollection: (id: string, name: string) => void;
+  deleteCollection: (id: string) => void;
 }
 
 const StoreContext = createContext<StoreContextType | null>(null);
 
 export function StoreProvider({ children }: { children: ReactNode }) {
   const { history, addEntry, removeEntry, clearHistory } = useQueryHistory();
-  const { items, saveToVault, removeFromVault, isInVault } = useVault();
+  const { items, saveToVault, removeFromVault, updateVaultItem, isInVault } = useVault();
+  const { collections, createCollection, renameCollection, deleteCollection } = useCollections();
 
   return (
     <StoreContext.Provider
@@ -29,7 +42,12 @@ export function StoreProvider({ children }: { children: ReactNode }) {
         vaultItems: items,
         saveToVault,
         removeFromVault,
+        updateVaultItem,
         isInVault,
+        collections,
+        createCollection,
+        renameCollection,
+        deleteCollection,
       }}
     >
       {children}
