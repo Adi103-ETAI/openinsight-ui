@@ -20,10 +20,21 @@ export interface VaultItem {
   savedAt: number;
   queryContext: string;
   mongoId?: string;
+  tags?: string[];
+  collectionId?: string | null;
+  notes?: string;
+}
+
+export interface Collection {
+  id: string;
+  name: string;
+  color?: string;
+  createdAt: number;
 }
 
 const HISTORY_KEY = "openinsight_history";
 const VAULT_KEY = "openinsight_vault";
+const COLLECTIONS_KEY = "openinsight_collections";
 
 function loadFromStorage<T>(key: string, fallback: T[]): T[] {
   try {
@@ -106,8 +117,10 @@ export function useVault() {
   const saveToVault = useCallback((item: Omit<VaultItem, "id" | "savedAt">) => {
     const newItem: VaultItem = {
       ...item,
-      id: Date.now().toString(),
+      id: Date.now().toString() + Math.random().toString(36).slice(2, 6),
       savedAt: Date.now(),
+      tags: item.tags ?? [],
+      collectionId: item.collectionId ?? null,
     };
     setItems((prev) => [newItem, ...prev]);
     return newItem;
@@ -117,6 +130,10 @@ export function useVault() {
     setItems((prev) => prev.filter((i) => i.id !== id));
   }, []);
 
+  const updateVaultItem = useCallback((id: string, patch: Partial<VaultItem>) => {
+    setItems((prev) => prev.map((i) => (i.id === id ? { ...i, ...patch } : i)));
+  }, []);
+
   const isInVault = useCallback(
     (title: string, chunkText: string) => {
       return items.some((i) => i.title === title && i.chunkText === chunkText);
@@ -124,5 +141,37 @@ export function useVault() {
     [items]
   );
 
-  return { items, saveToVault, removeFromVault, isInVault };
+  return { items, saveToVault, removeFromVault, updateVaultItem, isInVault };
+}
+
+// ─── Collections Hook ───
+export function useCollections() {
+  const [collections, setCollections] = useState<Collection[]>(() =>
+    loadFromStorage(COLLECTIONS_KEY, [])
+  );
+
+  useEffect(() => {
+    saveToStorage(COLLECTIONS_KEY, collections);
+  }, [collections]);
+
+  const createCollection = useCallback((name: string, color?: string) => {
+    const newCollection: Collection = {
+      id: Date.now().toString() + Math.random().toString(36).slice(2, 6),
+      name: name.trim(),
+      color,
+      createdAt: Date.now(),
+    };
+    setCollections((prev) => [newCollection, ...prev]);
+    return newCollection;
+  }, []);
+
+  const renameCollection = useCallback((id: string, name: string) => {
+    setCollections((prev) => prev.map((c) => (c.id === id ? { ...c, name: name.trim() } : c)));
+  }, []);
+
+  const deleteCollection = useCallback((id: string) => {
+    setCollections((prev) => prev.filter((c) => c.id !== id));
+  }, []);
+
+  return { collections, createCollection, renameCollection, deleteCollection };
 }
