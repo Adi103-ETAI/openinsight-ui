@@ -20,10 +20,21 @@ export interface VaultItem {
   savedAt: number;
   queryContext: string;
   mongoId?: string;
+  tags?: string[];
+  collectionId?: string | null;
+  notes?: string;
+}
+
+export interface Collection {
+  id: string;
+  name: string;
+  color?: string;
+  createdAt: number;
 }
 
 const HISTORY_KEY = "openinsight_history";
 const VAULT_KEY = "openinsight_vault";
+const COLLECTIONS_KEY = "openinsight_collections";
 
 function loadFromStorage<T>(key: string, fallback: T[]): T[] {
   try {
