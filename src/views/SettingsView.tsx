@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useTransition } from "react";
-import { usePathname, useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
 import {
   Settings2, User, Shield, Bell, CreditCard, Lock,
 } from "lucide-react";
@@ -42,21 +42,18 @@ function resolveTab(pathname: string): TabId {
 
 const SettingsView = () => {
   const pathname = usePathname();
-  const router = useRouter();
-  const [isPending, startTransition] = useTransition();
-  const activeTab = resolveTab(pathname || "/settings");
+  const [activeTab, setActiveTab] = useState<TabId>(resolveTab(pathname || "/settings"));
   const isInitializing = false;
 
-  // Prefetch tab routes so switching feels instant after first settings load.
+  // Sync state if pathname changes from outside (e.g., back/forward navigation)
   useEffect(() => {
-    TABS.forEach((tab) => router.prefetch(tab.path));
-  }, [router]);
+    setActiveTab(resolveTab(pathname || "/settings"));
+  }, [pathname]);
 
   const handleTabChange = (tab: typeof TABS[number]) => {
-    if (tab.path === pathname) return;
-    startTransition(() => {
-      router.replace(tab.path);
-    });
+    if (tab.id === activeTab) return;
+    setActiveTab(tab.id);
+    window.history.pushState(null, "", tab.path);
   };
 
   const ActiveComponent = TAB_COMPONENTS[activeTab];
@@ -70,7 +67,7 @@ const SettingsView = () => {
         <div className="flex h-full">
           <div className="w-56 shrink-0 p-6 space-y-3">
             <div className="w-24 h-8 rounded-md skeleton-shimmer mb-6" />
-            {Array.from({ length: 7 }).map((_, i) => (
+            {Array.from({ length: TABS.length }).map((_, i) => (
               <div key={i} className="h-9 rounded-lg skeleton-shimmer" />
             ))}
           </div>
@@ -107,7 +104,7 @@ const SettingsView = () => {
         <main className="settings-content custom-scrollbar">
           <div
             key={activeTab}
-            className={`max-w-3xl animate-fade-up transition-opacity duration-150 ${isPending ? "opacity-80" : "opacity-100"}`}
+            className={`max-w-3xl animate-fade-up transition-opacity duration-150 opacity-100`}
           >
             <ActiveComponent />
           </div>
