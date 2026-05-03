@@ -39,7 +39,7 @@ const AccountTab = () => {
           {/* Log out */}
           <div className="settings-row">
             <div>
-              <p className="text-sm font-medium text-primary">Log out of all devices</p>
+              <p className="text-sm font-medium text-foreground">Log out of all devices</p>
             </div>
             <Button
               variant="outline"
@@ -53,7 +53,7 @@ const AccountTab = () => {
           {/* Delete account */}
           <div className="settings-row">
             <div>
-              <p className="text-sm font-medium text-primary">Delete your account</p>
+              <p className="text-sm font-medium text-foreground">Delete your account</p>
             </div>
             <AlertDialog>
               <AlertDialogTrigger asChild>
@@ -87,7 +87,7 @@ const AccountTab = () => {
           {/* Organization ID */}
           <div className="settings-row">
             <div>
-              <p className="text-sm font-medium text-primary">Organization ID</p>
+              <p className="text-sm font-medium text-foreground">Organization ID</p>
             </div>
             <button
               onClick={copyOrgId}
@@ -120,7 +120,7 @@ const AccountTab = () => {
                 <tr key={s.id} className="border-b border-border/15 last:border-0">
                   <td className="py-3.5 pr-4">
                     <div className="flex items-center gap-2">
-                      <span className="text-sm font-medium text-primary">{s.device}</span>
+                      <span className="text-sm font-medium text-foreground">{s.device}</span>
                       {s.current && (
                         <span className="text-[10px] uppercase tracking-wider px-1.5 py-0.5 rounded bg-muted text-muted-foreground font-medium">
                           Current
