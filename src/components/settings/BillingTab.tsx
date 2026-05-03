@@ -46,10 +46,10 @@ const BillingTab = () => {
             </div>
           </div>
           <div className="flex gap-2">
-            <Button variant="outline" onClick={() => toast({ title: "Plan paused", description: "Your subscription will pause at the end of the cycle." })}>
+            <Button variant="outline" size="sm" onClick={() => toast({ title: "Plan paused", description: "Your subscription will pause at the end of the cycle." })}>
               Cancel
             </Button>
-            <Button onClick={() => toast({ title: "Upgrade", description: "Contact sales for Enterprise pricing." })}>
+            <Button size="sm" onClick={() => toast({ title: "Upgrade", description: "Contact sales for Enterprise pricing." })}>
               Upgrade
             </Button>
           </div>
