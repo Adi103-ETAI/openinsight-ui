@@ -112,6 +112,7 @@ const BillingTab = () => {
               </ul>
               <Button
                 variant={plan.current ? "outline" : "default"}
+                size="sm"
                 disabled={plan.current}
                 className="w-full"
                 onClick={() => toast({ title: `Switch to ${plan.name}`, description: "Plan change initiated." })}
