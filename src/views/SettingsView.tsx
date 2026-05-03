@@ -81,7 +81,7 @@ const SettingsView = () => {
     >
       <div className="flex h-full animate-fade-up">
         <aside className="settings-sidebar custom-scrollbar">
-          <h1 className="text-2xl font-heading font-bold tracking-tight text-foreground px-4 mb-6">
+          <h1 className="text-base font-heading font-semibold tracking-tight text-foreground px-3 mb-4 uppercase opacity-60">
             Settings
           </h1>
           <nav className="space-y-0.5 flex-1">

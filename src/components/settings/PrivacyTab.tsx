@@ -34,25 +34,13 @@ const PrivacyTab = () => {
     <div className="space-y-0">
       {/* ── Privacy header ── */}
       <section>
-        <div className="flex items-center gap-3 mb-3">
-          <div className="p-2 bg-muted rounded-lg">
-            <EyeOff className="w-5 h-5 text-muted-foreground" />
-          </div>
-          <div>
-            <h2 className="settings-section-header mb-0">Privacy</h2>
-            <p className="text-sm text-muted-foreground">OpenInsight believes in transparent data practices</p>
-          </div>
-        </div>
-        <p className="text-sm text-muted-foreground mb-4">
-          Learn how your information is protected when using OpenInsight products.
+        <h2 className="settings-section-header">Privacy</h2>
+        <p className="text-sm text-muted-foreground mb-3">
+          OpenInsight believes in transparent data practices. Learn how your information is protected when using our products.
         </p>
-        <div className="space-y-1">
-          <button className="text-sm text-primary hover:underline flex items-center gap-1">
-            How we protect your data <span className="text-xs">›</span>
-          </button>
-          <button className="text-sm text-primary hover:underline flex items-center gap-1">
-            How we use your data <span className="text-xs">›</span>
-          </button>
+        <div className="flex flex-wrap gap-x-5 gap-y-1">
+          <button className="text-sm text-primary hover:underline">How we protect your data ›</button>
+          <button className="text-sm text-primary hover:underline">How we use your data ›</button>
         </div>
       </section>
 

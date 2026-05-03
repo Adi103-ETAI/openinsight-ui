@@ -34,24 +34,24 @@ const BillingTab = () => {
       {/* ── Current plan ── */}
       <section>
         <h2 className="settings-section-header">Current Plan</h2>
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 bg-surface-high border border-border/30 rounded-xl">
-          <div className="flex items-center gap-4">
-            <div className="p-3 bg-primary/10 rounded-xl">
-              <Zap className="w-6 h-6 text-primary" />
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 bg-surface-high border border-border/30 rounded-xl">
+          <div className="flex items-center gap-3">
+            <div className="p-2.5 bg-primary/10 rounded-lg">
+              <Zap className="w-5 h-5 text-primary" />
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <h3 className="text-xl font-heading font-semibold text-foreground">Pro Plan</h3>
+                <h3 className="text-base font-heading font-semibold text-foreground">Pro Plan</h3>
                 <span className="text-[10px] uppercase tracking-wider px-1.5 py-0.5 rounded bg-primary/15 text-primary font-medium">Active</span>
               </div>
-              <p className="text-sm text-muted-foreground">$29/month • Renews May 1, 2026</p>
+              <p className="text-xs text-muted-foreground mt-0.5">$29/month • Renews May 1, 2026</p>
             </div>
           </div>
           <div className="flex gap-2">
-            <Button variant="outline" onClick={() => toast({ title: "Plan paused", description: "Your subscription will pause at the end of the cycle." })}>
+            <Button variant="outline" size="sm" onClick={() => toast({ title: "Plan paused", description: "Your subscription will pause at the end of the cycle." })}>
               Cancel
             </Button>
-            <Button onClick={() => toast({ title: "Upgrade", description: "Contact sales for Enterprise pricing." })}>
+            <Button size="sm" onClick={() => toast({ title: "Upgrade", description: "Contact sales for Enterprise pricing." })}>
               Upgrade
             </Button>
           </div>
@@ -99,10 +99,10 @@ const BillingTab = () => {
                   {plan.badge}
                 </span>
               )}
-              <h3 className="font-heading font-semibold text-foreground">{plan.name}</h3>
-              <p className="mt-1 mb-4">
-                <span className="text-2xl font-bold text-foreground">{plan.price}</span>
-                {plan.per && <span className="text-sm text-muted-foreground">{plan.per}</span>}
+              <h3 className="text-sm font-heading font-semibold text-foreground">{plan.name}</h3>
+              <p className="mt-1 mb-4 flex items-baseline gap-1">
+                <span className="text-xl font-bold text-foreground">{plan.price}</span>
+                {plan.per && <span className="text-xs text-muted-foreground">{plan.per}</span>}
               </p>
               <ul className="space-y-2 mb-5">
                 {plan.features.map((f) => (
@@ -114,6 +114,7 @@ const BillingTab = () => {
               </ul>
               <Button
                 variant={plan.current ? "outline" : "default"}
+                size="sm"
                 disabled={plan.current}
                 className="w-full"
                 onClick={() => toast({ title: `Switch to ${plan.name}`, description: "Plan change initiated." })}
