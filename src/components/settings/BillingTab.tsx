@@ -32,17 +32,17 @@ const BillingTab = () => {
       {/* ── Current plan ── */}
       <section>
         <h2 className="settings-section-header">Current Plan</h2>
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 bg-surface-high border border-border/30 rounded-xl">
-          <div className="flex items-center gap-4">
-            <div className="p-3 bg-primary/10 rounded-xl">
-              <Zap className="w-6 h-6 text-primary" />
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 bg-surface-high border border-border/30 rounded-xl">
+          <div className="flex items-center gap-3">
+            <div className="p-2.5 bg-primary/10 rounded-lg">
+              <Zap className="w-5 h-5 text-primary" />
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <h3 className="text-xl font-heading font-semibold text-foreground">Pro Plan</h3>
+                <h3 className="text-base font-heading font-semibold text-foreground">Pro Plan</h3>
                 <span className="text-[10px] uppercase tracking-wider px-1.5 py-0.5 rounded bg-primary/15 text-primary font-medium">Active</span>
               </div>
-              <p className="text-sm text-muted-foreground">$29/month • Renews May 1, 2026</p>
+              <p className="text-xs text-muted-foreground mt-0.5">$29/month • Renews May 1, 2026</p>
             </div>
           </div>
           <div className="flex gap-2">
