@@ -97,10 +97,10 @@ const BillingTab = () => {
                   {plan.badge}
                 </span>
               )}
-              <h3 className="font-heading font-semibold text-foreground">{plan.name}</h3>
-              <p className="mt-1 mb-4">
-                <span className="text-2xl font-bold text-foreground">{plan.price}</span>
-                {plan.per && <span className="text-sm text-muted-foreground">{plan.per}</span>}
+              <h3 className="text-sm font-heading font-semibold text-foreground">{plan.name}</h3>
+              <p className="mt-1 mb-4 flex items-baseline gap-1">
+                <span className="text-xl font-bold text-foreground">{plan.price}</span>
+                {plan.per && <span className="text-xs text-muted-foreground">{plan.per}</span>}
               </p>
               <ul className="space-y-2 mb-5">
                 {plan.features.map((f) => (
