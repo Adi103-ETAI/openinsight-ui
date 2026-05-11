@@ -79,12 +79,12 @@ const SettingsView = () => {
         </div>
       }
     >
-      <div className="flex h-full animate-fade-up">
+      <div className="flex h-full w-full animate-fade-up">
         <aside className="settings-sidebar custom-scrollbar">
           <h1 className="text-base font-heading font-semibold tracking-tight text-foreground px-3 mb-4 uppercase opacity-60">
             Settings
           </h1>
-          <nav className="space-y-0.5 flex-1">
+          <nav className="space-y-0.5">
             {TABS.map((tab) => {
               const isActive = activeTab === tab.id;
               return (
@@ -102,10 +102,7 @@ const SettingsView = () => {
         </aside>
 
         <main className="settings-content custom-scrollbar">
-          <div
-            key={activeTab}
-            className={`max-w-3xl animate-fade-up transition-opacity duration-150 opacity-100`}
-          >
+          <div key={activeTab} className={`w-full animate-fade-up transition-opacity duration-150 opacity-100`}>
             <ActiveComponent />
           </div>
         </main>

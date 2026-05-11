@@ -164,18 +164,49 @@
 
 /* Custom scrollbar - subtle, parchment-friendly */
 ::-webkit-scrollbar {
-  display: none;
+  width: 6px;
+  height: 6px;
 }
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: hsl(var(--border));
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--muted-foreground));
+}
+
 html, body {
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
+
 .custom-scrollbar {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
+  scrollbar-width: thin;
+  scrollbar-color: hsl(var(--border)) transparent;
 }
+
 .custom-scrollbar::-webkit-scrollbar {
-  display: none;
+  width: 6px;
+  height: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: hsl(var(--border));
+  border-radius: 3px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--muted-foreground));
 }
 
 /* Scroll reveal animation */
@@ -231,22 +262,98 @@ html, body {
 .settings-sidebar {
   width: 220px;
   flex-shrink: 0;
-  border-right: 1px solid hsl(var(--border) / 0.3);
+  border-right: 1px solid hsl(var(--border) / 0.4);
   padding: 1.5rem 0.75rem;
   overflow-y: auto;
   background: hsl(var(--background));
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
 }
 
 .settings-content {
   flex: 1;
   overflow-y: auto;
   padding: 1.5rem 2rem 3rem;
+  min-height: 0;
+  scroll-behavior: smooth;
 }
 
 @media (min-width: 1024px) {
   .settings-content {
     padding: 1.5rem 2.5rem 3rem;
   }
+}
+
+/* Vault Layout Improvements */
+.vault-sidebar {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  overflow: hidden;
+  width: 100%;
+  padding: 0;
+}
+
+@media (min-width: 1024px) {
+  .vault-sidebar {
+    width: 200px;
+    shrink: 0;
+  }
+}
+
+.vault-sidebar-scroll {
+  overflow-y: auto;
+  overflow-x: hidden;
+  scroll-behavior: smooth;
+  flex: 1;
+  min-height: 0;
+  scrollbar-width: thin;
+  scrollbar-color: hsl(var(--border)) transparent;
+}
+
+.vault-sidebar-scroll::-webkit-scrollbar {
+  width: 5px;
+}
+
+.vault-sidebar-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.vault-sidebar-scroll::-webkit-scrollbar-thumb {
+  background: hsl(var(--border) / 0.6);
+  border-radius: 2.5px;
+}
+
+.vault-sidebar-scroll::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--muted-foreground) / 0.5);
+}
+
+.vault-content-scroll {
+  overflow-y: auto;
+  overflow-x: hidden;
+  scroll-behavior: smooth;
+  flex: 1;
+  min-height: 0;
+  scrollbar-width: thin;
+  scrollbar-color: hsl(var(--border)) transparent;
+}
+
+.vault-content-scroll::-webkit-scrollbar {
+  width: 5px;
+}
+
+.vault-content-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.vault-content-scroll::-webkit-scrollbar-thumb {
+  background: hsl(var(--border) / 0.6);
+  border-radius: 2.5px;
+}
+
+.vault-content-scroll::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--muted-foreground) / 0.5);
 }
 
 /* Nav items */

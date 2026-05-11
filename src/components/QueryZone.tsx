@@ -36,10 +36,12 @@ const getGreeting = () => {
 
 const QueryZone = ({ onSubmit, isLoading, hasResults }: QueryZoneProps) => {
   const [query, setQuery] = useState("");
-  const [greeting, setGreeting] = useState(() => getGreeting());
+  const [greeting, setGreeting] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
+    // Set greeting on client after hydration
+    setGreeting(getGreeting());
     const interval = setInterval(() => setGreeting(getGreeting()), 60000);
     return () => clearInterval(interval);
   }, []);
