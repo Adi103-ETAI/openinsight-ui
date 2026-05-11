@@ -1,5 +1,8 @@
+"use client";
+
 import { useState } from "react";
 import { HelpCircle, Keyboard, BookOpen, MessageSquare, Sparkles, Search, ArrowLeft } from "lucide-react";
+import AppLink from "@/components/AppLink";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -8,9 +11,8 @@ import {
   Accordion, AccordionContent, AccordionItem, AccordionTrigger,
 } from "@/components/ui/accordion";
 import { useToast } from "@/hooks/use-toast";
-import { Link } from "react-router-dom";
 
-const Help = () => {
+const HelpView = () => {
   const { toast } = useToast();
   const [supportSubject, setSupportSubject] = useState("");
   const [supportBody, setSupportBody] = useState("");
@@ -50,13 +52,13 @@ const Help = () => {
 
   return (
     <div className="w-full max-w-4xl xl:max-w-5xl mx-auto py-8 sm:py-12 px-4 sm:px-6 lg:px-8 animate-fade-up">
-      <Link
-        to="/settings"
+      <AppLink
+        href="/settings"
         className="inline-flex items-center gap-1.5 text-xs font-body text-muted-foreground hover:text-foreground transition-colors mb-4"
       >
         <ArrowLeft className="w-3.5 h-3.5" />
         Back to Settings
-      </Link>
+      </AppLink>
 
       <div className="flex items-start gap-3 mb-8">
         <div className="p-3 bg-primary/10 rounded-xl text-primary"><HelpCircle className="w-6 h-6" /></div>
@@ -69,7 +71,6 @@ const Help = () => {
       </div>
 
       <div className="space-y-6">
-        {/* Quick start */}
         <section className="p-6 bg-surface-high border border-border/50 rounded-2xl">
           <div className="flex items-center gap-3 mb-4">
             <Sparkles className="w-5 h-5 text-primary" />
@@ -90,7 +91,6 @@ const Help = () => {
           </div>
         </section>
 
-        {/* Shortcuts */}
         <section className="p-6 bg-surface-high border border-border/50 rounded-2xl">
           <div className="flex items-center gap-3 mb-4">
             <Keyboard className="w-5 h-5 text-primary" />
@@ -110,7 +110,6 @@ const Help = () => {
           </div>
         </section>
 
-        {/* FAQ */}
         <section className="p-6 bg-surface-high border border-border/50 rounded-2xl">
           <div className="flex items-center gap-3 mb-4">
             <BookOpen className="w-5 h-5 text-primary" />
@@ -134,7 +133,6 @@ const Help = () => {
           )}
         </section>
 
-        {/* Changelog */}
         <section className="p-6 bg-surface-high border border-border/50 rounded-2xl">
           <h2 className="text-lg font-semibold text-foreground mb-4">What's New</h2>
           <div className="space-y-5">
@@ -154,7 +152,6 @@ const Help = () => {
           </div>
         </section>
 
-        {/* Contact */}
         <section className="p-6 bg-surface-high border border-border/50 rounded-2xl">
           <div className="flex items-center gap-3 mb-4">
             <MessageSquare className="w-5 h-5 text-primary" />
@@ -177,4 +174,4 @@ const Help = () => {
   );
 };
 
-export default Help;
+export default HelpView;

@@ -1,3 +1,5 @@
+"use client";
+
 import { CreditCard, Check, Download, Zap, TrendingUp, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";

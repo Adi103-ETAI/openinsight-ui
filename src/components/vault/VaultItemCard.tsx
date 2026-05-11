@@ -1,3 +1,5 @@
+"use client";
+
 import { useState } from "react";
 import { ExternalLink, Trash2, ChevronDown, Tag, X, Plus, FolderInput } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
@@ -108,10 +110,10 @@ const VaultItemCard = ({ item, collections, onRemove, onUpdate }: VaultItemCardP
       </div>
 
       {/* Query context */}
-      <p className="text-[11px] text-muted-foreground/70 mb-2">From query: "{item.queryContext}"</p>
+      <p className="text-[11px] text-muted-foreground/70 mb-2">From query: &quot;{item.queryContext}&quot;</p>
 
       {/* Passage */}
-      <p className="text-xs text-muted-foreground leading-relaxed">"{displayText}"</p>
+      <p className="text-xs text-muted-foreground leading-relaxed">&quot;{displayText}&quot;</p>
 
       {truncated && (
         <button

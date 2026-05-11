@@ -1,3 +1,5 @@
+"use client";
+
 import { useState, useRef, useEffect } from "react";
 import { Loader2, Search, Lightbulb, ArrowRightLeft, BookOpen, ArrowUp } from "lucide-react";
 import Logo from "./Logo";
@@ -16,7 +18,9 @@ interface QueryZoneProps {
 
 const getGreeting = () => {
   const hour = new Date().getHours();
-  const name = (localStorage.getItem("openinsight_display_name") || "").trim();
+  const name = typeof window === "undefined"
+    ? ""
+    : (window.localStorage.getItem("openinsight_display_name") || "").trim();
   const suffix = name ? `, ${name}` : "";
 
   let salutation: string;
@@ -32,10 +36,12 @@ const getGreeting = () => {
 
 const QueryZone = ({ onSubmit, isLoading, hasResults }: QueryZoneProps) => {
   const [query, setQuery] = useState("");
-  const [greeting, setGreeting] = useState(getGreeting());
+  const [greeting, setGreeting] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
+    // Set greeting on client after hydration
+    setGreeting(getGreeting());
     const interval = setInterval(() => setGreeting(getGreeting()), 60000);
     return () => clearInterval(interval);
   }, []);

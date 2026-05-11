@@ -1,3 +1,5 @@
+"use client";
+
 import { useState } from "react";
 import { Plus, Folder, Trash2, Pencil, Check, X, Inbox, BookOpen } from "lucide-react";
 import type { Collection } from "@/hooks/use-store";
@@ -62,33 +64,34 @@ const CollectionsSidebar = ({
     children?: React.ReactNode;
   }) => (
     <div
-      className={`group flex items-center gap-2 px-3 py-2 rounded-lg cursor-pointer transition-colors ${
+      className={`group flex items-center gap-1.5 px-2 py-1.5 rounded-lg cursor-pointer transition-colors ${
         active ? "bg-primary/10 text-primary" : "hover:bg-muted text-foreground"
       }`}
       onClick={onClick}
     >
-      <span className="shrink-0">{icon}</span>
-      <span className="flex-1 text-sm font-medium truncate">{label}</span>
-      <span className="text-[11px] text-muted-foreground tabular-nums">{count}</span>
+      <span className="shrink-0 flex items-center justify-center">{icon}</span>
+      <span className="flex-1 text-xs font-medium truncate">{label}</span>
+      <span className="text-[10px] text-muted-foreground tabular-nums shrink-0">{count}</span>
       {children}
     </div>
   );
 
   return (
-    <aside className="w-full lg:w-60 shrink-0">
+    <aside className="vault-sidebar">
       <div className="flex items-center justify-between mb-3 px-1">
         <h2 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Collections</h2>
         <button
           onClick={() => setCreating((v) => !v)}
-          className="text-muted-foreground hover:text-primary transition-colors"
+          className="text-muted-foreground hover:text-primary transition-colors shrink-0"
           title="New collection"
           aria-label="New collection"
         >
-          <Plus className="w-4 h-4" />
+          <Plus className="w-3.5 h-3.5" />
         </button>
       </div>
 
-      <div className="space-y-1">
+      <div className="vault-sidebar-scroll">
+        <div className="space-y-0.5">
         <ItemRow
           active={selectedId === "all"}
           icon={<BookOpen className="w-4 h-4" />}
@@ -208,6 +211,7 @@ const CollectionsSidebar = ({
             </div>
           );
         })}
+        </div>
       </div>
     </aside>
   );

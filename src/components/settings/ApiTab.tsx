@@ -1,3 +1,5 @@
+"use client";
+
 import { useState } from "react";
 import { Plus, Copy, Check, Trash2, Webhook, ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";

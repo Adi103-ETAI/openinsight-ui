@@ -1,10 +1,11 @@
+"use client";
+
 import { useEffect, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { navigate, usePathname } from "@/lib/router";
 import {
-  Settings2, User, Shield, Bell, CreditCard, Lock, Code2,
+  Settings2, User, Shield, Bell, CreditCard, Lock,
 } from "lucide-react";
 import { Skeleton as BoneyardSkeleton } from "boneyard-js/react";
-import { useToast } from "@/hooks/use-toast";
 
 import GeneralTab from "@/components/settings/GeneralTab";
 import AccountTab from "@/components/settings/AccountTab";
@@ -12,7 +13,6 @@ import SecurityTab from "@/components/settings/SecurityTab";
 import NotificationsTab from "@/components/settings/NotificationsTab";
 import BillingTab from "@/components/settings/BillingTab";
 import PrivacyTab from "@/components/settings/PrivacyTab";
-import ApiTab from "@/components/settings/ApiTab";
 
 const TABS = [
   { id: "general", label: "General", icon: Settings2, path: "/settings" },
@@ -40,26 +40,20 @@ function resolveTab(pathname: string): TabId {
   return match ? match.id : "general";
 }
 
-const Settings = () => {
-  const location = useLocation();
-  const navigate = useNavigate();
-  const { toast } = useToast();
-  const [activeTab, setActiveTab] = useState<TabId>(() => resolveTab(location.pathname));
-  const [isInitializing, setIsInitializing] = useState(true);
+const SettingsView = () => {
+  const pathname = usePathname();
+  const [activeTab, setActiveTab] = useState<TabId>(resolveTab(pathname || "/settings"));
+  const isInitializing = false;
 
-  // Sync tab with URL
+  // Sync state if pathname changes from outside (e.g., back/forward navigation)
   useEffect(() => {
-    setActiveTab(resolveTab(location.pathname));
-  }, [location.pathname]);
-
-  useEffect(() => {
-    const timer = setTimeout(() => setIsInitializing(false), 300);
-    return () => clearTimeout(timer);
-  }, []);
+    setActiveTab(resolveTab(pathname || "/settings"));
+  }, [pathname]);
 
   const handleTabChange = (tab: typeof TABS[number]) => {
+    if (tab.id === activeTab) return;
     setActiveTab(tab.id);
-    navigate(tab.path, { replace: true });
+    navigate(tab.path);
   };
 
   const ActiveComponent = TAB_COMPONENTS[activeTab];
@@ -73,7 +67,7 @@ const Settings = () => {
         <div className="flex h-full">
           <div className="w-56 shrink-0 p-6 space-y-3">
             <div className="w-24 h-8 rounded-md skeleton-shimmer mb-6" />
-            {Array.from({ length: 7 }).map((_, i) => (
+            {Array.from({ length: TABS.length }).map((_, i) => (
               <div key={i} className="h-9 rounded-lg skeleton-shimmer" />
             ))}
           </div>
@@ -85,18 +79,18 @@ const Settings = () => {
         </div>
       }
     >
-      <div className="flex h-full animate-fade-up">
-        {/* ── Sidebar Navigation ── */}
+      <div className="flex h-full w-full animate-fade-up">
         <aside className="settings-sidebar custom-scrollbar">
           <h1 className="text-base font-heading font-semibold tracking-tight text-foreground px-3 mb-4 uppercase opacity-60">
             Settings
           </h1>
-          <nav className="space-y-0.5 flex-1">
+          <nav className="space-y-0.5">
             {TABS.map((tab) => {
               const isActive = activeTab === tab.id;
               return (
                 <button
                   key={tab.id}
+                  type="button"
                   onClick={() => handleTabChange(tab)}
                   className={`settings-nav-item ${isActive ? "active" : ""}`}
                 >
@@ -107,9 +101,8 @@ const Settings = () => {
           </nav>
         </aside>
 
-        {/* ── Content Area ── */}
-        <main className="settings-content custom-scrollbar" key={activeTab}>
-          <div className="max-w-3xl">
+        <main className="settings-content custom-scrollbar">
+          <div key={activeTab} className={`w-full animate-fade-up transition-opacity duration-150 opacity-100`}>
             <ActiveComponent />
           </div>
         </main>
@@ -118,4 +111,4 @@ const Settings = () => {
   );
 };
 
-export default Settings;
+export default SettingsView;

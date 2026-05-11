@@ -1,12 +1,14 @@
-import { useLocation } from "react-router-dom";
-import { useEffect } from "react";
+"use client";
 
-const NotFound = () => {
-  const location = useLocation();
+import { useEffect } from "react";
+import { usePathname } from "@/lib/router";
+
+const NotFoundView = () => {
+  const pathname = usePathname();
 
   useEffect(() => {
-    console.error("404 Error: User attempted to access non-existent route:", location.pathname);
-  }, [location.pathname]);
+    console.error("404 Error: User attempted to access non-existent route:", pathname);
+  }, [pathname]);
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-muted">
@@ -21,4 +23,4 @@ const NotFound = () => {
   );
 };
 
-export default NotFound;
+export default NotFoundView;
