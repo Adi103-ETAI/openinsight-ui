@@ -1,11 +1,11 @@
 "use client";
 
-import Link, { LinkProps } from "next/link";
-import { usePathname } from "next/navigation";
+import AppLink from "@/components/AppLink";
+import { usePathname } from "@/lib/router";
 import { AnchorHTMLAttributes, forwardRef } from "react";
 import { cn } from "@/lib/utils";
 
-interface NavLinkCompatProps extends Omit<AnchorHTMLAttributes<HTMLAnchorElement>, "href" | "className">, Omit<LinkProps, "href"> {
+interface NavLinkCompatProps extends Omit<AnchorHTMLAttributes<HTMLAnchorElement>, "href" | "className"> {
   href: string;
   className?: string;
   activeClassName?: string;
@@ -18,7 +18,7 @@ const NavLink = forwardRef<HTMLAnchorElement, NavLinkCompatProps>(
     const isActive = pathname === hrefString;
 
     return (
-      <Link
+      <AppLink
         ref={ref}
         href={href}
         className={cn(className, isActive && activeClassName)}

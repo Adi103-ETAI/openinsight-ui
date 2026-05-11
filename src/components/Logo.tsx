@@ -1,11 +1,14 @@
 "use client";
 
-import type { StaticImageData } from "next/image";
 import React, { useEffect, useState } from "react";
 import homeDarkLogo from "@/assets/DarkGrey.png";
 import homeLightLogo from "@/assets/LightYellow.png";
 import headerDarkLogo from "@/assets/Head-Side.png";
 import headerLightLogo from "@/assets/Side-Head.png";
+
+type StaticImageData = {
+  src: string;
+};
 
 export type LogoStyle = "classic" | "modern";
 

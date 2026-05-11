@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { HelpCircle, Keyboard, BookOpen, MessageSquare, Sparkles, Search, ArrowLeft } from "lucide-react";
-import Link from "next/link";
+import AppLink from "@/components/AppLink";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -52,13 +52,13 @@ const HelpView = () => {
 
   return (
     <div className="w-full max-w-4xl xl:max-w-5xl mx-auto py-8 sm:py-12 px-4 sm:px-6 lg:px-8 animate-fade-up">
-      <Link
+      <AppLink
         href="/settings"
         className="inline-flex items-center gap-1.5 text-xs font-body text-muted-foreground hover:text-foreground transition-colors mb-4"
       >
         <ArrowLeft className="w-3.5 h-3.5" />
         Back to Settings
-      </Link>
+      </AppLink>
 
       <div className="flex items-start gap-3 mb-8">
         <div className="p-3 bg-primary/10 rounded-xl text-primary"><HelpCircle className="w-6 h-6" /></div>

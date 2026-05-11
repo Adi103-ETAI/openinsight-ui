@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { usePathname } from "next/navigation";
+import { navigate, usePathname } from "@/lib/router";
 import {
   Settings2, User, Shield, Bell, CreditCard, Lock,
 } from "lucide-react";
@@ -53,7 +53,7 @@ const SettingsView = () => {
   const handleTabChange = (tab: typeof TABS[number]) => {
     if (tab.id === activeTab) return;
     setActiveTab(tab.id);
-    window.history.pushState(null, "", tab.path);
+    navigate(tab.path);
   };
 
   const ActiveComponent = TAB_COMPONENTS[activeTab];

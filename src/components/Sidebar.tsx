@@ -1,8 +1,8 @@
 "use client";
 
 import { Clock, BookOpen, Settings, LayoutDashboard, PanelLeftClose, PanelLeftOpen, Trash2, X, LogOut, User } from "lucide-react";
-import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import AppLink from "@/components/AppLink";
+import { usePathname, useRouter } from "@/lib/router";
 import { useStore } from "@/contexts/StoreContext";
 import { format, formatDistanceToNow, isThisWeek, isToday, isYesterday } from "date-fns";
 import Logo from "@/components/Logo";
@@ -87,7 +87,7 @@ const Sidebar = ({ isOpen, isMobile, toggleSidebar }: SidebarProps) => {
             <LayoutDashboard className="w-[18px] h-[18px] shrink-0" />
             <span className={`whitespace-nowrap transition-all duration-300 ${isOpen ? 'opacity-100 max-w-[200px]' : 'opacity-0 max-w-0'}`}>New Consultation</span>
           </button>
-          <Link
+          <AppLink
             title="Research Vault"
             href="/vault"
             onClick={() => isMobile && toggleSidebar()}
@@ -97,7 +97,7 @@ const Sidebar = ({ isOpen, isMobile, toggleSidebar }: SidebarProps) => {
           >
             <BookOpen className="w-[18px] h-[18px] shrink-0" />
             <span className={`whitespace-nowrap transition-all duration-300 ${isOpen ? 'opacity-100 max-w-[200px]' : 'opacity-0 max-w-0'}`}>Research Vault</span>
-          </Link>
+          </AppLink>
         </div>
 
         {/* History */}

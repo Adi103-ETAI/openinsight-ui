@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useCallback, useRef, useEffect } from "react";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "@/lib/router";
 import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
 import QueryZone from "@/components/QueryZone";
 import AnswerCard from "@/components/AnswerCard";
@@ -13,7 +13,7 @@ import SourcesPanel from "@/components/SourcesPanel";
 import { useStore } from "@/contexts/StoreContext";
 import type { QueryResponse, Citation } from "@/types/api";
 
-const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8000";
+const API_BASE = import.meta.env.VITE_API_BASE_URL || "http://localhost:8000";
 
 type ChatMessage = {
   id: string;
