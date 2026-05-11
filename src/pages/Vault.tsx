@@ -174,18 +174,18 @@ const Vault = () => {
         </div>
       }
     >
-      <div className="w-full max-w-6xl mx-auto py-8 sm:py-12 px-4 sm:px-6 lg:px-8 animate-fade-up">
+      <div className="w-full max-w-6xl mx-auto py-6 sm:py-8 px-4 sm:px-6 lg:px-8 animate-fade-up">
         {/* Header */}
-        <div className="flex items-center justify-between gap-3 mb-8 flex-wrap">
-          <div className="flex items-center gap-3">
-            <div className="p-3 bg-primary/10 rounded-xl text-primary">
-              <BookOpen className="w-6 h-6" />
+        <div className="flex items-center justify-between gap-3 mb-6 flex-wrap">
+          <div className="flex items-center gap-3 min-w-0">
+            <div className="p-2 bg-primary/10 rounded-lg text-primary shrink-0">
+              <BookOpen className="w-5 h-5" />
             </div>
-            <div>
-              <h1 className="text-2xl sm:text-3xl font-heading font-bold tracking-tight text-foreground">
+            <div className="min-w-0">
+              <h1 className="text-xl sm:text-2xl font-heading font-semibold tracking-tight text-foreground truncate">
                 Research Vault
               </h1>
-              <p className="text-sm text-muted-foreground mt-0.5">
+              <p className="text-xs text-muted-foreground mt-0.5">
                 {vaultItems.length} saved citation{vaultItems.length !== 1 ? "s" : ""} •{" "}
                 {collections.length} collection{collections.length !== 1 ? "s" : ""}
               </p>
@@ -196,7 +196,7 @@ const Vault = () => {
             <DropdownMenuTrigger asChild>
               <button
                 disabled={filteredItems.length === 0}
-                className="inline-flex items-center gap-2 h-10 px-4 rounded-xl bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                className="inline-flex items-center gap-2 h-9 px-3.5 rounded-lg bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
               >
                 <Download className="w-4 h-4" />
                 Export
@@ -218,7 +218,35 @@ const Vault = () => {
           </DropdownMenu>
         </div>
 
-        <div className="grid lg:grid-cols-[240px_1fr] gap-6">
+        {/* Toolbar: search + filter (spans full width so columns below align cleanly) */}
+        <div className="flex flex-col sm:flex-row gap-2 mb-4">
+          <div className="relative flex-1 min-w-0">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/50" />
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Search saved citations..."
+              className="w-full h-10 pl-10 pr-4 text-sm bg-card border border-border rounded-lg text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/50 transition-all"
+            />
+          </div>
+          <div className="relative">
+            <Filter className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/50" />
+            <select
+              value={sourceFilter}
+              onChange={(e) => setSourceFilter(e.target.value)}
+              className="w-full sm:w-auto h-10 pl-10 pr-8 text-sm bg-card border border-border rounded-lg text-foreground appearance-none cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/50 transition-all"
+            >
+              {SOURCE_FILTERS.map((f) => (
+                <option key={f.value} value={f.value}>
+                  {f.label}
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
+
+        <div className="grid lg:grid-cols-[220px_1fr] gap-6">
           <CollectionsSidebar
             collections={collections}
             selectedId={selectedCollection}
@@ -230,34 +258,6 @@ const Vault = () => {
           />
 
           <div className="min-w-0">
-            {/* Search & Filter */}
-            <div className="flex flex-col sm:flex-row gap-3 mb-4">
-              <div className="relative flex-1">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/50" />
-                <input
-                  type="text"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder="Search saved citations..."
-                  className="w-full h-11 pl-10 pr-4 text-sm bg-card border border-border rounded-xl text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/50 transition-all"
-                />
-              </div>
-              <div className="relative">
-                <Filter className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/50" />
-                <select
-                  value={sourceFilter}
-                  onChange={(e) => setSourceFilter(e.target.value)}
-                  className="h-11 pl-10 pr-8 text-sm bg-card border border-border rounded-xl text-foreground appearance-none cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/50 transition-all"
-                >
-                  {SOURCE_FILTERS.map((f) => (
-                    <option key={f.value} value={f.value}>
-                      {f.label}
-                    </option>
-                  ))}
-                </select>
-              </div>
-            </div>
-
             {/* Tag chips */}
             {allTags.length > 0 && (
               <div className="flex items-center gap-1.5 flex-wrap mb-4">
@@ -290,14 +290,14 @@ const Vault = () => {
 
             {/* Items */}
             {filteredItems.length === 0 ? (
-              <div className="flex flex-col items-center justify-center py-20 text-center">
-                <div className="w-16 h-16 bg-muted rounded-full flex items-center justify-center mb-4">
-                  <Bookmark className="w-6 h-6 text-muted-foreground" />
+              <div className="flex flex-col items-center justify-center py-12 text-center border border-dashed border-border/60 rounded-xl">
+                <div className="w-12 h-12 bg-muted rounded-full flex items-center justify-center mb-3">
+                  <Bookmark className="w-5 h-5 text-muted-foreground" />
                 </div>
-                <h3 className="text-lg font-semibold text-foreground mb-1">
+                <h3 className="text-base font-semibold text-foreground mb-1">
                   {vaultItems.length === 0 ? "No saved citations yet" : "No matches found"}
                 </h3>
-                <p className="text-sm text-muted-foreground max-w-sm">
+                <p className="text-sm text-muted-foreground max-w-xs">
                   {vaultItems.length === 0
                     ? "Save citations from clinical answers by clicking the bookmark icon on any citation card."
                     : "Try adjusting your search, source filter, tag, or collection."}
