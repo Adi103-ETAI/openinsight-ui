@@ -151,24 +151,33 @@ const Vault = () => {
       animate="shimmer"
       className="w-full"
       fallback={
-        <div className="w-full max-w-6xl mx-auto py-8 sm:py-12 px-4 sm:px-6 lg:px-8 animate-fade-up">
-          <div className="flex items-center gap-3 mb-8">
-            <div className="w-12 h-12 rounded-xl skeleton-shimmer" />
-            <div className="space-y-2">
-              <div className="w-40 h-7 rounded-md skeleton-shimmer" />
-              <div className="w-32 h-4 rounded-md skeleton-shimmer" />
+        <div className="w-full max-w-6xl mx-auto py-6 sm:py-8 px-4 sm:px-6 lg:px-8 animate-fade-up">
+          {/* Header skeleton */}
+          <div className="flex items-center justify-between gap-3 mb-6 flex-wrap">
+            <div className="flex items-center gap-3">
+              <div className="w-9 h-9 rounded-lg skeleton-shimmer" />
+              <div className="space-y-1.5">
+                <div className="w-44 h-6 rounded-md skeleton-shimmer" />
+                <div className="w-32 h-3 rounded-md skeleton-shimmer" />
+              </div>
             </div>
+            <div className="w-24 h-9 rounded-lg skeleton-shimmer" />
           </div>
-          <div className="grid lg:grid-cols-[240px_1fr] gap-6">
+          {/* Body skeleton: sidebar + (toolbar + cards) */}
+          <div className="grid lg:grid-cols-[220px_1fr] gap-6">
             <div className="space-y-2">
-              <div className="h-9 rounded-md skeleton-shimmer" />
-              <div className="h-9 rounded-md skeleton-shimmer" />
-              <div className="h-9 rounded-md skeleton-shimmer" />
+              <div className="h-10 rounded-lg skeleton-shimmer" />
+              <div className="h-9 rounded-lg skeleton-shimmer" />
+              <div className="h-9 rounded-lg skeleton-shimmer" />
             </div>
             <div className="space-y-3">
-              <div className="h-11 rounded-xl skeleton-shimmer" />
-              <div className="h-36 rounded-xl skeleton-shimmer" />
-              <div className="h-36 rounded-xl skeleton-shimmer" />
+              <div className="flex gap-2">
+                <div className="flex-1 h-10 rounded-lg skeleton-shimmer" />
+                <div className="w-32 h-10 rounded-lg skeleton-shimmer" />
+              </div>
+              <div className="h-28 rounded-xl skeleton-shimmer" />
+              <div className="h-28 rounded-xl skeleton-shimmer" />
+              <div className="h-28 rounded-xl skeleton-shimmer" />
             </div>
           </div>
         </div>
@@ -218,34 +227,6 @@ const Vault = () => {
           </DropdownMenu>
         </div>
 
-        {/* Toolbar: search + filter (spans full width so columns below align cleanly) */}
-        <div className="flex flex-col sm:flex-row gap-2 mb-4">
-          <div className="relative flex-1 min-w-0">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/50" />
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search saved citations..."
-              className="w-full h-10 pl-10 pr-4 text-sm bg-card border border-border rounded-lg text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/50 transition-all"
-            />
-          </div>
-          <div className="relative">
-            <Filter className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/50" />
-            <select
-              value={sourceFilter}
-              onChange={(e) => setSourceFilter(e.target.value)}
-              className="w-full sm:w-auto h-10 pl-10 pr-8 text-sm bg-card border border-border rounded-lg text-foreground appearance-none cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/50 transition-all"
-            >
-              {SOURCE_FILTERS.map((f) => (
-                <option key={f.value} value={f.value}>
-                  {f.label}
-                </option>
-              ))}
-            </select>
-          </div>
-        </div>
-
         <div className="grid lg:grid-cols-[220px_1fr] gap-6">
           <CollectionsSidebar
             collections={collections}
@@ -258,6 +239,33 @@ const Vault = () => {
           />
 
           <div className="min-w-0">
+            {/* Toolbar: search + filter — top-aligns with Collections header */}
+            <div className="flex flex-col sm:flex-row gap-2 mb-4">
+              <div className="relative flex-1 min-w-0">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/50" />
+                <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder="Search saved citations..."
+                  className="w-full h-10 pl-10 pr-4 text-sm bg-card border border-border rounded-lg text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/50 transition-all"
+                />
+              </div>
+              <div className="relative">
+                <Filter className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/50" />
+                <select
+                  value={sourceFilter}
+                  onChange={(e) => setSourceFilter(e.target.value)}
+                  className="w-full sm:w-auto h-10 pl-10 pr-8 text-sm bg-card border border-border rounded-lg text-foreground appearance-none cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/50 transition-all"
+                >
+                  {SOURCE_FILTERS.map((f) => (
+                    <option key={f.value} value={f.value}>
+                      {f.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
             {/* Tag chips */}
             {allTags.length > 0 && (
               <div className="flex items-center gap-1.5 flex-wrap mb-4">
