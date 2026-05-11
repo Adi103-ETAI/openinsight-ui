@@ -290,14 +290,14 @@ const Vault = () => {
 
             {/* Items */}
             {filteredItems.length === 0 ? (
-              <div className="flex flex-col items-center justify-center py-20 text-center">
-                <div className="w-16 h-16 bg-muted rounded-full flex items-center justify-center mb-4">
-                  <Bookmark className="w-6 h-6 text-muted-foreground" />
+              <div className="flex flex-col items-center justify-center py-12 text-center border border-dashed border-border/60 rounded-xl">
+                <div className="w-12 h-12 bg-muted rounded-full flex items-center justify-center mb-3">
+                  <Bookmark className="w-5 h-5 text-muted-foreground" />
                 </div>
-                <h3 className="text-lg font-semibold text-foreground mb-1">
+                <h3 className="text-base font-semibold text-foreground mb-1">
                   {vaultItems.length === 0 ? "No saved citations yet" : "No matches found"}
                 </h3>
-                <p className="text-sm text-muted-foreground max-w-sm">
+                <p className="text-sm text-muted-foreground max-w-xs">
                   {vaultItems.length === 0
                     ? "Save citations from clinical answers by clicking the bookmark icon on any citation card."
                     : "Try adjusting your search, source filter, tag, or collection."}
