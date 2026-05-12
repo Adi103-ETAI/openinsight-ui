@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback, useRef, useEffect } from "react";
+import { BookOpen, X } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "@/lib/router";
 import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
 import QueryZone from "@/components/QueryZone";
@@ -11,6 +12,8 @@ import ErrorState from "@/components/ErrorState";
 import Footer from "@/components/Footer";
 import SourcesPanel from "@/components/SourcesPanel";
 import { useStore } from "@/contexts/StoreContext";
+import { useToast } from "@/hooks/use-toast";
+import { useIsMobile } from "@/hooks/use-mobile";
 import type { QueryResponse, Citation } from "@/types/api";
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL || "http://localhost:8000";
@@ -36,8 +39,11 @@ const IndexView = () => {
   const router = useRouter();
   const handledNavigationRef = useRef<string | null>(null);
   const latestMessageStatus = messages[messages.length - 1]?.status;
+  const { toast } = useToast();
+  const isMobile = useIsMobile();
 
   const [activeSources, setActiveSources] = useState<{ citations: Citation[]; queryContext: string } | null>(null);
+  const [showSourcesPanel, setShowSourcesPanel] = useState(false);
 
   useEffect(() => {
     if (scrollRef.current) {
@@ -92,6 +98,11 @@ const IndexView = () => {
       }
     } catch (err) {
       console.error("Query request failed", err);
+      toast({
+        title: "Query failed",
+        description: err instanceof Error ? err.message : "Please check your connection and try again.",
+        variant: "destructive",
+      });
       setMessages((prev) => prev.map((msg) => (msg.id === newMessageId ? { ...msg, status: "error" } : msg)));
     }
   }, [addHistoryEntry]);
@@ -165,19 +176,19 @@ const IndexView = () => {
                 <Footer visible={true} />
               </div>
             ) : (
-              <div className="w-full max-w-3xl md:max-w-4xl xl:max-w-5xl mx-auto py-6 sm:py-8 px-4 sm:px-6 lg:px-8 space-y-6 sm:space-y-8">
+              <div className="w-full max-w-3xl md:max-w-4xl xl:max-w-5xl mx-auto py-6 sm:py-8 px-4 sm:px-6 lg:px-8 space-y-6">
                 {messages.map((msg, idx) => (
                   <div key={msg.id} className="space-y-6 animate-fade-up">
                     {(idx === 0 || new Date(msg.timestamp).toDateString() !== new Date(messages[idx - 1].timestamp).toDateString()) && (
-                      <p className="text-center text-[10px] uppercase tracking-[0.5px] font-body text-secondary/50 my-4">
+                      <p className="text-center text-xs uppercase tracking-wide font-body text-muted-foreground my-4">
                         {new Date(msg.timestamp).toLocaleDateString(undefined, { weekday: "long", month: "long", day: "numeric" })}
                       </p>
                     )}
 
                     <div className="flex justify-end">
-                      <div className="bg-card journal-shadow rounded-2xl rounded-tr-sm max-w-[92%] sm:max-w-[85%] lg:max-w-[75%] px-4 sm:px-5 py-3 sm:py-3.5">
+                      <div className="bg-card journal-shadow rounded-xl rounded-tr-sm max-w-[92%] sm:max-w-[85%] lg:max-w-[75%] px-4 sm:px-5 py-3 sm:py-3.5">
                         <p className="text-[14px] sm:text-[15px] font-body text-foreground leading-relaxed">{msg.query}</p>
-                        <p className="text-[10px] font-body text-secondary/40 mt-1.5 text-right">{formatTime(msg.timestamp)}</p>
+                        <p className="text-xs font-body text-muted-foreground mt-1.5 text-right">{formatTime(msg.timestamp)}</p>
                       </div>
                     </div>
 
@@ -212,9 +223,20 @@ const IndexView = () => {
               </div>
             </div>
           )}
+
+          {hasMessages && activeSources && (
+            <button
+              onClick={() => setShowSourcesPanel(true)}
+              className="fixed bottom-20 right-4 z-20 flex items-center gap-2 px-4 py-2.5 bg-primary text-primary-foreground rounded-full shadow-lg hover:bg-primary/90 transition-colors text-sm font-medium md:hidden"
+              aria-label="Open sources panel"
+            >
+              <BookOpen className="w-4 h-4" />
+              Sources ({activeSources.citations.length})
+            </button>
+          )}
         </Panel>
 
-        {activeSources && (
+        {activeSources && !isMobile && (
           <>
             <PanelResizeHandle className="w-1.5 bg-border/20 hover:bg-primary/20 transition-colors cursor-col-resize flex-shrink-0 relative group">
               <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-1 h-8 bg-border/40 group-hover:bg-primary/40 rounded-full transition-colors" />
@@ -227,6 +249,32 @@ const IndexView = () => {
               />
             </Panel>
           </>
+        )}
+
+        {isMobile && showSourcesPanel && activeSources && (
+          <div className="fixed inset-0 z-50 bg-background/80 backdrop-blur-sm md:hidden">
+            <div className="absolute bottom-0 left-0 right-0 h-[75vh] bg-card rounded-t-2xl shadow-xl animate-fade-up">
+              <div className="flex items-center justify-between px-4 py-3 border-b border-border/40">
+                <h2 className="text-[15px] font-heading font-semibold text-foreground">
+                  Sources ({activeSources.citations.length})
+                </h2>
+                <button
+                  onClick={() => setShowSourcesPanel(false)}
+                  className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-muted/50 transition-colors"
+                  aria-label="Close sources panel"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+              <div className="h-[calc(75vh-60px)] overflow-y-auto">
+                <SourcesPanel
+                  citations={activeSources.citations}
+                  queryContext={activeSources.queryContext}
+                  onClose={() => setShowSourcesPanel(false)}
+                />
+              </div>
+            </div>
+          </div>
         )}
       </PanelGroup>
     </div>

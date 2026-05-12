@@ -297,7 +297,7 @@ html, body {
 
 @media (min-width: 1024px) {
   .vault-sidebar {
-    width: 200px;
+    width: 220px;
     shrink: 0;
   }
 }

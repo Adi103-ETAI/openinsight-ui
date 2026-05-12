@@ -1,4 +1,4 @@
-import { X } from "lucide-react";
+import { X, BookOpen } from "lucide-react";
 import type { Citation } from "@/types/api";
 import CitationCard from "./CitationCard";
 
@@ -23,16 +23,23 @@ const SourcesPanel = ({ citations, queryContext, onClose }: SourcesPanelProps) =
         </button>
       </div>
 
-      <div className="flex-1 overflow-y-auto p-4 space-y-3 custom-scrollbar">
-        {citations.map((citation, i) => (
-          <div
-            key={citation.index}
-            className="animate-fade-up"
-            style={{ animationDelay: `${i * 0.04}s` }}
-          >
-            <CitationCard citation={citation} queryContext={queryContext} />
+      <div className="flex-1 overflow-y-auto p-4 custom-scrollbar">
+        {citations.length === 0 ? (
+          <div className="flex flex-col items-center justify-center py-12 text-center">
+            <BookOpen className="w-8 h-8 text-muted-foreground/50 mb-3" />
+            <p className="text-sm text-muted-foreground">No sources available</p>
           </div>
-        ))}
+        ) : (
+          citations.map((citation, i) => (
+            <div
+              key={citation.index}
+              className="animate-fade-up"
+              style={{ animationDelay: `${i * 0.04}s` }}
+            >
+              <CitationCard citation={citation} queryContext={queryContext} />
+            </div>
+          ))
+        )}
       </div>
     </div>
   );

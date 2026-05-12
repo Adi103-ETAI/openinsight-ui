@@ -151,7 +151,8 @@ const AnswerCard = ({ data, onRegenerate, onOpenSources }: AnswerCardProps) => {
           onClick={handleCopy}
           aria-label="Copy answer"
           title="Copy answer"
-          className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-[11px] uppercase tracking-[0.05em] font-body font-medium text-secondary/70 hover:text-primary hover:bg-primary/8 transition-colors"
+          tabIndex={0}
+          className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-[11px] uppercase tracking-[0.05em] font-body font-medium text-muted-foreground hover:text-primary hover:bg-primary/8 transition-colors"
         >
           {copied ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
           <span className="hidden sm:inline">{copied ? "Copied" : "Copy"}</span>
@@ -162,7 +163,8 @@ const AnswerCard = ({ data, onRegenerate, onOpenSources }: AnswerCardProps) => {
             onClick={onRegenerate}
             aria-label="Regenerate answer"
             title="Regenerate answer"
-            className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-[11px] uppercase tracking-[0.05em] font-body font-medium text-secondary/70 hover:text-primary hover:bg-primary/8 transition-colors"
+            tabIndex={0}
+            className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-[11px] uppercase tracking-[0.05em] font-body font-medium text-muted-foreground hover:text-primary hover:bg-primary/8 transition-colors"
           >
             <RefreshCw className="w-3.5 h-3.5" />
             <span className="hidden sm:inline">Regenerate</span>
@@ -173,7 +175,8 @@ const AnswerCard = ({ data, onRegenerate, onOpenSources }: AnswerCardProps) => {
           onClick={handleShare}
           aria-label="Share answer"
           title="Share answer"
-          className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-[11px] uppercase tracking-[0.05em] font-body font-medium text-secondary/70 hover:text-primary hover:bg-primary/8 transition-colors"
+          tabIndex={0}
+          className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-[11px] uppercase tracking-[0.05em] font-body font-medium text-muted-foreground hover:text-primary hover:bg-primary/8 transition-colors"
         >
           <Share2 className="w-3.5 h-3.5" />
           <span className="hidden sm:inline">Share</span>
@@ -184,7 +187,8 @@ const AnswerCard = ({ data, onRegenerate, onOpenSources }: AnswerCardProps) => {
             onClick={handleSaveAll}
             aria-label="Save citations to vault"
             title="Save to Vault"
-            className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-[11px] uppercase tracking-[0.05em] font-body font-medium text-secondary/70 hover:text-primary hover:bg-primary/8 transition-colors"
+            tabIndex={0}
+            className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-[11px] uppercase tracking-[0.05em] font-body font-medium text-muted-foreground hover:text-primary hover:bg-primary/8 transition-colors"
           >
             <Bookmark className={`w-3.5 h-3.5 ${alreadySaved ? 'fill-primary text-primary' : ''}`} />
             <span className="hidden sm:inline">Save</span>
@@ -194,6 +198,8 @@ const AnswerCard = ({ data, onRegenerate, onOpenSources }: AnswerCardProps) => {
         {data.citations.length > 0 && (
           <button
             onClick={() => onOpenSources?.(data.citations, data.query)}
+            aria-label="Open sources panel"
+            tabIndex={0}
             className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-[11px] uppercase tracking-[0.05em] font-body font-medium text-primary hover:bg-primary/8 transition-colors"
           >
             <BookOpen className="w-3.5 h-3.5" />
@@ -201,7 +207,7 @@ const AnswerCard = ({ data, onRegenerate, onOpenSources }: AnswerCardProps) => {
           </button>
         )}
 
-        <span className="ml-auto text-[11px] font-body text-secondary/50 px-2">
+        <span className="ml-auto text-[11px] font-body text-muted-foreground/50 px-2">
           {data.chunks_retrieved} sources
         </span>
       </div>

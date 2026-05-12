@@ -198,8 +198,8 @@ const VaultView = () => {
 
         {/* Main content area */}
         <div className="flex-1 overflow-hidden min-h-0">
-          <div className="h-full w-full px-2 sm:px-4 lg:px-6 py-6 sm:py-8">
-            <div className="grid lg:grid-cols-[200px_1fr] gap-0 h-full items-start">
+          <div className="h-full w-full px-2 sm:px-4 lg:px-8 py-6 sm:py-8">
+            <div className="grid lg:grid-cols-[220px_1fr] gap-0 h-full items-start">
           <CollectionsSidebar
             collections={collections}
             selectedId={selectedCollection}
