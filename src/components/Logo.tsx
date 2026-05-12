@@ -149,11 +149,11 @@ const Logo: React.FC<LogoProps> = ({ className = "", variant = "header" }) => {
     return <ModernTextLogo className={className} />;
   }
 
-  let lightTarget = headerLightLogo;
-  let darkTarget = headerDarkLogo;
+  let lightTarget = (headerLightLogo as { src: string }).src;
+  let darkTarget = (headerDarkLogo as { src: string }).src;
   if (variant === "home") {
-    lightTarget = homeLightLogo;
-    darkTarget = homeDarkLogo;
+    lightTarget = (homeLightLogo as { src: string }).src;
+    darkTarget = (homeDarkLogo as { src: string }).src;
   }
   return (
     <ImageLogo

@@ -16,7 +16,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useIsMobile } from "@/hooks/use-mobile";
 import type { QueryResponse, Citation } from "@/types/api";
 
-const API_BASE = import.meta.env.VITE_API_BASE_URL || "http://localhost:8000";
+const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8000";
 
 type ChatMessage = {
   id: string;
@@ -105,7 +105,7 @@ const IndexView = () => {
       });
       setMessages((prev) => prev.map((msg) => (msg.id === newMessageId ? { ...msg, status: "error" } : msg)));
     }
-  }, [addHistoryEntry]);
+  }, [addHistoryEntry, toast]);
 
   useEffect(() => {
     const navKey = `${pathname}?${searchParams.toString()}`;

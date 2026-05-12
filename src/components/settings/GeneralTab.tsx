@@ -32,7 +32,14 @@ import avatar4 from "@/assets/avatar_4.png";
 import avatar5 from "@/assets/avatar_5.png";
 import avatar6 from "@/assets/avatar_6.png";
 
-const AVATARS = [avatar1, avatar2, avatar3, avatar4, avatar5, avatar6];
+const AVATARS: string[] = [
+  (avatar1 as { src: string }).src,
+  (avatar2 as { src: string }).src,
+  (avatar3 as { src: string }).src,
+  (avatar4 as { src: string }).src,
+  (avatar5 as { src: string }).src,
+  (avatar6 as { src: string }).src,
+];
 
 const GeneralTab = () => {
   const { toast } = useToast();
@@ -55,7 +62,7 @@ const GeneralTab = () => {
     specialization: "Cardiology",
     experience: "15+",
     country: "India",
-    avatarImg: avatar1,
+    avatarImg: (avatar1 as { src: string }).src,
   });
 
   // Toggles State
