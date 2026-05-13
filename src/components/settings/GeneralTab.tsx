@@ -221,7 +221,7 @@ const GeneralTab = () => {
                                 : "border-border/50 opacity-70 hover:opacity-100 hover:border-primary/40 hover:scale-105"
                             }`}
                           >
-                            <img src={src.src} alt="Avatar option" className="w-full h-full object-cover" />
+                            <img src={src} alt="Avatar option" className="w-full h-full object-cover" />
                             {profile.avatarImg === src && (
                               <div className="absolute inset-0 bg-primary/10 flex items-center justify-center">
                                 <div className="w-5 h-5 rounded-full bg-primary flex items-center justify-center">
