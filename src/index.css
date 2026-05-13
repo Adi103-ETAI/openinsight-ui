@@ -412,51 +412,8 @@ html, body {
   line-height: 1.35;
 }
 
-/* ═══ Mobile: sidebar → sticky horizontal tab bar ═══ */
+/* ═══ Mobile settings tweaks (drilldown UX lives in SettingsView.tsx) ═══ */
 @media (max-width: 767px) {
-  .settings-sidebar {
-    width: 100%;
-    flex-shrink: 0;
-    border-right: none;
-    border-bottom: 1px solid hsl(var(--border) / 0.4);
-    padding: 0;
-    overflow: visible;
-    display: block;
-    position: sticky;
-    top: 0;
-    z-index: 20;
-    background: hsl(var(--background) / 0.95);
-    backdrop-filter: blur(8px);
-  }
-  .settings-sidebar nav {
-    display: flex;
-    gap: 0.125rem;
-    flex-direction: row;
-    overflow-x: auto;
-    padding: 0.5rem 0.75rem 0;
-    -ms-overflow-style: none;
-    scrollbar-width: none;
-  }
-  .settings-sidebar nav::-webkit-scrollbar {
-    display: none;
-  }
-  .settings-nav-item {
-    white-space: nowrap;
-    border-bottom: 2px solid transparent;
-    border-radius: 0;
-    padding: 0.625rem 0.875rem;
-    font-size: 0.8125rem;
-    background: transparent !important;
-  }
-  .settings-nav-item.active {
-    border-bottom-color: hsl(var(--primary));
-    color: hsl(var(--foreground));
-    background: transparent !important;
-  }
-  .settings-content {
-    padding: 1.25rem 1rem 2.5rem;
-    flex: 1 1 auto;
-  }
   .settings-section-header {
     font-size: 0.9375rem;
     margin-bottom: 0.75rem;
