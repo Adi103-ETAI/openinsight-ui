@@ -212,7 +212,7 @@ const GeneralTab = () => {
                       <div className="grid grid-cols-6 gap-2">
                         {AVATARS.map((src) => (
                           <button
-                            key={src.src}
+                            key={src}
                             type="button"
                             onClick={() => setProfile({ ...profile, avatarImg: src })}
                             className={`relative w-full aspect-square rounded-xl overflow-hidden transition-all duration-200 border-2 ${
