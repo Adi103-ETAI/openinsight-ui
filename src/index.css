@@ -260,15 +260,20 @@ html, body {
 
 /* ═══ Settings Layout ═══ */
 .settings-sidebar {
+  display: none;
   width: 220px;
   flex-shrink: 0;
   border-right: 1px solid hsl(var(--border) / 0.4);
   padding: 1.5rem 0.75rem;
   overflow-y: auto;
   background: hsl(var(--background));
-  display: flex;
   flex-direction: column;
   min-height: 0;
+}
+@media (min-width: 768px) {
+  .settings-sidebar {
+    display: flex;
+  }
 }
 
 .settings-content {
