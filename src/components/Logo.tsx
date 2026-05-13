@@ -107,21 +107,24 @@ const ModernTextLogo: React.FC<{ className: string }> = ({ className }) => (
 );
 
 // ─── Image-based Logo (for home/header in Modern mode) ───
+const resolveImageSrc = (value: StaticImageData | string) =>
+  typeof value === "string" ? value : value.src;
+
 const ImageLogo: React.FC<{
   className: string;
-  lightSrc: string;
-  darkSrc: string;
+  lightSrc: StaticImageData | string;
+  darkSrc: StaticImageData | string;
 }> = ({ className, lightSrc, darkSrc }) => (
   <div
     className={`relative flex items-center justify-center overflow-hidden w-[8em] h-[1.5em] ${className}`}
   >
     <img
-      src={lightSrc}
+      src={resolveImageSrc(lightSrc)}
       alt="OpenInsight Logo"
       className="block dark:hidden absolute w-full h-auto object-center"
     />
     <img
-      src={darkSrc}
+      src={resolveImageSrc(darkSrc)}
       alt="OpenInsight Logo"
       className="hidden dark:block absolute w-full h-auto object-center"
     />
@@ -149,11 +152,11 @@ const Logo: React.FC<LogoProps> = ({ className = "", variant = "header" }) => {
     return <ModernTextLogo className={className} />;
   }
 
-  let lightTarget = (headerLightLogo as { src: string }).src;
-  let darkTarget = (headerDarkLogo as { src: string }).src;
+  let lightTarget = headerLightLogo;
+  let darkTarget = headerDarkLogo;
   if (variant === "home") {
-    lightTarget = (homeLightLogo as { src: string }).src;
-    darkTarget = (homeDarkLogo as { src: string }).src;
+    lightTarget = homeLightLogo;
+    darkTarget = homeDarkLogo;
   }
   return (
     <ImageLogo

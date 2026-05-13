@@ -55,10 +55,10 @@ const QueryZone = ({ onSubmit, isLoading, hasResults }: QueryZoneProps) => {
   };
 
   return (
-    <div className={`w-full max-w-3xl md:max-w-4xl xl:max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 ${hasResults ? "py-4" : "pt-8 sm:pt-10 pb-5 sm:pb-6"}`}>
+    <div className={`w-full max-w-3xl md:max-w-4xl xl:max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 ${hasResults ? "" : "pt-8 sm:pt-10 pb-5 sm:pb-6"}`}>
       {!hasResults && (
         <div className="text-center mb-10 animate-fade-up">
-          <p className="text-xs sm:text-xs uppercase tracking-wide font-body font-medium text-muted-foreground mb-3 sm:mb-4">
+          <p className="text-[10px] sm:text-[11px] uppercase tracking-[0.15em] font-body font-medium text-secondary mb-3 sm:mb-4">
             {greeting}
           </p>
             <div className="mb-8 flex justify-center items-center gap-3">
@@ -69,8 +69,8 @@ const QueryZone = ({ onSubmit, isLoading, hasResults }: QueryZoneProps) => {
 
       {/* Inquiry Bar */}
       <div className="relative transition-all">
-        <div className="flex items-center bg-card rounded-xl journal-ring journal-shadow transition-all focus-within:shadow-md focus-within:ring-1 focus-within:ring-primary/30">
-          <div className="pl-5 text-muted-foreground">
+        <div className="flex items-center bg-card rounded-2xl journal-ring journal-shadow transition-all focus-within:shadow-md focus-within:ring-1 focus-within:ring-primary/30">
+          <div className="pl-5 text-secondary/60">
             <Search className="w-[18px] h-[18px]" />
           </div>
           <input
@@ -80,7 +80,7 @@ const QueryZone = ({ onSubmit, isLoading, hasResults }: QueryZoneProps) => {
             onChange={(e) => setQuery(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && handleSubmit()}
             placeholder={hasResults ? "Reply..." : "Ask a medical question..."}
-            className="flex-1 h-12 sm:h-14 pl-3 pr-3 text-[14px] sm:text-[15px] font-body bg-transparent text-foreground placeholder:text-muted-foreground focus:outline-none"
+            className="flex-1 h-12 sm:h-14 pl-3 pr-3 text-[14px] sm:text-[15px] font-body bg-transparent text-foreground placeholder:text-secondary/50 focus:outline-none"
           />
           <button
             onClick={() => handleSubmit()}
@@ -102,7 +102,7 @@ const QueryZone = ({ onSubmit, isLoading, hasResults }: QueryZoneProps) => {
             <button
               key={ex.label}
               onClick={() => handleSubmit(ex.label)}
-              className="flex items-center gap-2 text-[12px] sm:text-[13px] font-body font-medium text-muted-foreground border border-border px-4 py-2.5 rounded-full hover:bg-primary/8 hover:border-primary/30 hover:text-primary transition-all"
+              className="flex items-center gap-2 text-[12px] sm:text-[13px] font-body font-medium text-secondary border border-border px-4 py-2.5 rounded-full hover:bg-primary/8 hover:border-primary/30 hover:text-primary transition-all"
             >
               <ex.icon className="w-3.5 h-3.5" />
               {ex.label}

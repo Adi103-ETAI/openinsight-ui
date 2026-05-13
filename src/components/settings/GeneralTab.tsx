@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import { Stethoscope, Sun, Moon, Monitor } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Switch } from "@/components/ui/switch";
@@ -32,7 +32,7 @@ import avatar4 from "@/assets/avatar_4.png";
 import avatar5 from "@/assets/avatar_5.png";
 import avatar6 from "@/assets/avatar_6.png";
 
-const AVATARS: string[] = [
+const AVATARS = [
   (avatar1 as { src: string }).src,
   (avatar2 as { src: string }).src,
   (avatar3 as { src: string }).src,
@@ -50,7 +50,6 @@ const GeneralTab = () => {
     if (typeof window === "undefined") return "Director";
     return window.localStorage.getItem("openinsight_display_name") || "Director";
   });
-  const prevDisplayName = useRef(displayName);
 
   useEffect(() => {
     localStorage.setItem("openinsight_display_name", displayName);
@@ -174,8 +173,7 @@ const GeneralTab = () => {
               placeholder="e.g. Director"
               className="bg-muted/40 border-border/30 h-12 text-base"
               onBlur={() => {
-                if (displayName.trim() && displayName !== prevDisplayName.current) {
-                  prevDisplayName.current = displayName;
+                if (displayName.trim()) {
                   toast({ title: "Display name saved", description: `OpenInsight will call you "${displayName}".` });
                 }
               }}

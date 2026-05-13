@@ -11,13 +11,3 @@ export function useRouter() {
     replace: (to: string) => router.replace(to),
   };
 }
-
-export function navigate(to: string, options?: { replace?: boolean }) {
-  if (typeof window === "undefined") return;
-
-  if (options?.replace) {
-    window.history.replaceState({}, "", to);
-  } else {
-    window.history.pushState({}, "", to);
-  }
-}

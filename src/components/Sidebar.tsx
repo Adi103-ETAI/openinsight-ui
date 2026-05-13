@@ -1,7 +1,6 @@
 "use client";
 
-import { useState } from "react";
-import { Clock, BookOpen, Settings, LayoutDashboard, PanelLeftClose, PanelLeftOpen, Trash2, X, LogOut, User, Sun, Moon, Monitor } from "lucide-react";
+import { Clock, BookOpen, Settings, LayoutDashboard, PanelLeftClose, PanelLeftOpen, Trash2, X, LogOut, User } from "lucide-react";
 import AppLink from "@/components/AppLink";
 import { usePathname, useRouter } from "@/lib/router";
 import { useStore } from "@/contexts/StoreContext";
@@ -23,44 +22,6 @@ const Sidebar = ({ isOpen, isMobile, toggleSidebar }: SidebarProps) => {
   const router = useRouter();
   const { toast } = useToast();
   const { history, removeHistoryEntry, clearHistory } = useStore();
-
-  // Theme state - sync with localStorage
-  const [theme, setTheme] = useState<'light' | 'dark' | 'system'>(() => {
-    if (typeof window === "undefined") return "dark";
-    return (window.localStorage.getItem('theme') as 'light' | 'dark' | 'system') || 'dark';
-  });
-
-  const handleThemeToggle = () => {
-    const themes: Array<'light' | 'dark' | 'system'> = ['light', 'system', 'dark'];
-    const currentIndex = themes.indexOf(theme);
-    const nextTheme = themes[(currentIndex + 1) % themes.length];
-    
-    setTheme(nextTheme);
-    localStorage.setItem('theme', nextTheme);
-
-    const root = window.document.documentElement;
-    const body = window.document.body;
-
-    root.classList.remove("dark", "light");
-    body.classList.remove("dark", "light");
-
-    if (nextTheme === "dark") {
-      root.classList.add("dark");
-      body.classList.add("dark");
-    } else if (nextTheme === "system") {
-      const systemTheme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
-      if (systemTheme === "dark") {
-        root.classList.add("dark");
-        body.classList.add("dark");
-      }
-    }
-
-    let themeName = 'System Default';
-    if (nextTheme === 'dark') themeName = 'Dark Mode';
-    if (nextTheme === 'light') themeName = 'Light Mode';
-
-    toast({ title: "Appearance Updated", description: `Theme has been set to ${themeName}.` });
-  };
 
   const isActive = (path: string) => pathname === path;
 
@@ -104,7 +65,7 @@ const Sidebar = ({ isOpen, isMobile, toggleSidebar }: SidebarProps) => {
         )}
         <button 
           onClick={toggleSidebar}
-          className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-muted/50 transition-colors text-muted-foreground hover:text-foreground"
+          className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-muted/50 transition-colors text-secondary/50 hover:text-foreground"
           aria-label={isOpen ? "Close sidebar" : "Open sidebar"}
         >
           {isOpen ? <PanelLeftClose className="w-4 h-4" /> : <PanelLeftOpen className="w-4 h-4" />}
@@ -120,7 +81,7 @@ const Sidebar = ({ isOpen, isMobile, toggleSidebar }: SidebarProps) => {
               if (isMobile) toggleSidebar();
             }}
             className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-[14px] font-body font-medium transition-all duration-300 overflow-hidden ${
-              isActive("/") && isOpen ? "text-primary bg-primary/10" : isActive("/") ? "text-primary" : "text-muted-foreground hover:text-foreground hover:bg-muted/40"
+              isActive("/") && isOpen ? "text-primary bg-primary/10" : isActive("/") ? "text-primary" : "text-secondary/70 hover:text-foreground hover:bg-muted/40"
             }`}
           >
             <LayoutDashboard className="w-[18px] h-[18px] shrink-0" />
@@ -131,7 +92,7 @@ const Sidebar = ({ isOpen, isMobile, toggleSidebar }: SidebarProps) => {
             href="/vault"
             onClick={() => isMobile && toggleSidebar()}
             className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-[14px] font-body font-medium transition-all duration-300 overflow-hidden ${
-              isActive("/vault") && isOpen ? "text-primary bg-primary/10" : isActive("/vault") ? "text-primary" : "text-muted-foreground hover:text-foreground hover:bg-muted/40"
+              isActive("/vault") && isOpen ? "text-primary bg-primary/10" : isActive("/vault") ? "text-primary" : "text-secondary/70 hover:text-foreground hover:bg-muted/40"
             }`}
           >
             <BookOpen className="w-[18px] h-[18px] shrink-0" />
@@ -142,14 +103,14 @@ const Sidebar = ({ isOpen, isMobile, toggleSidebar }: SidebarProps) => {
         {/* History */}
         <div className={`mt-5 transition-all duration-300 ${isOpen ? 'opacity-100' : 'opacity-0 pointer-events-none h-0 overflow-hidden'}`}>
           <div className="px-4 flex items-center justify-between mb-2">
-            <h4 className="text-xs font-body font-medium text-muted-foreground uppercase tracking-wide flex items-center gap-1.5">
+            <h4 className="text-[10px] font-body font-medium text-secondary/50 uppercase tracking-[0.12em] flex items-center gap-1.5">
               <Clock className="w-3 h-3" /> Recent Conversations
             </h4>
             {history.length > 0 && (
               <button
                 onClick={clearHistory}
                 aria-label="Delete all recent conversations"
-                className="text-muted-foreground/30 hover:text-destructive transition-colors"
+                className="text-secondary/30 hover:text-destructive transition-colors"
               >
                 <Trash2 className="w-3 h-3" />
               </button>
@@ -157,11 +118,11 @@ const Sidebar = ({ isOpen, isMobile, toggleSidebar }: SidebarProps) => {
           </div>
           <div className="px-2 space-y-px">
             {history.length === 0 ? (
-              <p className="px-3 py-4 text-xs font-body text-secondary/40 text-center">No queries yet</p>
+              <p className="px-3 py-4 text-[11px] font-body text-secondary/40 text-center">No queries yet</p>
             ) : (
               Object.entries(groupedHistory).map(([group, items]) => (
                 <div key={group} className="mb-2.5">
-                  <p className="px-3 py-1 text-xs uppercase tracking-wide text-secondary/45">{group}</p>
+                  <p className="px-3 py-1 text-[10px] uppercase tracking-[0.08em] text-secondary/45">{group}</p>
                   {items.map((item) => (
                     <div
                       key={item.id}
@@ -172,7 +133,7 @@ const Sidebar = ({ isOpen, isMobile, toggleSidebar }: SidebarProps) => {
                         <span className="text-[12px] font-body text-foreground/80 group-hover:text-primary transition-colors line-clamp-1 block">
                           {item.title || item.query}
                         </span>
-                        <span className="text-xs font-body text-secondary/40 mt-0.5 block">
+                        <span className="text-[10px] font-body text-secondary/40 mt-0.5 block">
                           {formatDistanceToNow(item.timestamp, { addSuffix: true })}
                         </span>
                       </div>
@@ -182,7 +143,7 @@ const Sidebar = ({ isOpen, isMobile, toggleSidebar }: SidebarProps) => {
                           removeHistoryEntry(item.id);
                         }}
                         aria-label={`Delete conversation: ${item.query}`}
-                        className="shrink-0 mt-0.5 opacity-100 md:opacity-0 md:group-hover:opacity-100 md:group-focus-within:opacity-100 text-muted-foreground/40 hover:text-destructive transition-all"
+                        className="shrink-0 mt-0.5 opacity-100 md:opacity-0 md:group-hover:opacity-100 md:group-focus-within:opacity-100 text-secondary/40 hover:text-destructive transition-all"
                       >
                         <X className="w-3 h-3" />
                       </button>
