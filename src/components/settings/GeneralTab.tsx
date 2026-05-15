@@ -34,6 +34,31 @@ import avatar6 from "@/assets/avatar_6.png";
 
 const AVATARS = [avatar1, avatar2, avatar3, avatar4, avatar5, avatar6];
 
+const getInitials = (name: string, email: string) => {
+  const source = (name || "").trim() || (email || "").split("@")[0] || "";
+  if (!source) return "?";
+  const parts = source.split(/[\s._-]+/).filter(Boolean);
+  if (parts.length >= 2) return (parts[0][0] + parts[1][0]).toUpperCase();
+  return source.slice(0, 2).toUpperCase();
+};
+
+const InitialsAvatar = ({
+  name,
+  email,
+  className = "",
+}: {
+  name: string;
+  email: string;
+  className?: string;
+}) => (
+  <div
+    className={`flex items-center justify-center w-full h-full bg-gradient-to-br from-primary/80 to-primary text-primary-foreground font-semibold select-none ${className}`}
+    aria-label="User initials"
+  >
+    {getInitials(name, email)}
+  </div>
+);
+
 const GeneralTab = () => {
   const { toast } = useToast();
 
