@@ -34,6 +34,31 @@ import avatar6 from "@/assets/avatar_6.png";
 
 const AVATARS = [avatar1, avatar2, avatar3, avatar4, avatar5, avatar6];
 
+const getInitials = (name: string, email: string) => {
+  const source = (name || "").trim() || (email || "").split("@")[0] || "";
+  if (!source) return "?";
+  const parts = source.split(/[\s._-]+/).filter(Boolean);
+  if (parts.length >= 2) return (parts[0][0] + parts[1][0]).toUpperCase();
+  return source.slice(0, 2).toUpperCase();
+};
+
+const InitialsAvatar = ({
+  name,
+  email,
+  className = "",
+}: {
+  name: string;
+  email: string;
+  className?: string;
+}) => (
+  <div
+    className={`flex items-center justify-center w-full h-full bg-gradient-to-br from-primary/80 to-primary text-primary-foreground font-semibold select-none ${className}`}
+    aria-label="User initials"
+  >
+    {getInitials(name, email)}
+  </div>
+);
+
 const GeneralTab = () => {
   const { toast } = useToast();
 
@@ -47,7 +72,15 @@ const GeneralTab = () => {
   useEffect(() => {
     localStorage.setItem("openinsight_display_name", displayName);
   }, [displayName]);
-  const [profile, setProfile] = useState({
+  const [profile, setProfile] = useState<{
+    name: string;
+    email: string;
+    role: string;
+    specialization: string;
+    experience: string;
+    country: string;
+    avatarImg: string | null;
+  }>({
     name: "Director A",
     email: "director@sentarc.labs",
     role: "Doctor",
@@ -144,8 +177,12 @@ const GeneralTab = () => {
           <div className="space-y-2">
             <Label className="text-base text-muted-foreground">Full name</Label>
             <div className="flex items-center gap-3 px-4 py-2 bg-muted/40 border border-border/30 rounded-md focus-within:ring-1 focus-within:ring-ring transition-all">
-              <div className="w-8 h-8 rounded-full overflow-hidden bg-muted shrink-0">
-                <img src={profile.avatarImg} alt="Avatar" className="w-full h-full object-cover" />
+              <div className="w-8 h-8 rounded-full overflow-hidden bg-muted shrink-0 text-xs">
+                {profile.avatarImg ? (
+                  <img src={profile.avatarImg} alt="Avatar" className="w-full h-full object-cover" />
+                ) : (
+                  <InitialsAvatar name={profile.name} email={profile.email} />
+                )}
               </div>
               <input
                 value={profile.name}
@@ -207,9 +244,44 @@ const GeneralTab = () => {
                   <div className="grid grid-cols-2 gap-4">
                     {/* Avatar Picker */}
                     <div className="space-y-3 col-span-2 pb-4 border-b border-border/50">
-                      <Label>Choose Your Avatar</Label>
-                      <p className="text-xs text-muted-foreground">Pick a cartoon avatar that represents you.</p>
-                      <div className="grid grid-cols-6 gap-2">
+                      <div className="flex items-center justify-between">
+                        <Label>Choose Your Avatar</Label>
+                        {profile.avatarImg && (
+                          <button
+                            type="button"
+                            onClick={() => setProfile({ ...profile, avatarImg: null })}
+                            className="text-xs font-medium text-destructive hover:underline"
+                          >
+                            Remove avatar
+                          </button>
+                        )}
+                      </div>
+                      <p className="text-xs text-muted-foreground">
+                        Pick a cartoon avatar, or use your initials.
+                      </p>
+                      <div className="grid grid-cols-7 gap-2">
+                        {/* Initials / no-avatar option */}
+                        <button
+                          type="button"
+                          onClick={() => setProfile({ ...profile, avatarImg: null })}
+                          className={`relative w-full aspect-square rounded-xl overflow-hidden transition-all duration-200 border-2 text-sm ${
+                            profile.avatarImg === null
+                              ? "border-primary ring-2 ring-primary/30 scale-105 shadow-md"
+                              : "border-border/50 opacity-70 hover:opacity-100 hover:border-primary/40 hover:scale-105"
+                          }`}
+                          aria-label="Use initials instead of avatar"
+                        >
+                          <InitialsAvatar name={profile.name} email={profile.email} />
+                          {profile.avatarImg === null && (
+                            <div className="absolute inset-0 bg-primary/10 flex items-center justify-center">
+                              <div className="w-5 h-5 rounded-full bg-primary flex items-center justify-center">
+                                <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                                </svg>
+                              </div>
+                            </div>
+                          )}
+                        </button>
                         {AVATARS.map((src) => (
                           <button
                             key={src}
