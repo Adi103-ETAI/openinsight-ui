@@ -72,7 +72,15 @@ const GeneralTab = () => {
   useEffect(() => {
     localStorage.setItem("openinsight_display_name", displayName);
   }, [displayName]);
-  const [profile, setProfile] = useState({
+  const [profile, setProfile] = useState<{
+    name: string;
+    email: string;
+    role: string;
+    specialization: string;
+    experience: string;
+    country: string;
+    avatarImg: string | null;
+  }>({
     name: "Director A",
     email: "director@sentarc.labs",
     role: "Doctor",
