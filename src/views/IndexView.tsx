@@ -53,9 +53,14 @@ const IndexView = () => {
     setMessages((prev) => [...prev, { id: newMessageId, query, status: "loading", timestamp: Date.now() }]);
 
     try {
+      const { data: sessionData } = await import("@/integrations/supabase/client").then(m => m.supabase.auth.getSession());
+      const token = sessionData.session?.access_token;
+      const headers: Record<string, string> = { "Content-Type": "application/json" };
+      if (token) headers["Authorization"] = `Bearer ${token}`;
+
       const res = await fetch(`${API_BASE}/query`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers,
         body: JSON.stringify({ query, top_k: 8, mode: "standard" }),
       });
 

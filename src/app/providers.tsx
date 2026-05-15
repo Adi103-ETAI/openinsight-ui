@@ -6,6 +6,7 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { StoreProvider } from "@/contexts/StoreContext";
+import { AuthProvider } from "@/contexts/AuthContext";
 
 function applyPersistedTheme() {
   const saved = localStorage.getItem("theme") as "light" | "dark" | "system" | null;
@@ -37,11 +38,13 @@ export default function Providers({ children }: { children: ReactNode }) {
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
-        <StoreProvider>
-          <Toaster />
-          <Sonner />
-          {children}
-        </StoreProvider>
+        <AuthProvider>
+          <StoreProvider>
+            <Toaster />
+            <Sonner />
+            {children}
+          </StoreProvider>
+        </AuthProvider>
       </TooltipProvider>
     </QueryClientProvider>
   );
