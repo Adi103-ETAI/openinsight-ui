@@ -95,7 +95,7 @@ async function migrateLocalToCloud(userId: string) {
         title: h.title,
         sources_used: h.sourcesUsed,
         model: h.model ?? null,
-        response: h.response ? (h.response as unknown as Record<string, unknown>) : null,
+        response: (h.response as unknown as never) ?? null,
         created_at: new Date(h.timestamp).toISOString(),
       }))
     );
@@ -163,7 +163,7 @@ export function useQueryHistory() {
           timestamp: new Date(r.created_at).getTime(),
           sourcesUsed: (r.sources_used ?? []) as string[],
           model: r.model ?? undefined,
-          response: (r.response as QueryResponse | null) ?? undefined,
+          response: (r.response as unknown as QueryResponse | null) ?? undefined,
         }))
       );
     })();
@@ -198,7 +198,7 @@ export function useQueryHistory() {
           title: entry.title,
           sources_used: entry.sourcesUsed,
           model: response.model ?? null,
-          response: response as unknown as Record<string, unknown>,
+          response: response as unknown as never,
         }).then(({ error }) => { if (error) console.error("history insert", error); });
       }
     },
@@ -307,7 +307,7 @@ export function useVault() {
     (id: string, patch: Partial<VaultItem>) => {
       setItems((prev) => prev.map((i) => (i.id === id ? { ...i, ...patch } : i)));
       if (userId) {
-        const dbPatch: Record<string, unknown> = {};
+        const dbPatch: Record<string, never> = {} as Record<string, never>;
         if (patch.title !== undefined) dbPatch.title = patch.title;
         if (patch.tags !== undefined) dbPatch.tags = patch.tags;
         if (patch.collectionId !== undefined) dbPatch.collection_id = patch.collectionId;
