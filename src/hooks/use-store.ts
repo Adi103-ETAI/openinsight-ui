@@ -307,13 +307,18 @@ export function useVault() {
     (id: string, patch: Partial<VaultItem>) => {
       setItems((prev) => prev.map((i) => (i.id === id ? { ...i, ...patch } : i)));
       if (userId) {
-        const dbPatch: Record<string, never> = {} as Record<string, never>;
+        const dbPatch: {
+          title?: string;
+          tags?: string[];
+          collection_id?: string | null;
+          notes?: string | null;
+        } = {};
         if (patch.title !== undefined) dbPatch.title = patch.title;
         if (patch.tags !== undefined) dbPatch.tags = patch.tags;
         if (patch.collectionId !== undefined) dbPatch.collection_id = patch.collectionId;
-        if (patch.notes !== undefined) dbPatch.notes = patch.notes;
+        if (patch.notes !== undefined) dbPatch.notes = patch.notes ?? null;
         if (Object.keys(dbPatch).length) {
-          supabase.from("vault_items").update(dbPatch).eq("id", id);
+          supabase.from("vault_items").update(dbPatch as never).eq("id", id);
         }
       }
     },
