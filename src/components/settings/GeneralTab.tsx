@@ -1,13 +1,15 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { Stethoscope, Sun, Moon, Monitor } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { Stethoscope, Sun, Moon, Monitor, Upload, Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Switch } from "@/components/ui/switch";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { getLogoStyle, setLogoStyle, type LogoStyle } from "@/components/Logo";
+import { useAuth } from "@/contexts/AuthContext";
+import { supabase } from "@/integrations/supabase/client";
 import {
   Dialog,
   DialogContent,
@@ -33,6 +35,24 @@ import avatar5 from "@/assets/avatar_5.png";
 import avatar6 from "@/assets/avatar_6.png";
 
 const AVATARS = [avatar1, avatar2, avatar3, avatar4, avatar5, avatar6];
+
+// Convert stored avatar_url back to a renderable src.
+// Cartoon picks are stored as "cartoon:1".."cartoon:6"; uploads as full URLs.
+const resolveAvatar = (stored: string | null | undefined): string | null => {
+  if (!stored) return null;
+  if (stored.startsWith("cartoon:")) {
+    const idx = parseInt(stored.split(":")[1], 10) - 1;
+    return AVATARS[idx] ?? null;
+  }
+  return stored;
+};
+
+const avatarToStored = (src: string | null): string | null => {
+  if (!src) return null;
+  const idx = AVATARS.indexOf(src);
+  if (idx >= 0) return `cartoon:${idx + 1}`;
+  return src;
+};
 
 const getInitials = (name: string, email: string) => {
   const source = (name || "").trim() || (email || "").split("@")[0] || "";
