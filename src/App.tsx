@@ -7,6 +7,8 @@ import NotFoundView from "@/views/NotFoundView";
 import SettingsView from "@/views/SettingsView";
 import VaultView from "@/views/VaultView";
 import AuthView from "@/views/AuthView";
+import ForgotPasswordView from "@/views/ForgotPasswordView";
+import ResetPasswordView from "@/views/ResetPasswordView";
 import Providers from "@/app/providers";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import { usePathname } from "@/lib/router";
@@ -14,9 +16,9 @@ import { usePathname } from "@/lib/router";
 function AppRoute() {
   const pathname = usePathname();
 
-  if (pathname === "/auth") {
-    return <AuthView />;
-  }
+  if (pathname === "/auth") return <AuthView />;
+  if (pathname === "/auth/forgot-password") return <ForgotPasswordView />;
+  if (pathname === "/auth/reset-password") return <ResetPasswordView />;
 
   if (pathname === "/" || pathname === "") {
     return (

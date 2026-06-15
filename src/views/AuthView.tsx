@@ -104,7 +104,12 @@ export default function AuthView() {
                   <Input id="email-in" type="email" required value={email} onChange={(e) => setEmail(e.target.value)} />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="password-in">Password</Label>
+                  <div className="flex items-center justify-between">
+                    <Label htmlFor="password-in">Password</Label>
+                    <a href="/auth/forgot-password" className="text-xs text-primary hover:underline font-body">
+                      Forgot?
+                    </a>
+                  </div>
                   <Input id="password-in" type="password" required value={password} onChange={(e) => setPassword(e.target.value)} />
                 </div>
                 <Button type="submit" className="w-full" disabled={busy}>
