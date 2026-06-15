@@ -1,13 +1,15 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { Stethoscope, Sun, Moon, Monitor } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { Stethoscope, Sun, Moon, Monitor, Upload, Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Switch } from "@/components/ui/switch";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { getLogoStyle, setLogoStyle, type LogoStyle } from "@/components/Logo";
+import { useAuth } from "@/contexts/AuthContext";
+import { supabase } from "@/integrations/supabase/client";
 import {
   Dialog,
   DialogContent,
@@ -33,6 +35,24 @@ import avatar5 from "@/assets/avatar_5.png";
 import avatar6 from "@/assets/avatar_6.png";
 
 const AVATARS = [avatar1, avatar2, avatar3, avatar4, avatar5, avatar6];
+
+// Convert stored avatar_url back to a renderable src.
+// Cartoon picks are stored as "cartoon:1".."cartoon:6"; uploads as full URLs.
+const resolveAvatar = (stored: string | null | undefined): string | null => {
+  if (!stored) return null;
+  if (stored.startsWith("cartoon:")) {
+    const idx = parseInt(stored.split(":")[1], 10) - 1;
+    return AVATARS[idx] ?? null;
+  }
+  return stored;
+};
+
+const avatarToStored = (src: string | null): string | null => {
+  if (!src) return null;
+  const idx = AVATARS.indexOf(src);
+  if (idx >= 0) return `cartoon:${idx + 1}`;
+  return src;
+};
 
 const getInitials = (name: string, email: string) => {
   const source = (name || "").trim() || (email || "").split("@")[0] || "";
@@ -61,9 +81,13 @@ const InitialsAvatar = ({
 
 const GeneralTab = () => {
   const { toast } = useToast();
+  const { user } = useAuth();
 
   // Profile State
   const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const [avatarUploading, setAvatarUploading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
   const [displayName, setDisplayName] = useState(() => {
     if (typeof window === "undefined") return "Director";
     return window.localStorage.getItem("openinsight_display_name") || "Director";
@@ -72,6 +96,7 @@ const GeneralTab = () => {
   useEffect(() => {
     localStorage.setItem("openinsight_display_name", displayName);
   }, [displayName]);
+
   const [profile, setProfile] = useState<{
     name: string;
     email: string;
@@ -89,6 +114,35 @@ const GeneralTab = () => {
     country: "India",
     avatarImg: avatar1,
   });
+
+  // Load profile from Supabase when signed in
+  useEffect(() => {
+    if (!user) return;
+    let cancelled = false;
+    (async () => {
+      const { data, error } = await supabase
+        .from("profiles")
+        .select("display_name, specialty, avatar_url")
+        .eq("id", user.id)
+        .maybeSingle();
+      if (cancelled) return;
+      if (error) {
+        console.error("Failed to load profile", error);
+        return;
+      }
+      setProfile((p) => ({
+        ...p,
+        name: data?.display_name || p.name,
+        email: user.email || p.email,
+        specialization: data?.specialty || p.specialization,
+        avatarImg: data?.avatar_url !== undefined
+          ? (data.avatar_url === null ? null : resolveAvatar(data.avatar_url))
+          : p.avatarImg,
+      }));
+      if (data?.display_name) setDisplayName(data.display_name);
+    })();
+    return () => { cancelled = true; };
+  }, [user]);
 
   // Toggles State
   const [newGuidanceAlerts, setNewGuidanceAlerts] = useState(true);
@@ -119,12 +173,57 @@ const GeneralTab = () => {
     }
   }, []);
 
-  const handleProfileSave = (e: React.FormEvent) => {
+  const handleAvatarUpload = async (file: File) => {
+    if (!user) {
+      toast({ title: "Sign in required", description: "Sign in to upload a custom avatar.", variant: "destructive" });
+      return;
+    }
+    if (!file.type.startsWith("image/")) {
+      toast({ title: "Invalid file", description: "Pick an image file.", variant: "destructive" });
+      return;
+    }
+    if (file.size > 2 * 1024 * 1024) {
+      toast({ title: "Too large", description: "Avatar must be under 2 MB.", variant: "destructive" });
+      return;
+    }
+    setAvatarUploading(true);
+    const ext = file.name.split(".").pop()?.toLowerCase() || "png";
+    const path = `${user.id}/avatar-${Date.now()}.${ext}`;
+    const { error: upErr } = await supabase.storage.from("avatars").upload(path, file, {
+      cacheControl: "3600",
+      upsert: true,
+    });
+    if (upErr) {
+      setAvatarUploading(false);
+      toast({ title: "Upload failed", description: upErr.message, variant: "destructive" });
+      return;
+    }
+    const { data: pub } = supabase.storage.from("avatars").getPublicUrl(path);
+    setProfile((p) => ({ ...p, avatarImg: pub.publicUrl }));
+    setAvatarUploading(false);
+    toast({ title: "Avatar uploaded", description: "Don't forget to save your profile." });
+  };
+
+  const handleProfileSave = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (user) {
+      const { error } = await supabase
+        .from("profiles")
+        .update({
+          display_name: profile.name,
+          specialty: profile.specialization,
+          avatar_url: avatarToStored(profile.avatarImg),
+        })
+        .eq("id", user.id);
+      if (error) {
+        toast({ title: "Save failed", description: error.message, variant: "destructive" });
+        return;
+      }
+    }
     setIsProfileOpen(false);
     toast({
       title: "Profile Updated",
-      description: "Your professional context has been saved securely.",
+      description: user ? "Your details have been saved to your account." : "Saved locally. Sign in to sync.",
     });
   };
 
@@ -257,8 +356,38 @@ const GeneralTab = () => {
                         )}
                       </div>
                       <p className="text-xs text-muted-foreground">
-                        Pick a cartoon avatar, or use your initials.
+                        Pick a cartoon avatar, upload your own, or use your initials.
                       </p>
+                      <div>
+                        <input
+                          ref={fileInputRef}
+                          type="file"
+                          accept="image/*"
+                          className="hidden"
+                          onChange={(e) => {
+                            const f = e.target.files?.[0];
+                            if (f) handleAvatarUpload(f);
+                            e.target.value = "";
+                          }}
+                        />
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          className="h-7 text-xs px-3"
+                          onClick={() => fileInputRef.current?.click()}
+                          disabled={avatarUploading || !user}
+                        >
+                          {avatarUploading ? (
+                            <><Loader2 className="w-3 h-3 mr-1.5 animate-spin" /> Uploading…</>
+                          ) : (
+                            <><Upload className="w-3 h-3 mr-1.5" /> Upload custom</>
+                          )}
+                        </Button>
+                        {!user && (
+                          <span className="ml-2 text-[11px] text-muted-foreground">Sign in to upload</span>
+                        )}
+                      </div>
                       <div className="grid grid-cols-7 gap-2">
                         {/* Initials / no-avatar option */}
                         <button
