@@ -356,8 +356,38 @@ const GeneralTab = () => {
                         )}
                       </div>
                       <p className="text-xs text-muted-foreground">
-                        Pick a cartoon avatar, or use your initials.
+                        Pick a cartoon avatar, upload your own, or use your initials.
                       </p>
+                      <div>
+                        <input
+                          ref={fileInputRef}
+                          type="file"
+                          accept="image/*"
+                          className="hidden"
+                          onChange={(e) => {
+                            const f = e.target.files?.[0];
+                            if (f) handleAvatarUpload(f);
+                            e.target.value = "";
+                          }}
+                        />
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          className="h-7 text-xs px-3"
+                          onClick={() => fileInputRef.current?.click()}
+                          disabled={avatarUploading || !user}
+                        >
+                          {avatarUploading ? (
+                            <><Loader2 className="w-3 h-3 mr-1.5 animate-spin" /> Uploading…</>
+                          ) : (
+                            <><Upload className="w-3 h-3 mr-1.5" /> Upload custom</>
+                          )}
+                        </Button>
+                        {!user && (
+                          <span className="ml-2 text-[11px] text-muted-foreground">Sign in to upload</span>
+                        )}
+                      </div>
                       <div className="grid grid-cols-7 gap-2">
                         {/* Initials / no-avatar option */}
                         <button
