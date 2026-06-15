@@ -81,9 +81,13 @@ const InitialsAvatar = ({
 
 const GeneralTab = () => {
   const { toast } = useToast();
+  const { user } = useAuth();
 
   // Profile State
   const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const [avatarUploading, setAvatarUploading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
   const [displayName, setDisplayName] = useState(() => {
     if (typeof window === "undefined") return "Director";
     return window.localStorage.getItem("openinsight_display_name") || "Director";
@@ -92,6 +96,7 @@ const GeneralTab = () => {
   useEffect(() => {
     localStorage.setItem("openinsight_display_name", displayName);
   }, [displayName]);
+
   const [profile, setProfile] = useState<{
     name: string;
     email: string;
@@ -109,6 +114,35 @@ const GeneralTab = () => {
     country: "India",
     avatarImg: avatar1,
   });
+
+  // Load profile from Supabase when signed in
+  useEffect(() => {
+    if (!user) return;
+    let cancelled = false;
+    (async () => {
+      const { data, error } = await supabase
+        .from("profiles")
+        .select("display_name, specialty, avatar_url")
+        .eq("id", user.id)
+        .maybeSingle();
+      if (cancelled) return;
+      if (error) {
+        console.error("Failed to load profile", error);
+        return;
+      }
+      setProfile((p) => ({
+        ...p,
+        name: data?.display_name || p.name,
+        email: user.email || p.email,
+        specialization: data?.specialty || p.specialization,
+        avatarImg: data?.avatar_url !== undefined
+          ? (data.avatar_url === null ? null : resolveAvatar(data.avatar_url))
+          : p.avatarImg,
+      }));
+      if (data?.display_name) setDisplayName(data.display_name);
+    })();
+    return () => { cancelled = true; };
+  }, [user]);
 
   // Toggles State
   const [newGuidanceAlerts, setNewGuidanceAlerts] = useState(true);
@@ -139,12 +173,57 @@ const GeneralTab = () => {
     }
   }, []);
 
-  const handleProfileSave = (e: React.FormEvent) => {
+  const handleAvatarUpload = async (file: File) => {
+    if (!user) {
+      toast({ title: "Sign in required", description: "Sign in to upload a custom avatar.", variant: "destructive" });
+      return;
+    }
+    if (!file.type.startsWith("image/")) {
+      toast({ title: "Invalid file", description: "Pick an image file.", variant: "destructive" });
+      return;
+    }
+    if (file.size > 2 * 1024 * 1024) {
+      toast({ title: "Too large", description: "Avatar must be under 2 MB.", variant: "destructive" });
+      return;
+    }
+    setAvatarUploading(true);
+    const ext = file.name.split(".").pop()?.toLowerCase() || "png";
+    const path = `${user.id}/avatar-${Date.now()}.${ext}`;
+    const { error: upErr } = await supabase.storage.from("avatars").upload(path, file, {
+      cacheControl: "3600",
+      upsert: true,
+    });
+    if (upErr) {
+      setAvatarUploading(false);
+      toast({ title: "Upload failed", description: upErr.message, variant: "destructive" });
+      return;
+    }
+    const { data: pub } = supabase.storage.from("avatars").getPublicUrl(path);
+    setProfile((p) => ({ ...p, avatarImg: pub.publicUrl }));
+    setAvatarUploading(false);
+    toast({ title: "Avatar uploaded", description: "Don't forget to save your profile." });
+  };
+
+  const handleProfileSave = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (user) {
+      const { error } = await supabase
+        .from("profiles")
+        .update({
+          display_name: profile.name,
+          specialty: profile.specialization,
+          avatar_url: avatarToStored(profile.avatarImg),
+        })
+        .eq("id", user.id);
+      if (error) {
+        toast({ title: "Save failed", description: error.message, variant: "destructive" });
+        return;
+      }
+    }
     setIsProfileOpen(false);
     toast({
       title: "Profile Updated",
-      description: "Your professional context has been saved securely.",
+      description: user ? "Your details have been saved to your account." : "Saved locally. Sign in to sync.",
     });
   };
 
